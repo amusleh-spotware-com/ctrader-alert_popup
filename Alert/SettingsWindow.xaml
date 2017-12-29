@@ -1,0 +1,122 @@
+﻿<Controls:MetroWindow x:Class="Alert.SettingsWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             mc:Ignorable="d" 
+             Title="Settings - Alert" 
+             TitleCaps="False" 
+             BorderThickness="0" 
+             GlowBrush="Black"
+             ResizeMode="CanResizeWithGrip"
+             WindowTransitionsEnabled="False"
+             WindowState="Normal"
+             ShowIconOnTitleBar="False"
+             Height="400"
+             Width="500"
+             Topmost="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Controls:ToggleSwitch 
+                    Name="SoundAlertToggleSwitch" 
+                    Header="Enable Sound Alert" 
+                    Margin="5"
+                    Grid.Row="0"
+                    IsChecked="{Binding Path=IsSoundAlertEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=TwoWay}" />
+
+            <Grid Grid.Row="1" IsEnabled="{Binding ElementName=SoundAlertToggleSwitch, Path=IsChecked}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox 
+                    Name="SoundFilePathTextBox" 
+                    Text="{Binding Path=SoundFilePath, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=TwoWay}" 
+                    Grid.Column="0" 
+                    Margin="5" />
+
+                <Button Name="SoundFileBrowseButton" Margin="5" Grid.Column="1" Content="Browse" Click="SoundFileBrowseButton_Click" Style="{StaticResource SquareButtonStyle}" Controls:ButtonHelper.PreserveTextCase="True" />
+            </Grid>
+
+            <Controls:ToggleSwitch 
+                    Name="EmailAlertToggleSwitch" 
+                    Header="Enable Email Alert" 
+                    Margin="5"
+                    Grid.Row="2"
+                    IsChecked="{Binding Path=IsEmailAlertEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=TwoWay}" />
+
+            <Grid Grid.Row="3" IsEnabled="{Binding ElementName=EmailAlertToggleSwitch, Path=IsChecked}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="From Email: " Margin="5" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" />
+                <TextBox Name="FromEmailTextBox" Margin="5" Grid.Row="0" Grid.Column="1" Text="{Binding Path=FromEmail, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=TwoWay}" />
+
+                <TextBlock Text="To Email: " Margin="5" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
+                <TextBox Name="ToEmailTextBox" Margin="5" Grid.Row="1" Grid.Column="1" Text="{Binding Path=ToEmail, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=TwoWay}" />
+            </Grid>
+
+            <Separator Grid.Row="4" Margin="5" />
+            
+            <Grid Grid.Row="5" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Theme" VerticalAlignment="Center" Margin="5" />
+
+                <ComboBox Name="ThemesComboBox"  Margin="5" MinWidth="150" HorizontalAlignment="Left" ItemsSource="{Binding Path=Themes, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" SelectedItem="{Binding Path=CurrentTheme, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="ThemeChanged"  Grid.Row="0" Grid.Column="1"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Accent" VerticalAlignment="Center" Margin="5" />
+
+                <ComboBox Name="AccentsComboBox" Margin="5" MinWidth="150" HorizontalAlignment="Left" ItemsSource="{Binding Path=Accents, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" SelectedItem="{Binding Path=CurrentAccent, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="ThemeChanged" Grid.Row="1" Grid.Column="1" />
+            </Grid>
+        </Grid>
+        
+        <StatusBar Name="StatusBar" VerticalAlignment="Bottom" Grid.Row="1">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+
+            <StatusBarItem Grid.Column="0">
+                <TextBlock Name="StatusBarMessageTextBlock" Text="Please configure the email settings on your platform before enabling the email alert" />
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Controls:MetroWindow>

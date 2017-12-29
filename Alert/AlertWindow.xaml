@@ -1,0 +1,116 @@
+﻿<Controls:MetroWindow x:Class="Alert.AlertWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             mc:Ignorable="d" 
+             Title="Alert" 
+             TitleCaps="False" 
+             BorderThickness="0" 
+             GlowBrush="Black"
+             ResizeMode="CanResizeWithGrip"
+             WindowTransitionsEnabled="False"
+             WindowState="Normal"
+             ShowIconOnTitleBar="False"
+             Height="500"
+             Width="650"
+             Topmost="True" 
+             WindowStartupLocation="CenterOwner">
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands ShowLastSeparator="False" >
+            <Button Name="SettingsButton" ToolTip="Settings" Click="SettingsButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_settings}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    <Grid>
+        <Grid.Resources>
+            <Style x:Key="ReadOnlyDataGridStyle" TargetType="DataGrid" BasedOn="{StaticResource MetroDataGrid}">
+                <Setter Property="AutoGenerateColumns" Value="False" />
+                <Setter Property="CanUserAddRows" Value="False" />
+                <Setter Property="IsReadOnly" Value="True" />
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
+                <Setter Property="SelectionMode" Value="Single" />
+                <Setter Property="EnableColumnVirtualization" Value="True" />
+                <Setter Property="EnableRowVirtualization" Value="True" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <DataGrid 
+            Name="AlertsDataGrid" 
+            ItemsSource="{Binding Path=Alerts, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" 
+            Style="{StaticResource ReadOnlyDataGridStyle}"
+            SelectedItem="{Binding Path=SelectedAlert, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=TwoWay}"
+            Grid.Row="1">
+            <DataGrid.Resources>
+                <DataTemplate x:Key="HeaderTemplate" >
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="3">
+                        <Button Name="RemoveAllAlertsButton" ToolTip="Remove All Alerts" Click="RemoveAllAlertsButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_delete}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="CellTemplate" >
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="3">
+                        <Button Name="RemoveAlertButton" ToolTip="Remove Alert" Click="RemoveAlertButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_delete}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </DataTemplate>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Trade Side" Binding="{Binding Path=TradeSide}" Width="Auto" />
+                <DataGridTextColumn Header="Symbol" Binding="{Binding Path=Symbol}" Width="Auto" />
+                <DataGridTextColumn Header="Time Frame" Binding="{Binding Path=TimeFrame}" Width="Auto" />
+                <DataGridTextColumn Header="Time" Binding="{Binding Path=Time}" Width="Auto" />
+                <DataGridTextColumn Header="Comment" Binding="{Binding Path=Comment}" Width="*" />
+                <DataGridTemplateColumn HeaderTemplate="{StaticResource HeaderTemplate}" CellTemplate="{StaticResource CellTemplate}" Width="Auto" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StatusBar Name="StatusBar" VerticalAlignment="Bottom" Grid.Row="2">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+
+            <StatusBarItem Grid.Column="0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Alerts #: " HorizontalAlignment="Left" />
+                    <TextBlock Name="StatusBarAlertsNumberTextBlock" Text="{Binding Path=Alerts.Count, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" HorizontalAlignment="Left" />
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Controls:MetroWindow>
