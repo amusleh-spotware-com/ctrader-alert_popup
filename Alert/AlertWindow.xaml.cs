@@ -3,21 +3,25 @@ using MahApps.Metro.Controls;
 using Nortal.Utilities.Csv;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.Windows;
 using System.IO.Pipes;
+using System.Linq;
 using System.Threading;
+using System.Windows;
 
 namespace Alert
 {
-    public partial class AlertWindow : MetroWindow
+    public partial class AlertWindow : MetroWindow, INotifyPropertyChanged
     {
         #region Fields
 
         private double windowHeight, windowWidth, windowTop, windowLeft;
 
         private bool stopPipeServer = false;
+
+        private Alert _selectedAlert;
 
         #endregion Fields
 
@@ -39,18 +43,34 @@ namespace Alert
 
             InitializeComponent();
 
-            SetWindowSize();
-
             Alerts = new ObservableCollection<Alert>();
         }
 
         #endregion Constructor
 
+        #region Events
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion Events
+
         #region Properties
 
         public ObservableCollection<Alert> Alerts { get; set; }
 
-        public Alert SelectedAlert { get; set; }
+        public Alert SelectedAlert
+        {
+            get
+            {
+                return _selectedAlert;
+            }
+            set
+            {
+                _selectedAlert = value;
+
+                OnPropertyChanged("SelectedAlert");
+            }
+        }
 
         #endregion Properties
 
@@ -74,11 +94,18 @@ namespace Alert
             }
         }
 
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             GetAlertsFromFile();
 
-            StartPipe();
+            StartPipeListening();
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -102,6 +129,8 @@ namespace Alert
             }
 
             stopPipeServer = true;
+
+            Manager.StopPipeServer();
         }
 
         private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -185,6 +214,29 @@ namespace Alert
                         });
                     }
                 }
+
+                if (Alerts.Count > Manager.MaximumAlertsNumberToShow)
+                {
+                    File.WriteAllText(Manager.FilePath, string.Empty);
+
+                    int counter = Alerts.Count - Manager.MaximumAlertsNumberToShow;
+
+                    Alerts.ToList().ForEach(alert => 
+                    {
+                        if (counter > 0)
+                        {
+                            Alerts.Remove(alert);
+                            counter--;
+                        }
+                    });
+
+                    Alerts.ToList().ForEach(alert => Manager.WriteAlert(alert));
+                }
+
+                SelectedAlert = Alerts.LastOrDefault();
+
+                AlertsDataGrid.UpdateLayout();
+                AlertsDataGrid.ScrollIntoView(SelectedAlert, null);
             }
             catch (Exception ex)
             {
@@ -210,7 +262,7 @@ namespace Alert
             this.IsEnabled = true;
         }
 
-        private void StartPipe()
+        private void StartPipeListening()
         {
             Thread pipeThread = new Thread(new ThreadStart(() =>
             {
@@ -218,7 +270,7 @@ namespace Alert
                 {
                     while (!stopPipeServer)
                     {
-                        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(Properties.Settings.Default.MutexName))
+                        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(Properties.Settings.Default.PipeServerName))
                         {
                             pipeServer.WaitForConnection();
 
@@ -226,6 +278,12 @@ namespace Alert
 
                             switch (result)
                             {
+                                case 0:
+                                    {
+                                        stopPipeServer = true;
+
+                                        break;
+                                    }
                                 case 1:
                                     {
                                         Invoke(new Action(() =>
@@ -245,7 +303,12 @@ namespace Alert
                 {
                     Manager.LogException(ex);
 
-                    StartPipe();
+                    Manager.StopPipeServer();
+                }
+
+                if (!stopPipeServer)
+                {
+                    StartPipeListening();
                 }
             }));
 

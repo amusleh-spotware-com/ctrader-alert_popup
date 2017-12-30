@@ -3,7 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="MutexName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">tsIo3dljI79K63ArjPvbe2FGN99763yuznG8S1o7qHFFH5O7yd_cTrader_Alert</Value>
+      <Value Profile="(Default)">tsIo3dljI79K63ArjPvbe2FGN99763yuznG8S1o7qHFFH5O7yd_mutex</Value>
+    </Setting>
+    <Setting Name="PipeServerName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">tsIo3dljI79K63ArjPvbe2FGN99763yuznG8S1o7qHFFH5O7yd_pipe</Value>
     </Setting>
   </Settings>
 </SettingsFile>

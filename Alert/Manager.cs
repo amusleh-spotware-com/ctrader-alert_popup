@@ -105,6 +105,14 @@ namespace Alert
             }
         }
 
+        public static int MaximumAlertsNumberToShow
+        {
+            get
+            {
+                return int.Parse(Registry.GetValue("MaximumAlertsNumberToShow", 50), CultureInfo.InvariantCulture);
+            }
+        }
+
         public static string FromEmail
         {
             get
@@ -149,49 +157,19 @@ namespace Alert
 
             Alert alert = new Alert() { TradeSide = tradeType.ToString(), Symbol = symbol.Code, TimeFrame = timeFrame.ToString(), Time = time, Comment = comment };
 
-            using (StringWriter writer = new StringWriter())
-            {
-                CsvWriter csv = new CsvWriter(writer, new CsvSettings());
-
-                csv.WriteLine(alert.TradeSide, alert.Symbol, alert.TimeFrame, alert.Time.ToString(), alert.Comment);
-
-                File.AppendAllText(FilePath, writer.ToString());
-            }
+            WriteAlert(alert);
 
             bool isWindowNotOpen = false;
 
-            mutex = new Mutex(isWindowNotOpen, Properties.Settings.Default.MutexName);
+            mutex = new Mutex(true, Properties.Settings.Default.MutexName, out isWindowNotOpen);
 
             if (isWindowNotOpen)
             {
-                Thread windowThread = new Thread(new ThreadStart(() =>
-                {
-                    try
-                    {
-                        window = new AlertWindow();
-
-                        window.ShowDialog();
-                    }
-                    catch (Exception ex)
-                    {
-                        LogException(ex);
-                    }
-                }));
-
-                windowThread.SetApartmentState(ApartmentState.STA);
-
-                windowThread.CurrentCulture = CultureInfo.InvariantCulture;
-                windowThread.CurrentUICulture = CultureInfo.InvariantCulture;
-
-                windowThread.Start();
+                ShowAlertWindow();
             }
             else
             {
-                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(Properties.Settings.Default.MutexName))
-                {
-                    pipeClient.Connect();
-                    pipeClient.WriteByte(1);
-                }
+                RefreshAlertWindow();
             }
 
             if (IsSoundAlertEnabled)
@@ -258,6 +236,78 @@ namespace Alert
             }
         }
 
+        public static void WriteAlert(Alert alert)
+        {
+            using (StringWriter writer = new StringWriter())
+            {
+                CsvWriter csv = new CsvWriter(writer, new CsvSettings());
+
+                csv.WriteLine(alert.TradeSide, alert.Symbol, alert.TimeFrame, alert.Time.ToString(), alert.Comment);
+
+                File.AppendAllText(FilePath, writer.ToString());
+            }
+        }
+
+        public static void ShowAlertWindow()
+        {
+            Thread windowThread = new Thread(new ThreadStart(() =>
+            {
+                try
+                {
+                    window = new AlertWindow();
+
+                    window.ShowDialog();
+                }
+                catch (Exception ex)
+                {
+                    LogException(ex);
+                }
+            }));
+
+            windowThread.SetApartmentState(ApartmentState.STA);
+
+            windowThread.CurrentCulture = CultureInfo.InvariantCulture;
+            windowThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            windowThread.Start();
+        }
+
+        public static void CloseAlertWindow()
+        {
+            if (window != null)
+            {
+                window.Invoke(() =>
+                {
+                    window.Close();
+                });
+            }
+        }
+
+        public static void RefreshAlertWindow()
+        {
+            using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(Properties.Settings.Default.PipeServerName))
+            {
+                pipeClient.Connect();
+                pipeClient.WriteByte(1);
+            }
+        }
+
+        public static void StopPipeServer()
+        {
+            try
+            {
+                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(Properties.Settings.Default.PipeServerName))
+                {
+                    pipeClient.Connect();
+
+                    pipeClient.WriteByte(0);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+        }
         #endregion Methods
     }
 }

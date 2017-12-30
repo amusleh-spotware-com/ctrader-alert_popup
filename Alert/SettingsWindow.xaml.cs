@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
+using System.Globalization;
 
 namespace Alert
 {
@@ -47,7 +48,7 @@ namespace Alert
             {
                 Registry.SetValue("IsSoundAlertEnabled", value);
 
-                OnPropertyChanged(new PropertyChangedEventArgs("IsSoundAlertEnabled"));
+                OnPropertyChanged("IsSoundAlertEnabled");
             }
         }
 
@@ -61,7 +62,7 @@ namespace Alert
             {
                 Registry.SetValue("SoundFilePath", value);
 
-                OnPropertyChanged(new PropertyChangedEventArgs("SoundFilePath"));
+                OnPropertyChanged("SoundFilePath");
             }
         }
 
@@ -75,7 +76,7 @@ namespace Alert
             {
                 Registry.SetValue("IsEmailAlertEnabled", value);
 
-                OnPropertyChanged(new PropertyChangedEventArgs("IsEmailAlertEnabled"));
+                OnPropertyChanged("IsEmailAlertEnabled");
             }
         }
 
@@ -89,7 +90,7 @@ namespace Alert
             {
                 Registry.SetValue("FromEmail", value);
 
-                OnPropertyChanged(new PropertyChangedEventArgs("FromEmail"));
+                OnPropertyChanged("FromEmail");
             }
         }
 
@@ -103,7 +104,7 @@ namespace Alert
             {
                 Registry.SetValue("ToEmail", value);
 
-                OnPropertyChanged(new PropertyChangedEventArgs("ToEmail"));
+                OnPropertyChanged("ToEmail");
             }
         }
 
@@ -117,7 +118,7 @@ namespace Alert
             {
                 Registry.SetValue("CurrentTheme", value.Name);
 
-                OnPropertyChanged(new PropertyChangedEventArgs("CurrentTheme"));
+                OnPropertyChanged("CurrentTheme");
             }
         }
 
@@ -131,7 +132,7 @@ namespace Alert
             {
                 Registry.SetValue("CurrentAccent", value.Name);
 
-                OnPropertyChanged(new PropertyChangedEventArgs("CurrentAccent"));
+                OnPropertyChanged("CurrentAccent");
             }
         }
 
@@ -151,18 +152,34 @@ namespace Alert
             }
         }
 
+        public int MaximumAlertsNumberToShow
+        {
+            get
+            {
+                return int.Parse(Registry.GetValue("MaximumAlertsNumberToShow", 50), CultureInfo.InvariantCulture);
+            }
+            set
+            {
+                Registry.SetValue("MaximumAlertsNumberToShow", value);
+
+                OnPropertyChanged("MaximumAlertsNumberToShow");
+            }
+        }
+
         #endregion Properties
 
         #region Methods
 
         public void Invoke(Action action)
         {
-            this.Dispatcher.BeginInvoke(action);
+            Dispatcher.BeginInvoke(action);
         }
 
-        private void OnPropertyChanged(PropertyChangedEventArgs e)
+        private void OnPropertyChanged(string propertyName)
         {
-            this.PropertyChanged?.Invoke(this, e);
+            PropertyChangedEventHandler handler = PropertyChanged;
+
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
@@ -177,7 +194,7 @@ namespace Alert
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "WAV files (*.wav)|*.wav";
-            openFileDialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
             if (openFileDialog.ShowDialog() == true)
             {
