@@ -2,15 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Alert.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="WindowHeight" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="WindowWidth" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="IsWindowSizeSaved" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="MutexName" Type="System.String" Scope="User">
       <Value Profile="(Default)">tsIo3dljI79K63ArjPvbe2FGN99763yuznG8S1o7qHFFH5O7yd_cTrader_Alert</Value>
     </Setting>

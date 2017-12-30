@@ -25,42 +25,6 @@ namespace Alert.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double WindowHeight {
-            get {
-                return ((double)(this["WindowHeight"]));
-            }
-            set {
-                this["WindowHeight"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double WindowWidth {
-            get {
-                return ((double)(this["WindowWidth"]));
-            }
-            set {
-                this["WindowWidth"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsWindowSizeSaved {
-            get {
-                return ((bool)(this["IsWindowSizeSaved"]));
-            }
-            set {
-                this["IsWindowSizeSaved"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("tsIo3dljI79K63ArjPvbe2FGN99763yuznG8S1o7qHFFH5O7yd_cTrader_Alert")]
         public string MutexName {
             get {

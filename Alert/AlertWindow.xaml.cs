@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Windows;
+using System.IO.Pipes;
+using System.Threading;
 
 namespace Alert
 {
@@ -13,10 +15,9 @@ namespace Alert
     {
         #region Fields
 
-        private double normalWindowHeight;
-        private double normalWindowWidth;
+        private double windowHeight, windowWidth, windowTop, windowLeft;
 
-        private System.Timers.Timer refreshCheckTimer = new System.Timers.Timer();
+        private bool stopPipeServer = false;
 
         #endregion Fields
 
@@ -27,6 +28,7 @@ namespace Alert
             Loaded += MetroWindow_Loaded;
             Closing += MetroWindow_Closing;
             SizeChanged += MetroWindow_SizeChanged;
+            LocationChanged += MetroWindow_LocationChanged;
 
             this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri("pack://application:,,,/Alert;component/Resources/Icons.xaml", UriKind.RelativeOrAbsolute) });
             this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute) });
@@ -37,21 +39,9 @@ namespace Alert
 
             InitializeComponent();
 
-            if (Properties.Settings.Default.IsWindowSizeSaved)
-            {
-                if (this.WindowState == WindowState.Normal)
-                {
-                    this.Height = Properties.Settings.Default.WindowHeight;
-                    this.Width = Properties.Settings.Default.WindowWidth;
-                }
-
-                this.normalWindowHeight = Properties.Settings.Default.WindowHeight;
-                this.normalWindowWidth = Properties.Settings.Default.WindowWidth;
-            }
+            SetWindowSize();
 
             Alerts = new ObservableCollection<Alert>();
-
-            GetAlertsFromFile();
         }
 
         #endregion Constructor
@@ -86,57 +76,50 @@ namespace Alert
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            refreshCheckTimer.Elapsed += RefreshCheckTimer_Elapsed;
-            refreshCheckTimer.Interval = 1000;
+            GetAlertsFromFile();
 
-            refreshCheckTimer.Start();
+            StartPipe();
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (this.Visibility == Visibility.Visible)
             {
-                Properties.Settings.Default.IsWindowSizeSaved = true;
+                Registry.SetValue("IsWindowSizeSaved", true);
 
                 if (this.WindowState == WindowState.Normal || this.WindowState == WindowState.Minimized)
                 {
-                    Properties.Settings.Default.WindowHeight = this.normalWindowHeight;
-                    Properties.Settings.Default.WindowWidth = this.normalWindowWidth;
+                    Registry.SetValue("WindowHeight", windowHeight);
+                    Registry.SetValue("WindowWidth", windowWidth);
+                    Registry.SetValue("WindowTop", windowTop);
+                    Registry.SetValue("WindowLeft", windowLeft);
                 }
             }
-
-            refreshCheckTimer.Stop();
 
             if (Manager.Mutex != null)
             {
                 Manager.Mutex.Close();
             }
+
+            stopPipeServer = true;
         }
 
         private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (this.WindowState == WindowState.Normal && this.Visibility == Visibility.Visible)
             {
-                this.normalWindowHeight = e.NewSize.Height;
-                this.normalWindowWidth = e.NewSize.Width;
+                windowHeight = e.NewSize.Height;
+                windowWidth = e.NewSize.Width;
             }
         }
 
-        private void RefreshCheckTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void MetroWindow_LocationChanged(object sender, EventArgs e)
         {
-            refreshCheckTimer.Stop();
-
-            if (bool.Parse(Registry.GetValue("Refresh", true)))
+            if (this.WindowState == WindowState.Normal && this.Visibility == Visibility.Visible)
             {
-                Invoke(new Action(() =>
-                {
-                    GetAlertsFromFile();
-                }));
-
-                Registry.SetValue("Refresh", false);
+                windowTop = Top;
+                windowLeft = Left;
             }
-
-            refreshCheckTimer.Start();
         }
 
         private void RemoveAllAlertsButton_Click(object sender, RoutedEventArgs e)
@@ -218,19 +201,76 @@ namespace Alert
         {
             SettingsWindow settingsWindow = new SettingsWindow();
 
-            refreshCheckTimer.Stop();
-
             this.IsEnabled = false;
 
             settingsWindow.ShowDialog();
 
             ThemeManager.ChangeAppStyle(this, Manager.CurrentAccent, Manager.CurrentTheme);
 
-            GetAlertsFromFile();
-
             this.IsEnabled = true;
+        }
 
-            refreshCheckTimer.Start();
+        private void StartPipe()
+        {
+            Thread pipeThread = new Thread(new ThreadStart(() =>
+            {
+                try
+                {
+                    while (!stopPipeServer)
+                    {
+                        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(Properties.Settings.Default.MutexName))
+                        {
+                            pipeServer.WaitForConnection();
+
+                            int result = pipeServer.ReadByte();
+
+                            switch (result)
+                            {
+                                case 1:
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            GetAlertsFromFile();
+                                        }));
+
+                                        break;
+                                    }
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Manager.LogException(ex);
+
+                    StartPipe();
+                }
+            }));
+
+            pipeThread.CurrentCulture = CultureInfo.InvariantCulture;
+            pipeThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            pipeThread.Start();
+        }
+
+        private void SetWindowSize()
+        {
+            bool isWindowSizeSaved = bool.Parse(Registry.GetValue("IsWindowSizeSaved", false));
+
+            if (isWindowSizeSaved && WindowState != WindowState.Maximized)
+            {
+                double savedHeight = double.Parse(Registry.GetValue("WindowHeight", 0), CultureInfo.InvariantCulture);
+                double savedWidth = double.Parse(Registry.GetValue("WindowWidth", 0), CultureInfo.InvariantCulture);
+                double savedTop = double.Parse(Registry.GetValue("WindowTop", 0), CultureInfo.InvariantCulture);
+                double savedLeft = double.Parse(Registry.GetValue("WindowLeft", 0), CultureInfo.InvariantCulture);
+
+                Height = savedHeight != 0 ? savedHeight : Height;
+                Width = savedWidth != 0 ? savedWidth : Width;
+                Top = savedTop != 0 ? savedTop : Top;
+                Left = savedLeft != 0 ? savedLeft : Left;
+            }
         }
 
         #endregion Methods

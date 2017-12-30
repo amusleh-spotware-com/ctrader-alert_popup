@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.IO.Pipes;
 
 namespace Alert
 {
@@ -186,7 +187,11 @@ namespace Alert
             }
             else
             {
-                Registry.SetValue("Refresh", true);
+                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(Properties.Settings.Default.MutexName))
+                {
+                    pipeClient.Connect();
+                    pipeClient.WriteByte(1);
+                }
             }
 
             if (IsSoundAlertEnabled)
