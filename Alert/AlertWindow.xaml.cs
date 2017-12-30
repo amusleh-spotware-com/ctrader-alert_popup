@@ -1,24 +1,27 @@
-﻿namespace Alert
-{
-    using MahApps.Metro.Controls;
-    using Nortal.Utilities.Csv;
-    using System;
-    using System.Collections.ObjectModel;
-    using System.Globalization;
-    using System.IO;
-    using System.Windows;
-    using MahApps.Metro;
+﻿using MahApps.Metro;
+using MahApps.Metro.Controls;
+using Nortal.Utilities.Csv;
+using System;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
+using System.Windows;
 
+namespace Alert
+{
     public partial class AlertWindow : MetroWindow
     {
         #region Fields
+
         private double normalWindowHeight;
         private double normalWindowWidth;
 
-        System.Timers.Timer refreshCheckTimer = new System.Timers.Timer();
-        #endregion
+        private System.Timers.Timer refreshCheckTimer = new System.Timers.Timer();
+
+        #endregion Fields
 
         #region Constructor
+
         public AlertWindow()
         {
             Loaded += MetroWindow_Loaded;
@@ -50,15 +53,19 @@
 
             GetAlertsFromFile();
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Properties
+
         public ObservableCollection<Alert> Alerts { get; set; }
 
         public Alert SelectedAlert { get; set; }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         public void Invoke(Action action)
         {
             this.Dispatcher.BeginInvoke(action);
@@ -77,36 +84,10 @@
             }
         }
 
-        private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (this.WindowState == WindowState.Normal && this.Visibility == Visibility.Visible)
-            {
-                this.normalWindowHeight = e.NewSize.Height;
-                this.normalWindowWidth = e.NewSize.Width;
-            }
-        }
-
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             refreshCheckTimer.Elapsed += RefreshCheckTimer_Elapsed;
             refreshCheckTimer.Interval = 1000;
-
-            refreshCheckTimer.Start();
-        }
-
-        private void RefreshCheckTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            refreshCheckTimer.Stop();
-
-            if (bool.Parse(Registry.GetValue("Refresh", true)))
-            {
-                Invoke(new Action(() =>
-                {
-                    GetAlertsFromFile();
-                }));
-
-                Registry.SetValue("Refresh", false);
-            }
 
             refreshCheckTimer.Start();
         }
@@ -124,9 +105,38 @@
                 }
             }
 
-            Registry.SetValue("IsOpen", false);
-
             refreshCheckTimer.Stop();
+
+            if (Manager.Mutex != null)
+            {
+                Manager.Mutex.Close();
+            }
+        }
+
+        private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (this.WindowState == WindowState.Normal && this.Visibility == Visibility.Visible)
+            {
+                this.normalWindowHeight = e.NewSize.Height;
+                this.normalWindowWidth = e.NewSize.Width;
+            }
+        }
+
+        private void RefreshCheckTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            refreshCheckTimer.Stop();
+
+            if (bool.Parse(Registry.GetValue("Refresh", true)))
+            {
+                Invoke(new Action(() =>
+                {
+                    GetAlertsFromFile();
+                }));
+
+                Registry.SetValue("Refresh", false);
+            }
+
+            refreshCheckTimer.Start();
         }
 
         private void RemoveAllAlertsButton_Click(object sender, RoutedEventArgs e)
@@ -222,6 +232,7 @@
 
             refreshCheckTimer.Start();
         }
-        #endregion
+
+        #endregion Methods
     }
 }

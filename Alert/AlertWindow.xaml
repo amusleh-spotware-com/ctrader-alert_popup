@@ -1,13 +1,13 @@
 ﻿<Controls:MetroWindow x:Class="Alert.AlertWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-             mc:Ignorable="d" 
-             Title="Alert" 
-             TitleCaps="False" 
-             BorderThickness="0" 
+             mc:Ignorable="d"
+             Title="Alert"
+             TitleCaps="False"
+             BorderThickness="0"
              GlowBrush="Black"
              ResizeMode="CanResizeWithGrip"
              WindowTransitionsEnabled="False"
@@ -15,10 +15,10 @@
              ShowIconOnTitleBar="False"
              Height="500"
              Width="650"
-             Topmost="True" 
+             Topmost="True"
              WindowStartupLocation="CenterOwner">
     <Controls:MetroWindow.RightWindowCommands>
-        <Controls:WindowCommands ShowLastSeparator="False" >
+        <Controls:WindowCommands ShowLastSeparator="False">
             <Button Name="SettingsButton" ToolTip="Settings" Click="SettingsButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="20" Height="20" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
@@ -49,14 +49,14 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <DataGrid 
-            Name="AlertsDataGrid" 
-            ItemsSource="{Binding Path=Alerts, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" 
+        <DataGrid
+            Name="AlertsDataGrid"
+            ItemsSource="{Binding Path=Alerts, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
             Style="{StaticResource ReadOnlyDataGridStyle}"
             SelectedItem="{Binding Path=SelectedAlert, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=TwoWay}"
             Grid.Row="1">
             <DataGrid.Resources>
-                <DataTemplate x:Key="HeaderTemplate" >
+                <DataTemplate x:Key="HeaderTemplate">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="3">
                         <Button Name="RemoveAllAlertsButton" ToolTip="Remove All Alerts" Click="RemoveAllAlertsButton_Click">
                             <StackPanel Orientation="Horizontal">
@@ -69,7 +69,7 @@
                         </Button>
                     </StackPanel>
                 </DataTemplate>
-                <DataTemplate x:Key="CellTemplate" >
+                <DataTemplate x:Key="CellTemplate">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="3">
                         <Button Name="RemoveAlertButton" ToolTip="Remove Alert" Click="RemoveAlertButton_Click">
                             <StackPanel Orientation="Horizontal">

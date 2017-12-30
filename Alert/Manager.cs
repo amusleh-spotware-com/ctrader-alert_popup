@@ -1,22 +1,27 @@
-﻿namespace Alert
-{
-    using cAlgo.API;
-    using cAlgo.API.Internals;
-    using System;
-    using System.Threading;
-    using System.IO;
-    using Nortal.Utilities.Csv;
-    using System.Globalization;
-    using MahApps.Metro;
-    using System.Linq;
+﻿using cAlgo.API;
+using cAlgo.API.Internals;
+using MahApps.Metro;
+using Nortal.Utilities.Csv;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading;
 
+namespace Alert
+{
     public class Manager
     {
         #region Fields
+
         private static AlertWindow window;
-        #endregion
+
+        private static Mutex mutex;
+
+        #endregion Fields
 
         #region Properties
+
         public static AlertWindow Window
         {
             get
@@ -75,18 +80,6 @@
             }
         }
 
-        public static bool IsWindowOpen
-        {
-            get
-            {
-                return bool.Parse(Registry.GetValue("IsOpen", false));
-            }
-            set
-            {
-                Registry.SetValue("IsOpen", value);
-            }
-        }
-
         public static bool IsSoundAlertEnabled
         {
             get
@@ -126,9 +119,19 @@
                 return Registry.GetValue("ToEmail", string.Empty);
             }
         }
-        #endregion
+
+        public static Mutex Mutex
+        {
+            get
+            {
+                return mutex;
+            }
+        }
+
+        #endregion Properties
 
         #region Methods
+
         public static void Trigger(TradeType tradeType, Symbol symbol, TimeFrame timeFrame, DateTime time, string comment)
         {
             Registry.CreateKey("cTrader Alert");
@@ -154,18 +157,17 @@
                 File.AppendAllText(FilePath, writer.ToString());
             }
 
-            if (!IsWindowOpen)
+            bool isWindowNotOpen = false;
+
+            mutex = new Mutex(isWindowNotOpen, Properties.Settings.Default.MutexName);
+
+            if (isWindowNotOpen)
             {
-                Thread alertWindowThread = new Thread(new ThreadStart(() =>
+                Thread windowThread = new Thread(new ThreadStart(() =>
                 {
                     try
                     {
-                        Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-                        Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
-
                         window = new AlertWindow();
-
-                        IsWindowOpen = true;
 
                         window.ShowDialog();
                     }
@@ -175,9 +177,12 @@
                     }
                 }));
 
-                alertWindowThread.SetApartmentState(ApartmentState.STA);
+                windowThread.SetApartmentState(ApartmentState.STA);
 
-                alertWindowThread.Start();
+                windowThread.CurrentCulture = CultureInfo.InvariantCulture;
+                windowThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+                windowThread.Start();
             }
             else
             {
@@ -186,14 +191,7 @@
 
             if (IsSoundAlertEnabled)
             {
-                if (Manager.Robot != null)
-                {
-                    Manager.Robot.Notifications.PlaySound(SoundFilePath);
-                }
-                else if (Manager.Indicator != null)
-                {
-                    Manager.Indicator.Notifications.PlaySound(SoundFilePath);
-                }
+                PlaySound(SoundFilePath);
             }
 
             if (IsEmailAlertEnabled)
@@ -202,14 +200,7 @@
 
                 string emailBody = string.Format("An alert triggered at {0} to {1} {2} on {3} time frame with this comment: {4}", alert.Time, alert.TradeSide, alert.Symbol, alert.TimeFrame, alert.Comment);
 
-                if (Manager.Robot != null)
-                {
-                    Manager.Robot.Notifications.SendEmail(FromEmail, ToEmail, emailSubject, emailBody);
-                }
-                else if (Manager.Indicator != null)
-                {
-                    Manager.Indicator.Notifications.SendEmail(FromEmail, ToEmail, emailSubject, emailBody);
-                }
+                SendEmail(FromEmail, ToEmail, emailSubject, emailBody);
             }
         }
 
@@ -225,6 +216,30 @@
             }
         }
 
+        public static void PlaySound(string soundFilePath)
+        {
+            if (Manager.Robot != null)
+            {
+                Manager.Robot.Notifications.PlaySound(soundFilePath);
+            }
+            else if (Manager.Indicator != null)
+            {
+                Manager.Indicator.Notifications.PlaySound(soundFilePath);
+            }
+        }
+
+        public static void SendEmail(string fromEmail, string toEmail, string emailSubject, string emailBody)
+        {
+            if (Manager.Robot != null)
+            {
+                Manager.Robot.Notifications.SendEmail(fromEmail, toEmail, emailSubject, emailBody);
+            }
+            else if (Manager.Indicator != null)
+            {
+                Manager.Indicator.Notifications.SendEmail(fromEmail, toEmail, emailSubject, emailBody);
+            }
+        }
+
         public static void LogException(Exception ex)
         {
             Print(string.Format("Exception: {0}", ex.Message));
@@ -237,6 +252,7 @@
                 Print(string.Format("InnerException: {0}", ex.InnerException));
             }
         }
-        #endregion
+
+        #endregion Methods
     }
 }

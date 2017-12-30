@@ -1,24 +1,17 @@
-﻿namespace Alert
-{
-    using MahApps.Metro.Controls;
-    using Nortal.Utilities.Csv;
-    using System;
-    using System.Collections.ObjectModel;
-    using System.Globalization;
-    using System.IO;
-    using System.Windows;
-    using Microsoft.Win32;
-    using System.ComponentModel;
-    using MahApps.Metro;
-    using System.Linq;
+﻿using MahApps.Metro;
+using MahApps.Metro.Controls;
+using Microsoft.Win32;
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows;
 
+namespace Alert
+{
     public partial class SettingsWindow : MetroWindow, INotifyPropertyChanged
     {
-        #region Fields
-
-        #endregion
-
         #region Constructor
+
         public SettingsWindow()
         {
             Loaded += MetroWindow_Loaded;
@@ -33,13 +26,17 @@
 
             InitializeComponent();
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Events
+
         public event PropertyChangedEventHandler PropertyChanged;
-        #endregion
+
+        #endregion Events
 
         #region Properties
+
         public bool IsSoundAlertEnabled
         {
             get
@@ -153,31 +150,27 @@
                 return new ObservableCollection<Accent>(ThemeManager.Accents);
             }
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
-        private void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            this.PropertyChanged?.Invoke(this, e);
-        }
 
         public void Invoke(Action action)
         {
             this.Dispatcher.BeginInvoke(action);
         }
 
+        private void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            this.PropertyChanged?.Invoke(this, e);
+        }
+
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
         }
 
-        private void RefreshCheckTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-
-        }
-
-        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-
         }
 
         private void SoundFileBrowseButton_Click(object sender, RoutedEventArgs e)
@@ -199,6 +192,7 @@
                 ThemeManager.ChangeAppStyle(this, (Accent)AccentsComboBox.SelectedItem, (AppTheme)ThemesComboBox.SelectedItem);
             }
         }
-        #endregion
+
+        #endregion Methods
     }
 }

@@ -1,7 +1,7 @@
-﻿namespace Alert
-{
-    using Microsoft.Win32;
+﻿using Microsoft.Win32;
 
+namespace Alert
+{
     public static class Registry
     {
         public static string KeyName { get; set; }
@@ -10,11 +10,11 @@
         {
             RegistryKey softwarekey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software", true);
 
-            RegistryKey botKey = softwarekey.CreateSubKey(keyName);
+            RegistryKey key = softwarekey.CreateSubKey(keyName);
 
             softwarekey.Close();
 
-            botKey.Close();
+            key.Close();
 
             KeyName = keyName;
         }

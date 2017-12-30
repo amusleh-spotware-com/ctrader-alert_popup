@@ -58,5 +58,17 @@ namespace Alert.Properties {
                 this["IsWindowSizeSaved"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("tsIo3dljI79K63ArjPvbe2FGN99763yuznG8S1o7qHFFH5O7yd_cTrader_Alert")]
+        public string MutexName {
+            get {
+                return ((string)(this["MutexName"]));
+            }
+            set {
+                this["MutexName"] = value;
+            }
+        }
     }
 }
