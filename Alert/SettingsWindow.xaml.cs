@@ -4,8 +4,8 @@ using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows;
 using System.Globalization;
+using System.Windows;
 
 namespace Alert
 {

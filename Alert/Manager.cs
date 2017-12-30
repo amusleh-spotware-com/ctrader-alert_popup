@@ -5,9 +5,9 @@ using Nortal.Utilities.Csv;
 using System;
 using System.Globalization;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Threading;
-using System.IO.Pipes;
 
 namespace Alert
 {
@@ -308,6 +308,7 @@ namespace Alert
                 LogException(ex);
             }
         }
+
         #endregion Methods
     }
 }

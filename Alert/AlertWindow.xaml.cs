@@ -221,7 +221,7 @@ namespace Alert
 
                     int counter = Alerts.Count - Manager.MaximumAlertsNumberToShow;
 
-                    Alerts.ToList().ForEach(alert => 
+                    Alerts.ToList().ForEach(alert =>
                     {
                         if (counter > 0)
                         {
@@ -258,6 +258,8 @@ namespace Alert
             settingsWindow.ShowDialog();
 
             ThemeManager.ChangeAppStyle(this, Manager.CurrentAccent, Manager.CurrentTheme);
+
+            GetAlertsFromFile();
 
             this.IsEnabled = true;
         }
