@@ -1,7 +1,7 @@
 ﻿using cAlgo.API;
 using cAlgo.API.Internals;
+using CsvHelper;
 using MahApps.Metro;
-using Nortal.Utilities.Csv;
 using System;
 using System.Globalization;
 using System.IO;
@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace Alert
 {
-    public class Manager
+    public class Factory
     {
         #region Fields
 
@@ -145,14 +145,14 @@ namespace Alert
         {
             Registry.CreateKey("cTrader Alert");
 
-            if (!Directory.Exists(Manager.DirectoryPath))
+            if (!Directory.Exists(Factory.DirectoryPath))
             {
-                Directory.CreateDirectory(Manager.DirectoryPath);
+                Directory.CreateDirectory(Factory.DirectoryPath);
             }
 
-            if (!File.Exists(Manager.FilePath))
+            if (!File.Exists(Factory.FilePath))
             {
-                File.Create(Manager.FilePath).Close();
+                File.Create(Factory.FilePath).Close();
             }
 
             Alert alert = new Alert() { TradeSide = tradeType.ToString(), Symbol = symbol.Code, TimeFrame = timeFrame.ToString(), Time = time, Comment = comment };
@@ -189,37 +189,37 @@ namespace Alert
 
         public static void Print(object obj)
         {
-            if (Manager.Robot != null)
+            if (Factory.Robot != null)
             {
-                Manager.Robot.Print(obj);
+                Factory.Robot.Print(obj);
             }
-            else if (Manager.Indicator != null)
+            else if (Factory.Indicator != null)
             {
-                Manager.Indicator.Print(obj);
+                Factory.Indicator.Print(obj);
             }
         }
 
         public static void PlaySound(string soundFilePath)
         {
-            if (Manager.Robot != null)
+            if (Factory.Robot != null)
             {
-                Manager.Robot.Notifications.PlaySound(soundFilePath);
+                Factory.Robot.Notifications.PlaySound(soundFilePath);
             }
-            else if (Manager.Indicator != null)
+            else if (Factory.Indicator != null)
             {
-                Manager.Indicator.Notifications.PlaySound(soundFilePath);
+                Factory.Indicator.Notifications.PlaySound(soundFilePath);
             }
         }
 
         public static void SendEmail(string fromEmail, string toEmail, string emailSubject, string emailBody)
         {
-            if (Manager.Robot != null)
+            if (Factory.Robot != null)
             {
-                Manager.Robot.Notifications.SendEmail(fromEmail, toEmail, emailSubject, emailBody);
+                Factory.Robot.Notifications.SendEmail(fromEmail, toEmail, emailSubject, emailBody);
             }
-            else if (Manager.Indicator != null)
+            else if (Factory.Indicator != null)
             {
-                Manager.Indicator.Notifications.SendEmail(fromEmail, toEmail, emailSubject, emailBody);
+                Factory.Indicator.Notifications.SendEmail(fromEmail, toEmail, emailSubject, emailBody);
             }
         }
 
@@ -238,13 +238,11 @@ namespace Alert
 
         public static void WriteAlert(Alert alert)
         {
-            using (StringWriter writer = new StringWriter())
+            using (TextWriter writer = File.CreateText(FilePath))
             {
-                CsvWriter csv = new CsvWriter(writer, new CsvSettings());
+                CsvWriter csvWriter = new CsvWriter(writer);
 
-                csv.WriteLine(alert.TradeSide, alert.Symbol, alert.TimeFrame, alert.Time.ToString(), alert.Comment);
-
-                File.AppendAllText(FilePath, writer.ToString());
+                csvWriter.WriteRecord(alert);
             }
         }
 

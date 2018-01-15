@@ -1,6 +1,6 @@
-﻿using MahApps.Metro;
+﻿using CsvHelper;
+using MahApps.Metro;
 using MahApps.Metro.Controls;
-using Nortal.Utilities.Csv;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -23,6 +23,8 @@ namespace Alert
 
         private Alert _selectedAlert;
 
+        private ObservableCollection<Alert> _alerts;
+
         #endregion Fields
 
         #region Constructor
@@ -38,8 +40,8 @@ namespace Alert
             this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute) });
             this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml", UriKind.RelativeOrAbsolute) });
             this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml", UriKind.RelativeOrAbsolute) });
-            this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri(string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", Manager.CurrentAccent.Name), UriKind.RelativeOrAbsolute) });
-            this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri(string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", Manager.CurrentTheme.Name), UriKind.RelativeOrAbsolute) });
+            this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri(string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", Factory.CurrentAccent.Name), UriKind.RelativeOrAbsolute) });
+            this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri(string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", Factory.CurrentTheme.Name), UriKind.RelativeOrAbsolute) });
 
             InitializeComponent();
 
@@ -56,7 +58,19 @@ namespace Alert
 
         #region Properties
 
-        public ObservableCollection<Alert> Alerts { get; set; }
+        public ObservableCollection<Alert> Alerts
+        {
+            get
+            {
+                return _alerts;
+            }
+            set
+            {
+                _alerts = value;
+
+                OnPropertyChanged("Alerts");
+            }
+        }
 
         public Alert SelectedAlert
         {
@@ -123,14 +137,14 @@ namespace Alert
                 }
             }
 
-            if (Manager.Mutex != null)
+            if (Factory.Mutex != null)
             {
-                Manager.Mutex.Close();
+                Factory.Mutex.Close();
             }
 
             stopPipeServer = true;
 
-            Manager.StopPipeServer();
+            Factory.StopPipeServer();
         }
 
         private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -155,13 +169,13 @@ namespace Alert
         {
             try
             {
-                File.WriteAllText(Manager.FilePath, string.Empty);
+                File.WriteAllText(Factory.FilePath, string.Empty);
 
                 Alerts.Clear();
             }
             catch (Exception ex)
             {
-                Manager.LogException(ex);
+                Factory.LogException(ex);
             }
         }
 
@@ -173,53 +187,38 @@ namespace Alert
                 {
                     Alerts.Remove(SelectedAlert);
 
-                    File.WriteAllText(Manager.FilePath, string.Empty);
+                    File.WriteAllText(Factory.FilePath, string.Empty);
 
-                    using (StringWriter writer = new StringWriter())
+                    using (TextWriter writer = File.CreateText(Factory.FilePath))
                     {
-                        CsvWriter csv = new CsvWriter(writer, new CsvSettings());
+                        CsvWriter csvWriter = new CsvWriter(writer);
 
-                        foreach (Alert alert in Alerts)
-                        {
-                            csv.WriteLine(alert.TradeSide, alert.Symbol, alert.TimeFrame, alert.Time.ToString(), alert.Comment);
-                        }
-
-                        File.AppendAllText(Manager.FilePath, writer.ToString());
+                        csvWriter.WriteRecords(Alerts);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Manager.LogException(ex);
+                Factory.LogException(ex);
             }
         }
 
         private void GetAlertsFromFile()
         {
-            Alerts.Clear();
-
             try
             {
-                using (var parser = new CsvParser(File.ReadAllText(Manager.FilePath)))
+                using (TextReader reader = File.OpenText(Factory.FilePath))
                 {
-                    foreach (String[] line in parser.ReadToEnd())
-                    {
-                        Alerts.Add(new Alert()
-                        {
-                            TradeSide = line[0],
-                            Symbol = line[1],
-                            TimeFrame = line[2],
-                            Time = DateTime.Parse(line[3], CultureInfo.InvariantCulture),
-                            Comment = line[4]
-                        });
-                    }
+                    CsvReader csvReader = new CsvReader(reader);
+
+                    Alerts = new ObservableCollection<Alert>(csvReader.GetRecords<Alert>());
                 }
 
-                if (Alerts.Count > Manager.MaximumAlertsNumberToShow)
+                if (Alerts.Count > Factory.MaximumAlertsNumberToShow)
                 {
-                    File.WriteAllText(Manager.FilePath, string.Empty);
+                    File.WriteAllText(Factory.FilePath, string.Empty);
 
-                    int counter = Alerts.Count - Manager.MaximumAlertsNumberToShow;
+                    int counter = Alerts.Count - Factory.MaximumAlertsNumberToShow;
 
                     Alerts.ToList().ForEach(alert =>
                     {
@@ -230,7 +229,7 @@ namespace Alert
                         }
                     });
 
-                    Alerts.ToList().ForEach(alert => Manager.WriteAlert(alert));
+                    Alerts.ToList().ForEach(alert => Factory.WriteAlert(alert));
                 }
 
                 SelectedAlert = Alerts.LastOrDefault();
@@ -240,10 +239,10 @@ namespace Alert
             }
             catch (Exception ex)
             {
-                Manager.LogException(ex);
+                Factory.LogException(ex);
 
-                File.Delete(Manager.FilePath);
-                File.Create(Manager.FilePath).Close();
+                File.Delete(Factory.FilePath);
+                File.Create(Factory.FilePath).Close();
             }
 
             BringInFront();
@@ -257,7 +256,7 @@ namespace Alert
 
             settingsWindow.ShowDialog();
 
-            ThemeManager.ChangeAppStyle(this, Manager.CurrentAccent, Manager.CurrentTheme);
+            ThemeManager.ChangeAppStyle(this, Factory.CurrentAccent, Factory.CurrentTheme);
 
             GetAlertsFromFile();
 
@@ -303,9 +302,9 @@ namespace Alert
                 }
                 catch (Exception ex)
                 {
-                    Manager.LogException(ex);
+                    Factory.LogException(ex);
 
-                    Manager.StopPipeServer();
+                    Factory.StopPipeServer();
                 }
 
                 if (!stopPipeServer)
