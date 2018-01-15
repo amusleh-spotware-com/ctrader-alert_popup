@@ -3,6 +3,7 @@ using cAlgo.API.Internals;
 using CsvHelper;
 using MahApps.Metro;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
@@ -242,7 +243,7 @@ namespace Alert
             {
                 CsvWriter csvWriter = new CsvWriter(writer);
 
-                csvWriter.WriteRecord(alert);
+                csvWriter.WriteRecords(new List<Alert>() { alert });
             }
         }
 
