@@ -1,7 +1,7 @@
-﻿using CsvHelper;
-using MahApps.Metro;
+﻿using MahApps.Metro;
 using MahApps.Metro.Controls;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -169,7 +169,7 @@ namespace Alert
         {
             try
             {
-                File.WriteAllText(Factory.FilePath, string.Empty);
+                Factory.WriteAlerts(new List<Alert>(), FileMode.Create);
 
                 Alerts.Clear();
             }
@@ -187,14 +187,7 @@ namespace Alert
                 {
                     Alerts.Remove(SelectedAlert);
 
-                    File.WriteAllText(Factory.FilePath, string.Empty);
-
-                    using (TextWriter writer = File.CreateText(Factory.FilePath))
-                    {
-                        CsvWriter csvWriter = new CsvWriter(writer);
-
-                        csvWriter.WriteRecords(Alerts);
-                    }
+                    Factory.WriteAlerts(Alerts, FileMode.Create);
                 }
             }
             catch (Exception ex)
@@ -207,12 +200,7 @@ namespace Alert
         {
             try
             {
-                using (TextReader reader = File.OpenText(Factory.FilePath))
-                {
-                    CsvReader csvReader = new CsvReader(reader);
-
-                    Alerts = new ObservableCollection<Alert>(csvReader.GetRecords<Alert>());
-                }
+                Alerts = new ObservableCollection<Alert>(Factory.ReadAlerts());
 
                 if (Alerts.Count > Factory.MaximumAlertsNumberToShow)
                 {
@@ -229,7 +217,7 @@ namespace Alert
                         }
                     });
 
-                    Alerts.ToList().ForEach(alert => Factory.WriteAlert(alert));
+                    Factory.WriteAlerts(Alerts.ToList());
                 }
 
                 SelectedAlert = Alerts.LastOrDefault();

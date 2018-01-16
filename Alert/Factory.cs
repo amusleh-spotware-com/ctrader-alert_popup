@@ -239,12 +239,46 @@ namespace Alert
 
         public static void WriteAlert(Alert alert)
         {
-            using (TextWriter writer = File.CreateText(FilePath))
-            {
-                CsvWriter csvWriter = new CsvWriter(writer);
+            WriteAlerts(new List<Alert>() { alert });
+        }
 
-                csvWriter.WriteRecords(new List<Alert>() { alert });
+        public static void WriteAlerts(IEnumerable<Alert> alerts, FileMode mode = FileMode.Append)
+        {
+            using (FileStream fileStream = File.Open(FilePath, mode))
+            {
+                using (TextWriter writer = new StreamWriter(fileStream))
+                {
+                    CsvWriter csvWriter = new CsvWriter(writer);
+
+                    csvWriter.WriteRecords(alerts);
+                }
             }
+        }
+
+        public static List<Alert> ReadAlerts()
+        {
+            List<Alert> alerts = new List<Alert>();
+
+            try
+            {
+                using (FileStream fileStream = File.Open(FilePath, FileMode.OpenOrCreate, FileAccess.Read))
+                {
+                    using (TextReader reader = new StreamReader(fileStream))
+                    {
+                        CsvReader csvReader = new CsvReader(reader);
+
+                        alerts = csvReader.GetRecords<Alert>().ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Factory.LogException(ex);
+
+                File.Delete(Factory.FilePath);
+            }
+
+            return alerts;
         }
 
         public static void ShowAlertWindow()
