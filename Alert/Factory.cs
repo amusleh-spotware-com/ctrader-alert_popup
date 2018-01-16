@@ -250,6 +250,8 @@ namespace Alert
                 {
                     CsvWriter csvWriter = new CsvWriter(writer);
 
+                    csvWriter.Configuration.HasHeaderRecord = false;
+
                     csvWriter.WriteRecords(alerts);
                 }
             }
@@ -267,6 +269,8 @@ namespace Alert
                     {
                         CsvReader csvReader = new CsvReader(reader);
 
+                        csvReader.Configuration.HasHeaderRecord = false;
+
                         alerts = csvReader.GetRecords<Alert>().ToList();
                     }
                 }
@@ -276,6 +280,8 @@ namespace Alert
                 Factory.LogException(ex);
 
                 File.Delete(Factory.FilePath);
+
+                Print("Alerts file cleaned due to an exception in reading");
             }
 
             return alerts;
