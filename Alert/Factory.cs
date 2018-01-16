@@ -341,7 +341,7 @@ namespace Alert
                 {
                     bool stopPipeServer = false;
 
-                    while(!stopPipeServer)
+                    while (!stopPipeServer)
                     {
                         using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(
                             Properties.Settings.Default.PipeServerName,

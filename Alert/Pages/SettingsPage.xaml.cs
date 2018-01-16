@@ -1,9 +1,5 @@
-﻿using MahApps.Metro;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,7 +14,7 @@ namespace Alert.Pages
 
         private Models.SettingsModel settingsModel = new Models.SettingsModel();
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
