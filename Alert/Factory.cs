@@ -1,24 +1,21 @@
 ﻿using cAlgo.API;
 using cAlgo.API.Internals;
 using CsvHelper;
-using MahApps.Metro;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Threading;
+using System.Windows;
 
 namespace Alert
 {
-    public class Factory
+    public static class Factory
     {
         #region Fields
 
-        private static MainWindow window;
-
-        private static Mutex mutex;
+        private static MainWindow _window;
 
         #endregion Fields
 
@@ -28,7 +25,7 @@ namespace Alert
         {
             get
             {
-                return window;
+                return _window;
             }
         }
 
@@ -56,36 +53,6 @@ namespace Alert
             get
             {
                 return Path.Combine(DirectoryPath, "alerts.csv");
-            }
-        }
-
-        public static AppTheme CurrentTheme
-        {
-            get
-            {
-                AppTheme currentTheme = ThemeManager.AppThemes.ToList().SingleOrDefault(theme => theme.Name == Registry.GetValue("CurrentTheme", string.Empty));
-
-                if (currentTheme == null)
-                {
-                    currentTheme = ThemeManager.AppThemes.First();
-                }
-
-                return currentTheme;
-            }
-        }
-
-        public static Accent CurrentAccent
-        {
-            get
-            {
-                Accent currentAccent = ThemeManager.Accents.ToList().SingleOrDefault(accent => accent.Name == Registry.GetValue("CurrentAccent", string.Empty));
-
-                if (currentAccent == null)
-                {
-                    currentAccent = ThemeManager.Accents.First();
-                }
-
-                return currentAccent;
             }
         }
 
@@ -137,11 +104,27 @@ namespace Alert
             }
         }
 
-        public static Mutex Mutex
+        public static string CurrentTheme
         {
             get
             {
-                return mutex;
+                return Registry.GetValue("CurrentTheme", "BaseDark");
+            }
+            set
+            {
+                Registry.SetValue("CurrentTheme", value);
+            }
+        }
+
+        public static string CurrentAccent
+        {
+            get
+            {
+                return Registry.GetValue("CurrentAccent", "Blue");
+            }
+            set
+            {
+                Registry.SetValue("CurrentAccent", value);
             }
         }
 
@@ -171,16 +154,10 @@ namespace Alert
                 SendEmail(FromEmail, ToEmail, emailSubject, emailBody);
             }
 
-            bool isMutexNew = false;
-
-            mutex = new Mutex(true, Properties.Settings.Default.MutexName, out isMutexNew);
-
-            if (!isMutexNew)
+            if (Window != null)
             {
-                CloseOpenWindows();
+                Window.Dispatcher.Invoke(() => Window.Close());
             }
-
-            StartPipeServer();
 
             ShowWindow();
         }
@@ -290,9 +267,9 @@ namespace Alert
             {
                 try
                 {
-                    window = new MainWindow();
+                    _window = new MainWindow();
 
-                    window.ShowDialog();
+                    _window.ShowDialog();
                 }
                 catch (Exception ex)
                 {
@@ -308,76 +285,11 @@ namespace Alert
             windowThread.Start();
         }
 
-        public static void CloseOpenWindows()
+        public static ResourceDictionary GetStyleResource(string name)
         {
-            Thread pipeThread = new Thread(new ThreadStart(() =>
-            {
-                try
-                {
-                    using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(Properties.Settings.Default.PipeServerName))
-                    {
-                        pipeClient.Connect();
+            Uri uri = new Uri(string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", name));
 
-                        pipeClient.WriteByte(0);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogException(ex);
-                }
-            }));
-
-            pipeThread.CurrentCulture = CultureInfo.InvariantCulture;
-            pipeThread.CurrentUICulture = CultureInfo.InvariantCulture;
-
-            pipeThread.Start();
-        }
-
-        public static void StartPipeServer()
-        {
-            Thread pipeThread = new Thread(new ThreadStart(() =>
-            {
-                try
-                {
-                    bool stopPipeServer = false;
-
-                    while (!stopPipeServer)
-                    {
-                        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(
-                            Properties.Settings.Default.PipeServerName,
-                            PipeDirection.InOut,
-                            NamedPipeServerStream.MaxAllowedServerInstances))
-                        {
-                            pipeServer.WaitForConnection();
-
-                            int result = pipeServer.ReadByte();
-
-                            switch (result)
-                            {
-                                case 0:
-                                    {
-                                        Window?.Invoke(() => Window.Close());
-
-                                        stopPipeServer = true;
-
-                                        break;
-                                    }
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogException(ex);
-                }
-            }));
-
-            pipeThread.CurrentCulture = CultureInfo.InvariantCulture;
-            pipeThread.CurrentUICulture = CultureInfo.InvariantCulture;
-
-            pipeThread.Start();
+            return new ResourceDictionary() { Source = uri };
         }
 
         #endregion Methods

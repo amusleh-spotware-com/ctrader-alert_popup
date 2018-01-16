@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using MahApps.Metro;
 
 namespace Alert
 {
@@ -18,8 +19,8 @@ namespace Alert
 
             InitializeComponent();
 
-            Resources.MergedDictionaries.Add(Factory.CurrentAccent.Resources);
-            Resources.MergedDictionaries.Add(Factory.CurrentTheme.Resources);
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentTheme));
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentAccent));
 
             Content = new Pages.AlertsPage();
         }
@@ -33,11 +34,6 @@ namespace Alert
         #endregion Events
 
         #region Methods
-
-        public void Invoke(Action action)
-        {
-            this.Dispatcher.BeginInvoke(action);
-        }
 
         private void BringInFront()
         {
@@ -65,7 +61,6 @@ namespace Alert
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Factory.CloseOpenWindows();
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)

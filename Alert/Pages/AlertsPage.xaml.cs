@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using MahApps.Metro;
 
 namespace Alert.Pages
 {
@@ -28,8 +29,8 @@ namespace Alert.Pages
 
             InitializeComponent();
 
-            Resources.MergedDictionaries.Add(Factory.CurrentAccent.Resources);
-            Resources.MergedDictionaries.Add(Factory.CurrentTheme.Resources);
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentTheme));
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentAccent));
 
             DataContext = alertsModel;
         }
@@ -87,26 +88,27 @@ namespace Alert.Pages
         {
             try
             {
-                alertsModel.Alerts = new ObservableCollection<Alert>(Factory.ReadAlerts());
+                List<Alert> alerts = Factory.ReadAlerts();
 
-                if (alertsModel.Alerts.Count > Factory.MaximumAlertsNumberToShow)
+                if (alerts.Count > Factory.MaximumAlertsNumberToShow)
                 {
                     File.WriteAllText(Factory.FilePath, string.Empty);
 
-                    int counter = alertsModel.Alerts.Count - Factory.MaximumAlertsNumberToShow;
+                    int counter = alerts.Count - Factory.MaximumAlertsNumberToShow;
 
-                    alertsModel.Alerts.ToList().ForEach(alert =>
+                    alerts.ToList().ForEach(alert =>
                     {
                         if (counter > 0)
                         {
-                            alertsModel.Alerts.Remove(alert);
+                            alerts.Remove(alert);
                             counter--;
                         }
                     });
 
-                    Factory.WriteAlerts(alertsModel.Alerts.ToList());
+                    Factory.WriteAlerts(alerts.ToList());
                 }
 
+                alertsModel.Alerts = new ObservableCollection<Alert>(alerts);
                 alertsModel.SelectedAlert = alertsModel.Alerts.LastOrDefault();
 
                 AlertsDataGrid.UpdateLayout();

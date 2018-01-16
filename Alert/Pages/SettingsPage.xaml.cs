@@ -2,6 +2,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using MahApps.Metro;
 
 namespace Alert.Pages
 {
@@ -25,8 +26,8 @@ namespace Alert.Pages
 
             InitializeComponent();
 
-            Resources.MergedDictionaries.Add(Factory.CurrentAccent.Resources);
-            Resources.MergedDictionaries.Add(Factory.CurrentTheme.Resources);
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentTheme));
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentAccent));
 
             DataContext = settingsModel;
         }

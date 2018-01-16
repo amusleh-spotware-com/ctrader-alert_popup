@@ -89,7 +89,7 @@ namespace Alert.Models
         {
             get
             {
-                return Factory.CurrentTheme;
+                return ThemeManager.GetAppTheme(Registry.GetValue("CurrentTheme", "BaseDark"));
             }
             set
             {
@@ -103,7 +103,7 @@ namespace Alert.Models
         {
             get
             {
-                return Factory.CurrentAccent;
+                return ThemeManager.GetAccent(Registry.GetValue("CurrentAccent", "Blue"));
             }
             set
             {
