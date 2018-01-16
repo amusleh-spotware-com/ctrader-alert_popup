@@ -16,7 +16,7 @@ namespace Alert
     {
         #region Fields
 
-        private static AlertWindow window;
+        private static MainWindow window;
 
         private static Mutex mutex;
 
@@ -24,7 +24,7 @@ namespace Alert
 
         #region Properties
 
-        public static AlertWindow Window
+        public static MainWindow Window
         {
             get
             {
@@ -40,7 +40,14 @@ namespace Alert
         {
             get
             {
-                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "cAlgo");
+                string dirPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "cAlgo");
+
+                if (!Directory.Exists(dirPath))
+                {
+                    Directory.CreateDirectory(dirPath);
+                }
+
+                return dirPath;
             }
         }
 
@@ -146,32 +153,9 @@ namespace Alert
         {
             Registry.CreateKey("cTrader Alert");
 
-            if (!Directory.Exists(Factory.DirectoryPath))
-            {
-                Directory.CreateDirectory(Factory.DirectoryPath);
-            }
-
-            if (!File.Exists(Factory.FilePath))
-            {
-                File.Create(Factory.FilePath).Close();
-            }
-
             Alert alert = new Alert() { TradeSide = tradeType.ToString(), Symbol = symbol.Code, TimeFrame = timeFrame.ToString(), Time = time, Comment = comment };
 
             WriteAlert(alert);
-
-            bool isWindowNotOpen = false;
-
-            mutex = new Mutex(true, Properties.Settings.Default.MutexName, out isWindowNotOpen);
-
-            if (isWindowNotOpen)
-            {
-                ShowAlertWindow();
-            }
-            else
-            {
-                RefreshAlertWindow();
-            }
 
             if (IsSoundAlertEnabled)
             {
@@ -186,6 +170,19 @@ namespace Alert
 
                 SendEmail(FromEmail, ToEmail, emailSubject, emailBody);
             }
+
+            bool isMutexNew = false;
+
+            mutex = new Mutex(true, Properties.Settings.Default.MutexName, out isMutexNew);
+
+            if (!isMutexNew)
+            {
+                CloseOpenWindows();
+            }
+
+            StartPipeServer();
+
+            ShowWindow();
         }
 
         public static void Print(object obj)
@@ -244,7 +241,7 @@ namespace Alert
 
         public static void WriteAlerts(IEnumerable<Alert> alerts, FileMode mode = FileMode.Append)
         {
-            using (FileStream fileStream = File.Open(FilePath, mode))
+            using (FileStream fileStream = File.Open(FilePath, mode, FileAccess.Write, FileShare.ReadWrite))
             {
                 using (TextWriter writer = new StreamWriter(fileStream))
                 {
@@ -263,7 +260,7 @@ namespace Alert
 
             try
             {
-                using (FileStream fileStream = File.Open(FilePath, FileMode.OpenOrCreate, FileAccess.Read))
+                using (FileStream fileStream = File.Open(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite))
                 {
                     using (TextReader reader = new StreamReader(fileStream))
                     {
@@ -287,13 +284,13 @@ namespace Alert
             return alerts;
         }
 
-        public static void ShowAlertWindow()
+        public static void ShowWindow()
         {
             Thread windowThread = new Thread(new ThreadStart(() =>
             {
                 try
                 {
-                    window = new AlertWindow();
+                    window = new MainWindow();
 
                     window.ShowDialog();
                 }
@@ -311,41 +308,76 @@ namespace Alert
             windowThread.Start();
         }
 
-        public static void CloseAlertWindow()
+        public static void CloseOpenWindows()
         {
-            if (window != null)
+            Thread pipeThread = new Thread(new ThreadStart(() =>
             {
-                window.Invoke(() =>
+                try
                 {
-                    window.Close();
-                });
-            }
-        }
+                    using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(Properties.Settings.Default.PipeServerName))
+                    {
+                        pipeClient.Connect();
 
-        public static void RefreshAlertWindow()
-        {
-            using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(Properties.Settings.Default.PipeServerName))
-            {
-                pipeClient.Connect();
-                pipeClient.WriteByte(1);
-            }
-        }
-
-        public static void StopPipeServer()
-        {
-            try
-            {
-                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(Properties.Settings.Default.PipeServerName))
-                {
-                    pipeClient.Connect();
-
-                    pipeClient.WriteByte(0);
+                        pipeClient.WriteByte(0);
+                    }
                 }
-            }
-            catch (Exception ex)
+                catch (Exception ex)
+                {
+                    LogException(ex);
+                }
+            }));
+
+            pipeThread.CurrentCulture = CultureInfo.InvariantCulture;
+            pipeThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            pipeThread.Start();
+        }
+
+        public static void StartPipeServer()
+        {
+            Thread pipeThread = new Thread(new ThreadStart(() =>
             {
-                LogException(ex);
-            }
+                try
+                {
+                    bool stopPipeServer = false;
+
+                    while(!stopPipeServer)
+                    {
+                        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(
+                            Properties.Settings.Default.PipeServerName,
+                            PipeDirection.InOut,
+                            NamedPipeServerStream.MaxAllowedServerInstances))
+                        {
+                            pipeServer.WaitForConnection();
+
+                            int result = pipeServer.ReadByte();
+
+                            switch (result)
+                            {
+                                case 0:
+                                    {
+                                        Window?.Invoke(() => Window.Close());
+
+                                        stopPipeServer = true;
+
+                                        break;
+                                    }
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogException(ex);
+                }
+            }));
+
+            pipeThread.CurrentCulture = CultureInfo.InvariantCulture;
+            pipeThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            pipeThread.Start();
         }
 
         #endregion Methods

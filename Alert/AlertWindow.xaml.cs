@@ -6,9 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 
 namespace Alert
@@ -17,13 +15,9 @@ namespace Alert
     {
         #region Fields
 
-        private double windowHeight, windowWidth, windowTop, windowLeft;
-
-        private bool stopPipeServer = false;
-
         private Alert _selectedAlert;
 
-        private ObservableCollection<Alert> _alerts;
+        private ObservableCollection<Alert> _alerts = new ObservableCollection<Alert>();
 
         #endregion Fields
 
@@ -31,21 +25,14 @@ namespace Alert
 
         public AlertWindow()
         {
+            Application.ResourceAssembly = typeof(AlertWindow).Assembly;
+
             Loaded += MetroWindow_Loaded;
             Closing += MetroWindow_Closing;
-            SizeChanged += MetroWindow_SizeChanged;
-            LocationChanged += MetroWindow_LocationChanged;
-
-            this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri("pack://application:,,,/Alert;component/Resources/Icons.xaml", UriKind.RelativeOrAbsolute) });
-            this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute) });
-            this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml", UriKind.RelativeOrAbsolute) });
-            this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml", UriKind.RelativeOrAbsolute) });
-            this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri(string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", Factory.CurrentAccent.Name), UriKind.RelativeOrAbsolute) });
-            this.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri(string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", Factory.CurrentTheme.Name), UriKind.RelativeOrAbsolute) });
 
             InitializeComponent();
 
-            Alerts = new ObservableCollection<Alert>();
+            ThemeManager.ChangeAppStyle(this, Factory.CurrentAccent, Factory.CurrentTheme);
         }
 
         #endregion Constructor
@@ -118,51 +105,11 @@ namespace Alert
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             GetAlertsFromFile();
-
-            StartPipeListening();
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (this.Visibility == Visibility.Visible)
-            {
-                Registry.SetValue("IsWindowSizeSaved", true);
-
-                if (this.WindowState == WindowState.Normal || this.WindowState == WindowState.Minimized)
-                {
-                    Registry.SetValue("WindowHeight", windowHeight);
-                    Registry.SetValue("WindowWidth", windowWidth);
-                    Registry.SetValue("WindowTop", windowTop);
-                    Registry.SetValue("WindowLeft", windowLeft);
-                }
-            }
-
-            if (Factory.Mutex != null)
-            {
-                Factory.Mutex.Close();
-            }
-
-            stopPipeServer = true;
-
-            Factory.StopPipeServer();
-        }
-
-        private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (this.WindowState == WindowState.Normal && this.Visibility == Visibility.Visible)
-            {
-                windowHeight = e.NewSize.Height;
-                windowWidth = e.NewSize.Width;
-            }
-        }
-
-        private void MetroWindow_LocationChanged(object sender, EventArgs e)
-        {
-            if (this.WindowState == WindowState.Normal && this.Visibility == Visibility.Visible)
-            {
-                windowTop = Top;
-                windowLeft = Left;
-            }
+            Factory.CloseOpenAlertWindows();
         }
 
         private void RemoveAllAlertsButton_Click(object sender, RoutedEventArgs e)
@@ -249,80 +196,6 @@ namespace Alert
             GetAlertsFromFile();
 
             this.IsEnabled = true;
-        }
-
-        private void StartPipeListening()
-        {
-            Thread pipeThread = new Thread(new ThreadStart(() =>
-            {
-                try
-                {
-                    while (!stopPipeServer)
-                    {
-                        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(Properties.Settings.Default.PipeServerName))
-                        {
-                            pipeServer.WaitForConnection();
-
-                            int result = pipeServer.ReadByte();
-
-                            switch (result)
-                            {
-                                case 0:
-                                    {
-                                        stopPipeServer = true;
-
-                                        break;
-                                    }
-                                case 1:
-                                    {
-                                        Invoke(new Action(() =>
-                                        {
-                                            GetAlertsFromFile();
-                                        }));
-
-                                        break;
-                                    }
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Factory.LogException(ex);
-
-                    Factory.StopPipeServer();
-                }
-
-                if (!stopPipeServer)
-                {
-                    StartPipeListening();
-                }
-            }));
-
-            pipeThread.CurrentCulture = CultureInfo.InvariantCulture;
-            pipeThread.CurrentUICulture = CultureInfo.InvariantCulture;
-
-            pipeThread.Start();
-        }
-
-        private void SetWindowSize()
-        {
-            bool isWindowSizeSaved = bool.Parse(Registry.GetValue("IsWindowSizeSaved", false));
-
-            if (isWindowSizeSaved && WindowState != WindowState.Maximized)
-            {
-                double savedHeight = double.Parse(Registry.GetValue("WindowHeight", 0), CultureInfo.InvariantCulture);
-                double savedWidth = double.Parse(Registry.GetValue("WindowWidth", 0), CultureInfo.InvariantCulture);
-                double savedTop = double.Parse(Registry.GetValue("WindowTop", 0), CultureInfo.InvariantCulture);
-                double savedLeft = double.Parse(Registry.GetValue("WindowLeft", 0), CultureInfo.InvariantCulture);
-
-                Height = savedHeight != 0 ? savedHeight : Height;
-                Width = savedWidth != 0 ? savedWidth : Width;
-                Top = savedTop != 0 ? savedTop : Top;
-                Left = savedLeft != 0 ? savedLeft : Left;
-            }
         }
 
         #endregion Methods

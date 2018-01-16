@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="MutexName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">tsIo3dljI79K63ArjPvbe2FGN99763yuznG8S1o7qHFFH5O7yd_mutex</Value>
+      <Value Profile="(Default)">fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_mutex</Value>
     </Setting>
     <Setting Name="PipeServerName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">tsIo3dljI79K63ArjPvbe2FGN99763yuznG8S1o7qHFFH5O7yd_pipe</Value>
+      <Value Profile="(Default)">fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_pipeServer</Value>
     </Setting>
   </Settings>
 </SettingsFile>

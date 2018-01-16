@@ -25,7 +25,7 @@ namespace Alert.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("tsIo3dljI79K63ArjPvbe2FGN99763yuznG8S1o7qHFFH5O7yd_mutex")]
+        [global::System.Configuration.DefaultSettingValueAttribute("fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_mutex")]
         public string MutexName {
             get {
                 return ((string)(this["MutexName"]));
@@ -37,7 +37,7 @@ namespace Alert.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("tsIo3dljI79K63ArjPvbe2FGN99763yuznG8S1o7qHFFH5O7yd_pipe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_pipeServer")]
         public string PipeServerName {
             get {
                 return ((string)(this["PipeServerName"]));

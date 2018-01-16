@@ -1,32 +1,12 @@
 ﻿using MahApps.Metro;
-using MahApps.Metro.Controls;
-using Microsoft.Win32;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.Windows;
 
-namespace Alert
+namespace Alert.Models
 {
-    public partial class SettingsWindow : MetroWindow, INotifyPropertyChanged
+    public class SettingsModel : INotifyPropertyChanged
     {
-        #region Constructor
-
-        public SettingsWindow()
-        {
-            Application.ResourceAssembly = typeof(SettingsWindow).Assembly;
-
-            Loaded += MetroWindow_Loaded;
-            Closing += MetroWindow_Closing;
-
-            InitializeComponent();
-
-            ThemeManager.ChangeAppStyle(this, Factory.CurrentAccent, Factory.CurrentTheme);
-        }
-
-        #endregion Constructor
-
         #region Events
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -167,44 +147,11 @@ namespace Alert
 
         #region Methods
 
-        public void Invoke(Action action)
-        {
-            Dispatcher.BeginInvoke(action);
-        }
-
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
 
             handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void MetroWindow_Closing(object sender, CancelEventArgs e)
-        {
-        }
-
-        private void SoundFileBrowseButton_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "WAV files (*.wav)|*.wav";
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                SoundFilePath = openFileDialog.FileName;
-            }
-        }
-
-        private void ThemeChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            if (AccentsComboBox.SelectedItem != null && ThemesComboBox.SelectedItem != null)
-            {
-                ThemeManager.ChangeAppStyle(this, (Accent)AccentsComboBox.SelectedItem, (AppTheme)ThemesComboBox.SelectedItem);
-            }
         }
 
         #endregion Methods

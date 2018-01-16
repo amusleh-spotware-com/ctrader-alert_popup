@@ -1,50 +1,25 @@
-﻿<Controls:MetroWindow
-    x:Class="Alert.AlertWindow"
+﻿<Page
+    x:Class="Alert.Pages.AlertsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Alert"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Alert"
-    Width="650"
-    Height="500"
-    BorderThickness="0"
-    GlowBrush="Black"
-    ResizeMode="CanResizeWithGrip"
-    SaveWindowPosition="True"
-    ShowIconOnTitleBar="False"
-    TitleCaps="False"
-    Topmost="True"
-    WindowStartupLocation="CenterOwner"
-    WindowState="Normal"
-    WindowTransitionsEnabled="False"
+    Title="Alerts"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
     mc:Ignorable="d">
-    <Controls:MetroWindow.Resources>
+
+    <Page.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resource.xaml" />
+                <ResourceDictionary Source="/Alert;component/Resource.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Controls:MetroWindow.Resources>
-    <Controls:MetroWindow.RightWindowCommands>
-        <Controls:WindowCommands ShowLastSeparator="False">
-            <Button
-                Name="SettingsButton"
-                Click="SettingsButton_Click"
-                ToolTip="Settings">
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle
-                        Width="20"
-                        Height="20"
-                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_settings}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </StackPanel>
-            </Button>
-        </Controls:WindowCommands>
-    </Controls:MetroWindow.RightWindowCommands>
+    </Page.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -55,8 +30,8 @@
         <DataGrid
             Name="AlertsDataGrid"
             Grid.Row="1"
-            ItemsSource="{Binding Path=Alerts, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
-            SelectedItem="{Binding Path=SelectedAlert, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=TwoWay}"
+            ItemsSource="{Binding Path=Alerts}"
+            SelectedItem="{Binding Path=SelectedAlert, Mode=TwoWay}"
             Style="{StaticResource ReadOnlyDataGridStyle}">
             <DataGrid.Resources>
                 <DataTemplate x:Key="HeaderTemplate">
@@ -153,9 +128,9 @@
                     <TextBlock
                         Name="StatusBarAlertsNumberTextBlock"
                         HorizontalAlignment="Left"
-                        Text="{Binding Path=Alerts.Count, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" />
+                        Text="{Binding Path=Alerts.Count}" />
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
     </Grid>
-</Controls:MetroWindow>
+</Page>
