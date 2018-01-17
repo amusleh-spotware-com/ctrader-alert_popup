@@ -2,11 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Alert.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="MutexName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_mutex</Value>
-    </Setting>
-    <Setting Name="PipeServerName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_pipeServer</Value>
+    <Setting Name="PipeName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_pipeName</Value>
     </Setting>
   </Settings>
 </SettingsFile>

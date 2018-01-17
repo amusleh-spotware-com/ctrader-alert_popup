@@ -154,11 +154,6 @@ namespace Alert
                 SendEmail(FromEmail, ToEmail, emailSubject, emailBody);
             }
 
-            if (Window != null)
-            {
-                Window.Dispatcher.Invoke(() => Window.Close());
-            }
-
             ShowWindow();
         }
 
@@ -267,6 +262,11 @@ namespace Alert
             {
                 try
                 {
+                    if (_window != null)
+                    {
+                        _window.Dispatcher.Invoke(() => _window.Close());
+                    }
+
                     _window = new MainWindow();
 
                     _window.ShowDialog();

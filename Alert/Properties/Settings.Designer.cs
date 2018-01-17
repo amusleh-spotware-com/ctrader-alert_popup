@@ -25,25 +25,13 @@ namespace Alert.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_mutex")]
-        public string MutexName {
+        [global::System.Configuration.DefaultSettingValueAttribute("fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_pipeName")]
+        public string PipeName {
             get {
-                return ((string)(this["MutexName"]));
+                return ((string)(this["PipeName"]));
             }
             set {
-                this["MutexName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_pipeServer")]
-        public string PipeServerName {
-            get {
-                return ((string)(this["PipeServerName"]));
-            }
-            set {
-                this["PipeServerName"] = value;
+                this["PipeName"] = value;
             }
         }
     }

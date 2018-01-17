@@ -3,15 +3,24 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using MahApps.Metro;
+using System.IO.Pipes;
+using System.Threading;
+using System.Globalization;
 
 namespace Alert
 {
     public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
+        #region Fields
+        private bool pipeServerRunning;
+        #endregion
+
         #region Constructor
 
         public MainWindow()
         {
+            CloseOpenWindows();
+
             Application.ResourceAssembly = typeof(MainWindow).Assembly;
 
             Loaded += MetroWindow_Loaded;
@@ -57,10 +66,75 @@ namespace Alert
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            StartPipeListener();
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            pipeServerRunning = false;
+        }
+
+        private void CloseOpenWindows()
+        {
+            try
+            {
+                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(Properties.Settings.Default.PipeName))
+                {
+                    pipeClient.Connect(1000);
+
+                    pipeClient.WriteByte(1);
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void  StartPipeListener()
+        {
+            Thread thread = new Thread(new ThreadStart(() =>
+            {
+                try
+                {
+                    pipeServerRunning = true;
+
+                    while (pipeServerRunning)
+                    {
+                        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(
+                            Properties.Settings.Default.PipeName,
+                            PipeDirection.InOut,
+                            NamedPipeServerStream.MaxAllowedServerInstances))
+                        {
+                            pipeServer.WaitForConnection();
+
+                            int result = pipeServer.ReadByte();
+
+                            switch (result)
+                            {
+                                case 1:
+                                    {
+                                        this?.Dispatcher.Invoke(() => this?.Close());
+
+                                        pipeServerRunning = false;
+
+                                        break;
+                                    }
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Factory.LogException(ex);
+                }
+            }));
+
+            thread.CurrentCulture = CultureInfo.InvariantCulture;
+            thread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            thread.Start();
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
