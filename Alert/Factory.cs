@@ -154,6 +154,8 @@ namespace Alert
                 SendEmail(FromEmail, ToEmail, emailSubject, emailBody);
             }
 
+            CloseWindow();
+
             ShowWindow();
         }
 
@@ -262,11 +264,6 @@ namespace Alert
             {
                 try
                 {
-                    if (_window != null)
-                    {
-                        _window.Dispatcher.Invoke(() => _window.Close());
-                    }
-
                     _window = new MainWindow();
 
                     _window.ShowDialog();
@@ -283,6 +280,24 @@ namespace Alert
             windowThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
             windowThread.Start();
+        }
+
+        public static void CloseWindow()
+        {
+            if (Window != null && !Window.IsClosed)
+            {
+                Window.Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        Window?.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Factory.LogException(ex);
+                    }
+                });
+            }
         }
 
         public static ResourceDictionary GetStyleResource(string name)

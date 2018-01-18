@@ -11,15 +11,11 @@ namespace Alert
 {
     public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
-        #region Fields
-        private bool pipeServerRunning;
-        #endregion
-
         #region Constructor
 
         public MainWindow()
         {
-            CloseOpenWindows();
+            SendCloseWindowsMessage();
 
             Application.ResourceAssembly = typeof(MainWindow).Assembly;
 
@@ -35,6 +31,10 @@ namespace Alert
         }
 
         #endregion Constructor
+
+        #region Properties
+        public bool IsClosed { get; set; }
+        #endregion
 
         #region Events
 
@@ -71,10 +71,10 @@ namespace Alert
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            pipeServerRunning = false;
+            IsClosed = true;
         }
 
-        private void CloseOpenWindows()
+        private void SendCloseWindowsMessage()
         {
             try
             {
@@ -90,15 +90,13 @@ namespace Alert
             }
         }
 
-        private void  StartPipeListener()
+        private void StartPipeListener()
         {
             Thread thread = new Thread(new ThreadStart(() =>
             {
                 try
                 {
-                    pipeServerRunning = true;
-
-                    while (pipeServerRunning)
+                    while (!IsClosed)
                     {
                         using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(
                             Properties.Settings.Default.PipeName,
@@ -113,9 +111,7 @@ namespace Alert
                             {
                                 case 1:
                                     {
-                                        this?.Dispatcher.Invoke(() => this?.Close());
-
-                                        pipeServerRunning = false;
+                                        Factory.CloseWindow();
 
                                         break;
                                     }
