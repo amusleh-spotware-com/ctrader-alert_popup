@@ -2,7 +2,6 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using MahApps.Metro;
 
 namespace Alert.Pages
 {

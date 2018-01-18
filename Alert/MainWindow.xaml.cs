@@ -1,11 +1,10 @@
 ﻿using MahApps.Metro.Controls;
 using System;
 using System.ComponentModel;
-using System.Windows;
-using MahApps.Metro;
+using System.Globalization;
 using System.IO.Pipes;
 using System.Threading;
-using System.Globalization;
+using System.Windows;
 
 namespace Alert
 {
@@ -33,8 +32,10 @@ namespace Alert
         #endregion Constructor
 
         #region Properties
+
         public bool IsClosed { get; set; }
-        #endregion
+
+        #endregion Properties
 
         #region Events
 

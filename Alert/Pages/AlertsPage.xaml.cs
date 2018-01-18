@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using MahApps.Metro;
 
 namespace Alert.Pages
 {
