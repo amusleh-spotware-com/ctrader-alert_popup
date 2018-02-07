@@ -128,11 +128,32 @@ namespace Alert
             }
         }
 
+        public static TimeZoneInfo CurrentTimeZone
+        {
+            get
+            {
+                string timeZone = Registry.GetValue("CurrentTimeZone", string.Empty);
+
+                return !string.IsNullOrEmpty(timeZone) ?
+                    TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(tz => tz.DisplayName.Equals(timeZone, StringComparison.InvariantCultureIgnoreCase)) :
+                    TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(
+                        tz => tz.DisplayName.Equals("(UTC) Coordinated Universal Time", StringComparison.InvariantCultureIgnoreCase));
+            }
+        }
+
+        public static string CurrentTimeFormat
+        {
+            get
+            {
+                return Registry.GetValue("CurrentTimeFormat", "12 Hour");
+            }
+        }
+
         #endregion Properties
 
         #region Methods
 
-        public static void Trigger(TradeType tradeType, Symbol symbol, TimeFrame timeFrame, DateTime time, string comment)
+        public static void Trigger(TradeType tradeType, Symbol symbol, TimeFrame timeFrame, DateTimeOffset time, string comment)
         {
             Registry.CreateKey("cTrader Alert");
 

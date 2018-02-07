@@ -78,6 +78,28 @@
                         </Button>
                     </StackPanel>
                 </DataTemplate>
+                <DataTemplate x:Key="TwelveHourTimeTemplate">
+                    <TextBlock Text="{Binding Path=Time, StringFormat={}{0:h:mm tt}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="TwentyFourHourTimeTemplate">
+                    <TextBlock Text="{Binding Path=Time, StringFormat={}{0:H:mm}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="TimeTemplate">
+                    <ContentControl Content="{Binding}">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataContext.CurrentTimeFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Value="12 Hour">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource TwelveHourTimeTemplate}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=DataContext.CurrentTimeFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Value="24 Hour">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource TwentyFourHourTimeTemplate}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </DataTemplate>
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn
@@ -92,9 +114,9 @@
                     Width="Auto"
                     Binding="{Binding Path=TimeFrame}"
                     Header="Time Frame" />
-                <DataGridTextColumn
+                <DataGridTemplateColumn
                     Width="Auto"
-                    Binding="{Binding Path=Time}"
+                    CellTemplate="{StaticResource TimeTemplate}"
                     Header="Time" />
                 <DataGridTextColumn
                     Width="*"

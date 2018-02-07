@@ -35,9 +35,10 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <GroupBox Grid.Row="0" Header="Popup">
+                <GroupBox Grid.Row="0" Header="General">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -199,6 +200,54 @@
                                 Margin="5"
                                 Text="{Binding Path=ToEmail, Mode=TwoWay}" />
                         </Grid>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="3" Header="Time">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            Text="Format" />
+
+                        <ComboBox
+                            Name="TimeFormatComboBox"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            MinWidth="150"
+                            Margin="5"
+                            HorizontalAlignment="Left"
+                            ItemsSource="{Binding Path=TimeFormats}"
+                            SelectedItem="{Binding Path=CurrentTimeFormat, Mode=TwoWay}" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            Text="Time Zone" />
+
+                        <ComboBox
+                            Name="TimeZoneComboBox"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            MinWidth="150"
+                            Margin="5"
+                            HorizontalAlignment="Left"
+                            ItemsSource="{Binding Path=TimeZones}"
+                            SelectedItem="{Binding Path=CurrentTimeZone, Mode=TwoWay}" />
                     </Grid>
                 </GroupBox>
             </Grid>

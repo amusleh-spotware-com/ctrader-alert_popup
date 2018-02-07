@@ -49,6 +49,14 @@ namespace Alert.Models
             }
         }
 
+        public static string CurrentTimeFormat
+        {
+            get
+            {
+                return Registry.GetValue("CurrentTimeFormat", "12 Hour");
+            }
+        }
+
         #endregion Properties
 
         #region Methods

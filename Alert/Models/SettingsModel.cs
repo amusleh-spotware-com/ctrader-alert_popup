@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System;
+using System.Linq;
 
 namespace Alert.Models
 {
@@ -140,6 +142,55 @@ namespace Alert.Models
                 Registry.SetValue("MaximumAlertsNumberToShow", value);
 
                 OnPropertyChanged("MaximumAlertsNumberToShow");
+            }
+        }
+
+        public ReadOnlyCollection<TimeZoneInfo> TimeZones
+        {
+            get
+            {
+                return TimeZoneInfo.GetSystemTimeZones();
+            }
+        }
+
+        public TimeZoneInfo CurrentTimeZone
+        {
+            get
+            {
+                string timeZone = Registry.GetValue("CurrentTimeZone", string.Empty);
+
+                return !string.IsNullOrEmpty(timeZone) ?
+                    TimeZones.FirstOrDefault(tz => tz.DisplayName.Equals(timeZone, StringComparison.InvariantCultureIgnoreCase)) :
+                    TimeZones.FirstOrDefault(
+                        tz => tz.DisplayName.Equals("(UTC) Coordinated Universal Time", StringComparison.InvariantCultureIgnoreCase));
+            }
+            set
+            {
+                Registry.SetValue("CurrentTimeZone", value);
+
+                OnPropertyChanged("CurrentTimeZone");
+            }
+        }
+
+        public ObservableCollection<string> TimeFormats
+        {
+            get
+            {
+                return new ObservableCollection<string>() { "12 Hour", "24 Hour" };
+            }
+        }
+
+        public string CurrentTimeFormat
+        {
+            get
+            {
+                return Registry.GetValue("CurrentTimeFormat", "12 Hour");
+            }
+            set
+            {
+                Registry.SetValue("CurrentTimeFormat", value);
+
+                OnPropertyChanged("CurrentTimeFormat");
             }
         }
 
