@@ -162,7 +162,7 @@ namespace Alert.Models
                 return !string.IsNullOrEmpty(timeZone) ?
                     TimeZones.FirstOrDefault(tz => tz.DisplayName.Equals(timeZone, StringComparison.InvariantCultureIgnoreCase)) :
                     TimeZones.FirstOrDefault(
-                        tz => tz.DisplayName.Equals("(UTC) Coordinated Universal Time", StringComparison.InvariantCultureIgnoreCase));
+                        tz => tz.BaseUtcOffset == DateTimeOffset.Now.Offset);
             }
             set
             {

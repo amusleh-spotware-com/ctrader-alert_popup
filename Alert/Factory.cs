@@ -135,9 +135,11 @@ namespace Alert
                 string timeZone = Registry.GetValue("CurrentTimeZone", string.Empty);
 
                 return !string.IsNullOrEmpty(timeZone) ?
-                    TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(tz => tz.DisplayName.Equals(timeZone, StringComparison.InvariantCultureIgnoreCase)) :
-                    TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(
-                        tz => tz.DisplayName.Equals("(UTC) Coordinated Universal Time", StringComparison.InvariantCultureIgnoreCase));
+                    TimeZoneInfo.GetSystemTimeZones()
+                    .FirstOrDefault(tz => tz.DisplayName.Equals(timeZone, StringComparison.InvariantCultureIgnoreCase)) :
+                    TimeZoneInfo.GetSystemTimeZones()
+                    .FirstOrDefault(
+                        tz => tz.BaseUtcOffset == DateTimeOffset.Now.Offset);
             }
         }
 
