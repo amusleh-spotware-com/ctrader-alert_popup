@@ -17,6 +17,8 @@ namespace Alert
 
         private static MainWindow _window;
 
+        private static int? lastTriggeredBar = null;
+
         #endregion Fields
 
         #region Properties
@@ -151,12 +153,43 @@ namespace Alert
             }
         }
 
+        public static int Index
+        {
+            get
+            {
+                return Robot != null ? Robot.MarketSeries.Close.Count - 1 : Indicator.MarketSeries.Close.Count - 1;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
 
-        public static void Trigger(TradeType tradeType, Symbol symbol, TimeFrame timeFrame, DateTimeOffset time, string comment)
+        public static void Trigger(
+            TradeType tradeType,
+            Symbol symbol,
+            TimeFrame timeFrame,
+            DateTimeOffset time,
+            string comment,
+            TriggerType type = TriggerType.PerBar)
         {
+            if (type == TriggerType.PerBar)
+            {
+                if (lastTriggeredBar.HasValue && lastTriggeredBar == Index)
+                {
+                    return;
+                }
+                else
+                {
+                    lastTriggeredBar = Index;
+                }
+            }
+
+            if (Indicator != null && !Indicator.IsLastBar)
+            {
+                return;
+            }
+
             Registry.CreateKey("cTrader Alert");
 
             Alert alert = new Alert() { TradeSide = tradeType.ToString(), Symbol = symbol.Code, TimeFrame = timeFrame.ToString(), Time = time, Comment = comment };
@@ -228,6 +261,8 @@ namespace Alert
             if (ex.InnerException != null)
             {
                 Print(string.Format("InnerException: {0}", ex.InnerException));
+
+                LogException(ex.InnerException);
             }
         }
 
@@ -238,16 +273,30 @@ namespace Alert
 
         public static void WriteAlerts(IEnumerable<Alert> alerts, FileMode mode = FileMode.Append)
         {
-            using (FileStream fileStream = File.Open(FilePath, mode, FileAccess.Write, FileShare.ReadWrite))
+            try
             {
-                using (TextWriter writer = new StreamWriter(fileStream))
+                using (FileStream fileStream = File.Open(FilePath, mode, FileAccess.Write, FileShare.ReadWrite))
                 {
-                    CsvWriter csvWriter = new CsvWriter(writer);
+                    using (TextWriter writer = new StreamWriter(fileStream))
+                    {
+                        CsvWriter csvWriter = new CsvWriter(writer);
 
-                    csvWriter.Configuration.HasHeaderRecord = false;
+                        csvWriter.Configuration.HasHeaderRecord = false;
 
-                    csvWriter.WriteRecords(alerts);
+                        csvWriter.WriteRecords(alerts);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                if (ex is WriterException)
+                {
+                    File.Delete(Factory.FilePath);
+
+                    Print("Alerts file cleaned due to an exception in writing");
+                }
+
+                Factory.LogException(ex);
             }
         }
 
@@ -271,11 +320,14 @@ namespace Alert
             }
             catch (Exception ex)
             {
+                if (ex is ReaderException)
+                {
+                    File.Delete(Factory.FilePath);
+
+                    Print("Alerts file cleaned due to an exception in reading");
+                }
+
                 Factory.LogException(ex);
-
-                File.Delete(Factory.FilePath);
-
-                Print("Alerts file cleaned due to an exception in reading");
             }
 
             return alerts;
