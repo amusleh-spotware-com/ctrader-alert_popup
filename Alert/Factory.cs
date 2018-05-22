@@ -31,9 +31,7 @@ namespace Alert
             }
         }
 
-        public static Robot Robot { get; set; }
-
-        public static Indicator Indicator { get; set; }
+        public static Algo Algo { get; set; }
 
         public static string DirectoryPath
         {
@@ -157,7 +155,7 @@ namespace Alert
         {
             get
             {
-                return Robot != null ? Robot.MarketSeries.Close.Count - 1 : Indicator.MarketSeries.Close.Count - 1;
+                return Algo.MarketSeries.Close.Count - 1;
             }
         }
 
@@ -185,7 +183,7 @@ namespace Alert
                 }
             }
 
-            if (Indicator != null && !Indicator.IsLastBar)
+            if (Algo.GetType() == typeof(Indicator) && !(Algo as Indicator).IsLastBar)
             {
                 return;
             }
@@ -217,38 +215,17 @@ namespace Alert
 
         public static void Print(object obj)
         {
-            if (Factory.Robot != null)
-            {
-                Factory.Robot.Print(obj);
-            }
-            else if (Factory.Indicator != null)
-            {
-                Factory.Indicator.Print(obj);
-            }
+            Factory.Algo.Print(obj);
         }
 
         public static void PlaySound(string soundFilePath)
         {
-            if (Factory.Robot != null)
-            {
-                Factory.Robot.Notifications.PlaySound(soundFilePath);
-            }
-            else if (Factory.Indicator != null)
-            {
-                Factory.Indicator.Notifications.PlaySound(soundFilePath);
-            }
+            Factory.Algo.Notifications.PlaySound(soundFilePath);
         }
 
         public static void SendEmail(string fromEmail, string toEmail, string emailSubject, string emailBody)
         {
-            if (Factory.Robot != null)
-            {
-                Factory.Robot.Notifications.SendEmail(fromEmail, toEmail, emailSubject, emailBody);
-            }
-            else if (Factory.Indicator != null)
-            {
-                Factory.Indicator.Notifications.SendEmail(fromEmail, toEmail, emailSubject, emailBody);
-            }
+            Factory.Algo.Notifications.SendEmail(fromEmail, toEmail, emailSubject, emailBody);
         }
 
         public static void LogException(Exception ex)
