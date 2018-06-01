@@ -183,7 +183,7 @@ namespace Alert
                 }
             }
 
-            if (Algo.GetType() == typeof(Indicator) && !(Algo as Indicator).IsLastBar)
+            if (Algo.GetType().BaseType == typeof(Indicator) && !(Algo as Indicator).IsLastBar)
             {
                 return;
             }
