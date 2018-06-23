@@ -1,5 +1,4 @@
-﻿using cAlgo.API;
-using cAlgo.API.Internals;
+﻿using cAlgo.API.Internals;
 using CsvHelper;
 using System;
 using System.Collections.Generic;
@@ -11,13 +10,15 @@ using System.Windows;
 
 namespace cAlgo.API.Alert
 {
-    public static class Factory
+    public static class INotificationsExtensions
     {
         #region Fields
 
         private static MainWindow _window;
 
         private static int? lastTriggeredBar = null;
+
+        private static Algo _algo;
 
         #endregion Fields
 
@@ -30,8 +31,6 @@ namespace cAlgo.API.Alert
                 return _window;
             }
         }
-
-        public static Algo Algo { get; set; }
 
         public static string DirectoryPath
         {
@@ -151,19 +150,13 @@ namespace cAlgo.API.Alert
             }
         }
 
-        public static int Index
-        {
-            get
-            {
-                return Algo.MarketSeries.Close.Count - 1;
-            }
-        }
-
         #endregion Properties
 
         #region Methods
 
-        public static void Trigger(
+        public static void ShowPopup(
+            this INotifications notifications,
+            Algo algo,
             TradeType tradeType,
             Symbol symbol,
             TimeFrame timeFrame,
@@ -171,19 +164,23 @@ namespace cAlgo.API.Alert
             string comment,
             TriggerType type = TriggerType.PerBar)
         {
+            _algo = algo;
+
             if (type == TriggerType.PerBar)
             {
-                if (lastTriggeredBar.HasValue && lastTriggeredBar == Index)
+                int index = _algo.MarketSeries.Close.Count - 1;
+
+                if (lastTriggeredBar.HasValue && lastTriggeredBar == index)
                 {
                     return;
                 }
                 else
                 {
-                    lastTriggeredBar = Index;
+                    lastTriggeredBar = index;
                 }
             }
 
-            if (Algo.GetType().BaseType == typeof(Indicator) && !(Algo as Indicator).IsLastBar)
+            if (_algo.GetType().BaseType == typeof(Indicator) && !(_algo as Indicator).IsLastBar)
             {
                 return;
             }
@@ -196,7 +193,7 @@ namespace cAlgo.API.Alert
 
             if (IsSoundAlertEnabled)
             {
-                PlaySound(SoundFilePath);
+                notifications.PlaySound(SoundFilePath);
             }
 
             if (IsEmailAlertEnabled)
@@ -205,7 +202,7 @@ namespace cAlgo.API.Alert
 
                 string emailBody = string.Format("An alert triggered at {0} to {1} {2} on {3} time frame with this comment: {4}", alert.Time, alert.TradeSide, alert.Symbol, alert.TimeFrame, alert.Comment);
 
-                SendEmail(FromEmail, ToEmail, emailSubject, emailBody);
+                notifications.SendEmail(FromEmail, ToEmail, emailSubject, emailBody);
             }
 
             CloseWindow();
@@ -213,31 +210,16 @@ namespace cAlgo.API.Alert
             ShowWindow();
         }
 
-        public static void Print(object obj)
-        {
-            Factory.Algo.Print(obj);
-        }
-
-        public static void PlaySound(string soundFilePath)
-        {
-            Factory.Algo.Notifications.PlaySound(soundFilePath);
-        }
-
-        public static void SendEmail(string fromEmail, string toEmail, string emailSubject, string emailBody)
-        {
-            Factory.Algo.Notifications.SendEmail(fromEmail, toEmail, emailSubject, emailBody);
-        }
-
         public static void LogException(Exception ex)
         {
-            Print(string.Format("Exception: {0}", ex.Message));
-            Print(string.Format("Source: {0}", ex.Source));
-            Print(string.Format("StackTrace: {0}", ex.StackTrace));
-            Print(string.Format("TargetSite: {0}", ex.TargetSite));
+            _algo.Print("Exception: {0}", ex.Message);
+            _algo.Print("Source: {0}", ex.Source);
+            _algo.Print("StackTrace: {0}", ex.StackTrace);
+            _algo.Print("Source: {0}", ex.Source);
 
             if (ex.InnerException != null)
             {
-                Print(string.Format("InnerException: {0}", ex.InnerException));
+                _algo.Print("Source: {0}", ex.Source);
 
                 LogException(ex.InnerException);
             }
@@ -268,12 +250,12 @@ namespace cAlgo.API.Alert
             {
                 if (ex is WriterException)
                 {
-                    File.Delete(Factory.FilePath);
+                    File.Delete(INotificationsExtensions.FilePath);
 
-                    Print("Alerts file cleaned due to an exception in writing");
+                    _algo.Print("Alerts file cleaned due to an exception in writing");
                 }
 
-                Factory.LogException(ex);
+                INotificationsExtensions.LogException(ex);
             }
         }
 
@@ -299,12 +281,12 @@ namespace cAlgo.API.Alert
             {
                 if (ex is ReaderException)
                 {
-                    File.Delete(Factory.FilePath);
+                    File.Delete(INotificationsExtensions.FilePath);
 
-                    Print("Alerts file cleaned due to an exception in reading");
+                    _algo.Print("Alerts file cleaned due to an exception in reading");
                 }
 
-                Factory.LogException(ex);
+                INotificationsExtensions.LogException(ex);
             }
 
             return alerts;
@@ -346,7 +328,7 @@ namespace cAlgo.API.Alert
                     }
                     catch (Exception ex)
                     {
-                        Factory.LogException(ex);
+                        INotificationsExtensions.LogException(ex);
                     }
                 });
             }
