@@ -28,8 +28,8 @@ namespace cAlgo.API.Alert.Pages
 
             InitializeComponent();
 
-            Resources.MergedDictionaries.Add(INotificationsExtensions.GetStyleResource(INotificationsExtensions.CurrentTheme));
-            Resources.MergedDictionaries.Add(INotificationsExtensions.GetStyleResource(INotificationsExtensions.CurrentAccent));
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentTheme));
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentAccent));
 
             DataContext = alertsModel;
         }
@@ -56,13 +56,13 @@ namespace cAlgo.API.Alert.Pages
         {
             try
             {
-                INotificationsExtensions.WriteAlerts(new List<Alert>(), FileMode.Create);
+                Factory.WriteAlerts(new List<Alert>(), FileMode.Create);
 
                 alertsModel.Alerts.Clear();
             }
             catch (Exception ex)
             {
-                INotificationsExtensions.LogException(ex);
+                Factory.LogException(ex);
             }
         }
 
@@ -74,12 +74,12 @@ namespace cAlgo.API.Alert.Pages
                 {
                     alertsModel.Alerts.Remove(alertsModel.SelectedAlert);
 
-                    INotificationsExtensions.WriteAlerts(alertsModel.Alerts, FileMode.Create);
+                    Factory.WriteAlerts(alertsModel.Alerts, FileMode.Create);
                 }
             }
             catch (Exception ex)
             {
-                INotificationsExtensions.LogException(ex);
+                Factory.LogException(ex);
             }
         }
 
@@ -87,13 +87,13 @@ namespace cAlgo.API.Alert.Pages
         {
             try
             {
-                List<Alert> alerts = INotificationsExtensions.ReadAlerts();
+                List<Alert> alerts = Factory.ReadAlerts();
 
-                if (alerts.Count > INotificationsExtensions.MaximumAlertsNumberToShow)
+                if (alerts.Count > Factory.MaximumAlertsNumberToShow)
                 {
-                    File.WriteAllText(INotificationsExtensions.FilePath, string.Empty);
+                    File.WriteAllText(Factory.FilePath, string.Empty);
 
-                    int counter = alerts.Count - INotificationsExtensions.MaximumAlertsNumberToShow;
+                    int counter = alerts.Count - Factory.MaximumAlertsNumberToShow;
 
                     alerts.ToList().ForEach(alert =>
                     {
@@ -104,10 +104,10 @@ namespace cAlgo.API.Alert.Pages
                         }
                     });
 
-                    INotificationsExtensions.WriteAlerts(alerts.ToList());
+                    Factory.WriteAlerts(alerts.ToList());
                 }
 
-                alerts.ForEach(alert => alert.Time = alert.Time.ToOffset(INotificationsExtensions.CurrentTimeZone.BaseUtcOffset));
+                alerts.ForEach(alert => alert.Time = alert.Time.ToOffset(Factory.CurrentTimeZone.BaseUtcOffset));
 
                 alertsModel.Alerts = new ObservableCollection<Alert>(alerts);
                 alertsModel.SelectedAlert = alertsModel.Alerts.LastOrDefault();
@@ -117,7 +117,7 @@ namespace cAlgo.API.Alert.Pages
             }
             catch (Exception ex)
             {
-                INotificationsExtensions.LogException(ex);
+                Factory.LogException(ex);
             }
         }
 

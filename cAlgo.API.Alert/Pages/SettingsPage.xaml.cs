@@ -25,8 +25,8 @@ namespace cAlgo.API.Alert.Pages
 
             InitializeComponent();
 
-            Resources.MergedDictionaries.Add(INotificationsExtensions.GetStyleResource(INotificationsExtensions.CurrentTheme));
-            Resources.MergedDictionaries.Add(INotificationsExtensions.GetStyleResource(INotificationsExtensions.CurrentAccent));
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentTheme));
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentAccent));
 
             DataContext = settingsModel;
         }
@@ -68,8 +68,8 @@ namespace cAlgo.API.Alert.Pages
                 Resources.MergedDictionaries.Add(settingsModel.CurrentTheme.Resources);
 
                 // Main window
-                INotificationsExtensions.Window.Resources.MergedDictionaries.Add(settingsModel.CurrentAccent.Resources);
-                INotificationsExtensions.Window.Resources.MergedDictionaries.Add(settingsModel.CurrentTheme.Resources);
+                Factory.Window.Resources.MergedDictionaries.Add(settingsModel.CurrentAccent.Resources);
+                Factory.Window.Resources.MergedDictionaries.Add(settingsModel.CurrentTheme.Resources);
             }
         }
 

@@ -23,8 +23,8 @@ namespace cAlgo.API.Alert
 
             InitializeComponent();
 
-            Resources.MergedDictionaries.Add(INotificationsExtensions.GetStyleResource(INotificationsExtensions.CurrentTheme));
-            Resources.MergedDictionaries.Add(INotificationsExtensions.GetStyleResource(INotificationsExtensions.CurrentAccent));
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentTheme));
+            Resources.MergedDictionaries.Add(Factory.GetStyleResource(Factory.CurrentAccent));
 
             Content = new Pages.AlertsPage();
         }
@@ -112,7 +112,7 @@ namespace cAlgo.API.Alert
                             {
                                 case 1:
                                     {
-                                        INotificationsExtensions.CloseWindow();
+                                        Factory.CloseWindow();
 
                                         break;
                                     }
@@ -124,7 +124,7 @@ namespace cAlgo.API.Alert
                 }
                 catch (Exception ex)
                 {
-                    INotificationsExtensions.LogException(ex);
+                    Factory.LogException(ex);
                 }
             }));
 
