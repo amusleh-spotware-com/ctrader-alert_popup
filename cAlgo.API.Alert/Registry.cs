@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 
-namespace Alert
+namespace cAlgo.API.Alert
 {
     public static class Registry
     {

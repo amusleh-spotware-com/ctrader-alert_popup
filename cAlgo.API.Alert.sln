@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alert", "Alert\Alert.csproj", "{67AD1D85-119E-4984-A642-AE502BC4AF27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cAlgo.API.Alert", "cAlgo.API.Alert\cAlgo.API.Alert.csproj", "{67AD1D85-119E-4984-A642-AE502BC4AF27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

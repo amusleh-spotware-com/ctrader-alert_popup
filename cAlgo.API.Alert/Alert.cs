@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Alert
+namespace cAlgo.API.Alert
 {
     public class Alert
     {

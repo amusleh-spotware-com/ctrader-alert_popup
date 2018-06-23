@@ -6,7 +6,7 @@ using System.IO.Pipes;
 using System.Threading;
 using System.Windows;
 
-namespace Alert
+namespace cAlgo.API.Alert
 {
     public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
