@@ -18,6 +18,8 @@ namespace cAlgo.API.Alert
 
         private static Algo _algo;
 
+        private static int? lastTriggeredBar = null;
+
         #endregion Fields
 
         #region Properties
@@ -157,6 +159,14 @@ namespace cAlgo.API.Alert
             set
             {
                 _algo = value;
+            }
+        }
+
+        public static bool IsBarChanged
+        {
+            get
+            {
+                return lastTriggeredBar.GetValueOrDefault(-1) != Algo.MarketSeries.Close.Count - 1;
             }
         }
 

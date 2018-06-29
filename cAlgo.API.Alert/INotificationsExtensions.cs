@@ -5,12 +5,6 @@ namespace cAlgo.API.Alert
 {
     public static class INotificationsExtensions
     {
-        #region Fields
-
-        private static int? lastTriggeredBar = null;
-
-        #endregion Fields
-
         #region Methods
 
         /// <summary>
@@ -99,29 +93,16 @@ namespace cAlgo.API.Alert
         {
             Factory.Algo = algo;
 
-            if (perBar)
-            {
-                int index = algo.MarketSeries.Close.Count - 1;
-
-                if (lastTriggeredBar.HasValue && lastTriggeredBar == index)
-                {
-                    return;
-                }
-                else
-                {
-                    lastTriggeredBar = index;
-
-                    ShowAlertPopup(notifications, algo, tradeType, symbol, timeFrame, time, comment);
-                }
-            }
-
-            if (algo.GetType().BaseType == typeof(Indicator) && !(algo as Indicator).IsLastBar)
+            // If per bar is enabled and the bar doesn't changed or algo is indicator and current bar is not the last bar then return
+            if ((perBar && !Factory.IsBarChanged) || (algo.GetType().BaseType == typeof(Indicator) && !(algo as Indicator).IsLastBar))
             {
                 return;
             }
 
+            // Creates the registry key if it doesn't exist
             Registry.CreateKey("cTrader Alert");
 
+            // Alert object
             Alert alert = new Alert()
             {
                 TradeSide = tradeType.ToString(),
@@ -131,13 +112,16 @@ namespace cAlgo.API.Alert
                 Comment = comment
             };
 
+            // Adds alert object to alert CSV file
             Factory.WriteAlert(alert);
 
+            // Plays sound if sound alert is enabled
             if (Factory.IsSoundAlertEnabled)
             {
                 notifications.PlaySound(Factory.SoundFilePath);
             }
 
+            // Sends email if email alert is enabled
             if (Factory.IsEmailAlertEnabled)
             {
                 string emailSubject = string.Format("{0} {1} | Trade Alert", alert.TradeSide, alert.Symbol);
@@ -153,8 +137,10 @@ namespace cAlgo.API.Alert
                 notifications.SendEmail(Factory.FromEmail, Factory.ToEmail, emailSubject, emailBody);
             }
 
+            // Closes the alert window if its open
             Factory.CloseWindow();
 
+            // Shows back the alert window
             Factory.ShowWindow();
         }
 
