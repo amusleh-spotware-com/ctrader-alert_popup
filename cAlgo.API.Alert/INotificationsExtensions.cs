@@ -1,12 +1,5 @@
 ﻿using cAlgo.API.Internals;
-using CsvHelper;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Windows;
 
 namespace cAlgo.API.Alert
 {
@@ -20,7 +13,81 @@ namespace cAlgo.API.Alert
 
         #region Methods
 
-        public static void ShowPopup(
+        /// <summary>
+        /// Shows a pop window that contains a list of alerts, it uses the current symbol, time frame and server time
+        /// Use other overloads of this method if you want to have more control over inputs
+        /// </summary>
+        /// <param name="notifications">Algo Notifications object</param>
+        /// <param name="algo">The calling algo (indicator or cBot), use "this"</param>
+        /// <param name="tradeType">The alert trade type</param>
+        /// <param name="comment">Any extra detail about alert</param>
+        /// <param name="perBar">Only trigger alert if the bar changed?</param>
+        public static void ShowAlertPopup(
+            this INotifications notifications,
+            Algo algo,
+            TradeType tradeType,
+            string comment,
+            bool perBar = true)
+        {
+            ShowAlertPopup(notifications, algo, tradeType, algo.Symbol, algo.TimeFrame, algo.Server.Time, comment, perBar);
+        }
+
+        /// <summary>
+        /// Shows a pop window that contains a list of alerts, it uses the current symbol, and time frame
+        /// Use other overloads of this method if you want to have more control over inputs
+        /// </summary>
+        /// <param name="notifications">Algo Notifications object</param>
+        /// <param name="algo">The calling algo (indicator or cBot), use "this"</param>
+        /// <param name="tradeType">The alert trade type</param>
+        /// <param name="time">The alert time</param>
+        /// <param name="comment">Any extra detail about alert</param>
+        /// <param name="perBar">Only trigger alert if the bar changed?</param>
+        public static void ShowAlertPopup(
+            this INotifications notifications,
+            Algo algo,
+            TradeType tradeType,
+            DateTimeOffset time,
+            string comment,
+            bool perBar = true)
+        {
+            ShowAlertPopup(notifications, algo, tradeType, algo.Symbol, algo.TimeFrame, time, comment, perBar);
+        }
+
+        /// <summary>
+        /// Shows a pop window that contains a list of alerts, it uses the server time
+        /// Use other overloads of this method if you want to have more control over inputs
+        /// </summary>
+        /// <param name="notifications">Algo Notifications object</param>
+        /// <param name="algo">The calling algo (indicator or cBot), use "this"</param>
+        /// <param name="tradeType">The alert trade type</param>
+        /// <param name="symbol">The symbol you are triggering alert for</param>
+        /// <param name="timeFrame">Time frame of your indicator, or cBot</param>
+        /// <param name="comment">Any extra detail about alert</param>
+        /// <param name="perBar">Only trigger alert if the bar changed?</param>
+        public static void ShowAlertPopup(
+            this INotifications notifications,
+            Algo algo,
+            TradeType tradeType,
+            Symbol symbol,
+            TimeFrame timeFrame,
+            string comment,
+            bool perBar = true)
+        {
+            ShowAlertPopup(notifications, algo, tradeType, symbol, timeFrame, algo.Server.Time, comment, perBar);
+        }
+
+        /// <summary>
+        /// Shows a pop window that contains a list of alerts
+        /// </summary>
+        /// <param name="notifications">Algo Notifications object</param>
+        /// <param name="algo">The calling algo (indicator or cBot), use "this"</param>
+        /// <param name="tradeType">The alert trade type</param>
+        /// <param name="symbol">The symbol you are triggering alert for</param>
+        /// <param name="timeFrame">Time frame of your indicator, or cBot</param>
+        /// <param name="time">The alert time</param>
+        /// <param name="comment">Any extra detail about alert</param>
+        /// <param name="perBar">Only trigger alert if the bar changed?</param>
+        public static void ShowAlertPopup(
             this INotifications notifications,
             Algo algo,
             TradeType tradeType,
@@ -28,11 +95,11 @@ namespace cAlgo.API.Alert
             TimeFrame timeFrame,
             DateTimeOffset time,
             string comment,
-            TriggerType type = TriggerType.PerBar)
+            bool perBar = true)
         {
             Factory.Algo = algo;
 
-            if (type == TriggerType.PerBar)
+            if (perBar)
             {
                 int index = algo.MarketSeries.Close.Count - 1;
 
@@ -43,6 +110,8 @@ namespace cAlgo.API.Alert
                 else
                 {
                     lastTriggeredBar = index;
+
+                    ShowAlertPopup(notifications, algo, tradeType, symbol, timeFrame, time, comment);
                 }
             }
 
@@ -53,7 +122,14 @@ namespace cAlgo.API.Alert
 
             Registry.CreateKey("cTrader Alert");
 
-            Alert alert = new Alert() { TradeSide = tradeType.ToString(), Symbol = symbol.Code, TimeFrame = timeFrame.ToString(), Time = time, Comment = comment };
+            Alert alert = new Alert()
+            {
+                TradeSide = tradeType.ToString(),
+                Symbol = symbol.Code,
+                TimeFrame = timeFrame.ToString(),
+                Time = time,
+                Comment = comment
+            };
 
             Factory.WriteAlert(alert);
 
@@ -66,7 +142,13 @@ namespace cAlgo.API.Alert
             {
                 string emailSubject = string.Format("{0} {1} | Trade Alert", alert.TradeSide, alert.Symbol);
 
-                string emailBody = string.Format("An alert triggered at {0} to {1} {2} on {3} time frame with this comment: {4}", alert.Time, alert.TradeSide, alert.Symbol, alert.TimeFrame, alert.Comment);
+                string emailBody = string.Format(
+                    "An alert triggered at {0} to {1} {2} on {3} time frame with this comment: {4}",
+                    alert.Time,
+                    alert.TradeSide,
+                    alert.Symbol,
+                    alert.TimeFrame,
+                    alert.Comment);
 
                 notifications.SendEmail(Factory.FromEmail, Factory.ToEmail, emailSubject, emailBody);
             }

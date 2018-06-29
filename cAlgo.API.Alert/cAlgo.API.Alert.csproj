@@ -64,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Alert.cs" />
-    <Compile Include="Enums\TriggerType.cs" />
     <Compile Include="Models\AlertsModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Pages\SettingsPage.xaml.cs">
