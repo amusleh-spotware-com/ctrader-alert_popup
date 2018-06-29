@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows;
 
@@ -176,17 +177,15 @@ namespace cAlgo.API.Alert
 
         public static void LogException(Exception ex)
         {
-            _algo.Print("Exception: {0}", ex.Message);
-            _algo.Print("Source: {0}", ex.Source);
-            _algo.Print("StackTrace: {0}", ex.StackTrace);
-            _algo.Print("Source: {0}", ex.Source);
+            StringBuilder stringBuilder = new StringBuilder();
 
-            if (ex.InnerException != null)
-            {
-                _algo.Print("Source: {0}", ex.Source);
+            stringBuilder.AppendLine("Alert Library");
 
-                LogException(ex.InnerException);
-            }
+            string exceptionLog = GetExceptionLog(ex, stringBuilder);
+
+            Algo.Print(exceptionLog);
+
+            Algo.ChartObjects.DrawText("AlertLibraryException", exceptionLog, StaticPosition.Center, Colors.Red);
         }
 
         public static void WriteAlert(Alert alert)
@@ -303,6 +302,24 @@ namespace cAlgo.API.Alert
             Uri uri = new Uri(string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", name));
 
             return new ResourceDictionary() { Source = uri };
+        }
+
+        private static string GetExceptionLog(Exception ex, StringBuilder stringBuilder)
+        {
+            stringBuilder.AppendLine("Alert Library");
+            stringBuilder.AppendLine(string.Format("Exception: {0}", ex));
+            stringBuilder.AppendLine(string.Format("Message: {0}", ex.Message));
+            stringBuilder.AppendLine(string.Format("Source: {0}", ex.Source));
+            stringBuilder.AppendLine(string.Format("StackTrace: {0}", ex.StackTrace));
+
+            if (ex.InnerException != null)
+            {
+                stringBuilder.AppendLine("InnerException");
+
+                stringBuilder.AppendLine(GetExceptionLog(ex.InnerException, stringBuilder));
+            }
+
+            return stringBuilder.ToString();
         }
 
         #endregion Methods

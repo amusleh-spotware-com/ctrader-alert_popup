@@ -91,6 +91,7 @@ namespace cAlgo.API.Alert
             string comment,
             bool perBar = true)
         {
+            // Sets the factory algo
             Factory.Algo = algo;
 
             // If per bar is enabled and the bar doesn't changed or algo is indicator and current bar is not the last bar then return
