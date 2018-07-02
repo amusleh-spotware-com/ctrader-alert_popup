@@ -1,7 +1,7 @@
 ﻿using cAlgo.API.Internals;
 using System;
 
-namespace cAlgo.API.Alert
+namespace cAlgo.API.Alert.Core
 {
     public static class INotificationsExtensions
     {

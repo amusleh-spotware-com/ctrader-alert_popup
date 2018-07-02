@@ -3,12 +3,12 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace cAlgo.API.Alert.Pages
+namespace cAlgo.API.Alert.UI.Views
 {
     /// <summary>
-    /// Interaction logic for SettingsPage.xaml
+    /// Interaction logic for OptionsView.xaml
     /// </summary>
-    public partial class SettingsPage : Page
+    public partial class OptionsView : Page
     {
         #region Fields
 
@@ -18,7 +18,7 @@ namespace cAlgo.API.Alert.Pages
 
         #region Constructors
 
-        public SettingsPage()
+        public OptionsView()
         {
             Loaded += SettingsPage_Loaded;
             Unloaded += SettingsPage_Unloaded;

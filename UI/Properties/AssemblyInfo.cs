@@ -1,15 +1,16 @@
-﻿using System.Reflection;
-using System.Resources;
+﻿using System.Resources;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("cAlgo.API.Alert.Core")]
-[assembly: AssemblyDescription("A library for cTrader / cAlgo indicators and cBots")]
+[assembly: AssemblyTitle("cAlgo.API.Alert.UI")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AlgoDeveloper")]
-[assembly: AssemblyProduct("cAlgo.API.Alert.Core")]
+[assembly: AssemblyProduct("cAlgo.API.Alert.UI")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("67ad1d85-119e-4984-a642-ae502bc4af27")]
+[assembly: Guid("63c5a465-9969-4271-8b6c-e37296007ba8")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,6 +33,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: NeutralResourcesLanguage("en-US")]
+

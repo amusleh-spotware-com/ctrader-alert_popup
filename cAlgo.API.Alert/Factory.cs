@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 
-namespace cAlgo.API.Alert
+namespace cAlgo.API.Alert.Core
 {
     public static class Factory
     {

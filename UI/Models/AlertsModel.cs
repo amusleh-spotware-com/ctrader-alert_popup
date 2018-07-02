@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace cAlgo.API.Alert.Models
+namespace cAlgo.API.Alert.UI.Models
 {
     public class AlertsModel : INotifyPropertyChanged
     {

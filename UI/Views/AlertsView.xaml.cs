@@ -6,12 +6,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace cAlgo.API.Alert.Pages
+namespace cAlgo.API.Alert.UI.Views
 {
     /// <summary>
-    /// Interaction logic for AlertsPage.xaml
+    /// Interaction logic for AlertsView.xaml
     /// </summary>
-    public partial class AlertsPage : Page
+    public partial class AlertsView : Page
     {
         #region Fields
 
@@ -21,7 +21,7 @@ namespace cAlgo.API.Alert.Pages
 
         #region Constructors
 
-        public AlertsPage()
+        public AlertsView()
         {
             Loaded += AlertsPage_Loaded;
             Unloaded += AlertsPage_Unloaded;

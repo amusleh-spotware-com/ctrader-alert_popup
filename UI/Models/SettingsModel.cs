@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 
-namespace cAlgo.API.Alert.Models
+namespace cAlgo.API.Alert.UI.Models
 {
     public class SettingsModel : INotifyPropertyChanged
     {

@@ -6,17 +6,17 @@ using System.IO.Pipes;
 using System.Threading;
 using System.Windows;
 
-namespace cAlgo.API.Alert
+namespace cAlgo.API.Alert.Views
 {
-    public partial class MainWindow : MetroWindow, INotifyPropertyChanged
+    public partial class ShellView : MetroWindow, INotifyPropertyChanged
     {
         #region Constructor
 
-        public MainWindow()
+        public ShellView()
         {
             SendCloseWindowsMessage();
 
-            Application.ResourceAssembly = typeof(MainWindow).Assembly;
+            Application.ResourceAssembly = this.GetType().Assembly;
 
             Loaded += MetroWindow_Loaded;
             Closing += MetroWindow_Closing;

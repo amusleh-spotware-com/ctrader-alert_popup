@@ -1,5 +1,5 @@
 ﻿<Controls:MetroWindow
-    x:Class="cAlgo.API.Alert.MainWindow"
+    x:Class="cAlgo.API.Alert.UI.Views.ShellView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
