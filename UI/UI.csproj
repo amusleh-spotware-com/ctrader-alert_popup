@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="DelegateCommand.cs" />
     <Compile Include="Models\AlertModel.cs" />
     <Compile Include="Models\AlertsModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="ViewModels\AlertsViewModel.cs" />
     <Compile Include="ViewModels\OptionsViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewNames.cs" />
     <Compile Include="Views\AlertsView.xaml.cs">
       <DependentUpon>AlertsView.xaml</DependentUpon>
     </Compile>

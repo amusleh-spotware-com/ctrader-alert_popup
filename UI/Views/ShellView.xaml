@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconsPack="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:cAlgo.API.Alert.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Alerts - cTrader"
     Width="650"
@@ -23,7 +25,7 @@
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resource.xaml" />
+                <ResourceDictionary Source="../Resource.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
@@ -31,35 +33,17 @@
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands ShowLastSeparator="False">
             <Button
-                Name="SettingsButton"
-                Click="SettingsButton_Click"
+                Command="{Binding Path=NavigateCommand}"
+                CommandParameter="{x:Static local:ViewNames.OptionsView}"
                 ToolTip="Settings">
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle
-                        Width="20"
-                        Height="20"
-                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_settings}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </StackPanel>
+                <iconsPack:PackIconMaterial Kind="Settings" />
             </Button>
             <Button
-                Name="HomeButton"
-                Click="HomeButton_Click"
+                Command="{Binding Path=NavigateCommand}"
+                CommandParameter="{x:Static local:ViewNames.AlertsView}"
                 ToolTip="Home"
                 Visibility="Collapsed">
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle
-                        Width="20"
-                        Height="20"
-                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_home}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </StackPanel>
+                <iconsPack:PackIconMaterial Kind="Home" />
             </Button>
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
