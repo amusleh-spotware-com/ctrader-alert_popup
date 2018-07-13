@@ -11,7 +11,6 @@
     Width="650"
     Height="500"
     BorderThickness="0"
-    GlowBrush="{DynamicResource AccentColorBrush}"
     ResizeMode="CanResizeWithGrip"
     SaveWindowPosition="True"
     ShowIconOnTitleBar="False"

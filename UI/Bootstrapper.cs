@@ -22,8 +22,6 @@ namespace cAlgo.API.Alert.UI
             _accent = accent;
 
             _shellView = CreateView<Views.ShellView>(this);
-
-            Application.ResourceAssembly = _shellView.GetType().Assembly;
         }
 
         #endregion Constructors
@@ -32,7 +30,7 @@ namespace cAlgo.API.Alert.UI
 
         public void Run()
         {
-            _shellView.Show();
+            _shellView.ShowDialog();
         }
 
         public void Shutdown()

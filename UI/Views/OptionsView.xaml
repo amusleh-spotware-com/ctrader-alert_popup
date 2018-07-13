@@ -1,4 +1,4 @@
-﻿<Page
+﻿<UserControl
     x:Class="cAlgo.API.Alert.UI.Views.OptionsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,20 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:cAlgo.API.Alert.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Settings"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
-
-    <Page.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Resource.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Page.Resources>
-
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -59,7 +55,6 @@
                             Text="Theme" />
 
                         <ComboBox
-                            Name="ThemesComboBox"
                             Grid.Row="0"
                             Grid.Column="1"
                             MinWidth="150"
@@ -67,8 +62,7 @@
                             HorizontalAlignment="Left"
                             DisplayMemberPath="Name"
                             ItemsSource="{Binding Path=Themes}"
-                            SelectedItem="{Binding Path=CurrentTheme, Mode=TwoWay}"
-                            SelectionChanged="ThemeChanged" />
+                            SelectedItem="{Binding Path=CurrentTheme, Mode=TwoWay}" />
 
                         <TextBlock
                             Grid.Row="1"
@@ -78,7 +72,6 @@
                             Text="Accent" />
 
                         <ComboBox
-                            Name="AccentsComboBox"
                             Grid.Row="1"
                             Grid.Column="1"
                             MinWidth="150"
@@ -86,8 +79,7 @@
                             HorizontalAlignment="Left"
                             DisplayMemberPath="Name"
                             ItemsSource="{Binding Path=Accents}"
-                            SelectedItem="{Binding Path=CurrentAccent, Mode=TwoWay}"
-                            SelectionChanged="ThemeChanged" />
+                            SelectedItem="{Binding Path=CurrentAccent, Mode=TwoWay}" />
 
                         <TextBlock
                             Grid.Row="2"
@@ -117,7 +109,6 @@
                         </Grid.RowDefinitions>
 
                         <Controls:ToggleSwitch
-                            Name="SoundAlertToggleSwitch"
                             Grid.Row="0"
                             Margin="5"
                             Header="Enable Sound Alert"
@@ -130,18 +121,15 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBox
-                                Name="SoundFilePathTextBox"
                                 Grid.Column="0"
                                 Margin="5"
                                 Text="{Binding Path=SoundFilePath, Mode=TwoWay}" />
 
                             <Button
-                                Name="SoundFileBrowseButton"
                                 Grid.Column="1"
                                 MinWidth="100"
                                 Margin="5"
                                 Controls:ButtonHelper.PreserveTextCase="True"
-                                Click="SoundFileBrowseButton_Click"
                                 Content="Browse"
                                 Style="{StaticResource SquareButtonStyle}" />
                         </Grid>
@@ -156,7 +144,6 @@
                         </Grid.RowDefinitions>
 
                         <Controls:ToggleSwitch
-                            Name="EmailAlertToggleSwitch"
                             Grid.Row="0"
                             Margin="5"
                             Header="Enable Email Alert"
@@ -181,7 +168,6 @@
                                 Text="From" />
 
                             <TextBox
-                                Name="FromEmailTextBox"
                                 Grid.Row="0"
                                 Grid.Column="1"
                                 Margin="5"
@@ -193,8 +179,8 @@
                                 Margin="5"
                                 VerticalAlignment="Center"
                                 Text="To" />
+
                             <TextBox
-                                Name="ToEmailTextBox"
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 Margin="5"
@@ -223,7 +209,6 @@
                             Text="Format" />
 
                         <ComboBox
-                            Name="TimeFormatComboBox"
                             Grid.Row="0"
                             Grid.Column="1"
                             MinWidth="150"
@@ -240,7 +225,6 @@
                             Text="Time Zone" />
 
                         <ComboBox
-                            Name="TimeZoneComboBox"
                             Grid.Row="1"
                             Grid.Column="1"
                             MinWidth="150"
@@ -272,4 +256,4 @@
             </StatusBarItem>
         </StatusBar>
     </Grid>
-</Page>
+</UserControl>

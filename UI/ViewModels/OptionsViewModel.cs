@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
-    internal class OptionsViewModel
+    public class OptionsViewModel
     {
     }
 }
