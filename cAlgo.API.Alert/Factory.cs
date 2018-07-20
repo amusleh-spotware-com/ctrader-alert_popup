@@ -235,6 +235,7 @@ namespace cAlgo.API.Alert.Core
                         CsvReader csvReader = new CsvReader(reader);
 
                         csvReader.Configuration.HasHeaderRecord = false;
+                        csvReader.Configuration.CultureInfo = CultureInfo.InvariantCulture;
 
                         alerts = csvReader.GetRecords<Alert>().ToList();
                     }
