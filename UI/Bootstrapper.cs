@@ -21,7 +21,7 @@ namespace cAlgo.API.Alert.UI
 
         public Bootstrapper()
         {
-            _shellView = CreateView<Views.ShellView>(this);
+            _shellView = CreateView<Views.ShellView, ViewModels.ShellViewModel>(this);
 
             _navigationJournal = new List<string>();
         }
@@ -82,11 +82,11 @@ namespace cAlgo.API.Alert.UI
             switch (viewName)
             {
                 case ViewNames.AlertsView:
-                    _shellView.Content = CreateView<Views.AlertsView>(this);
+                    _shellView.Content = CreateView<Views.AlertsView, ViewModels.AlertsViewModel>(this);
                     break;
 
                 case ViewNames.OptionsView:
-                    _shellView.Content = CreateView<Views.OptionsView>(this);
+                    _shellView.Content = CreateView<Views.OptionsView, ViewModels.OptionsViewModel>(this);
                     break;
             }
         }
@@ -103,11 +103,12 @@ namespace cAlgo.API.Alert.UI
             return (T)Activator.CreateInstance(typeof(T), parameters);
         }
 
-        private T CreateView<T>(params object[] parameters) where T : class
+        private TView CreateView<TView, TViewModel>(params object[] parameters) where TView : class
+            where TViewModel : class
         {
-            T view = (T)Activator.CreateInstance(typeof(T));
+            TView view = (TView)Activator.CreateInstance(typeof(TView));
 
-            (view as FrameworkElement).DataContext = GetViewModel<ViewModels.ShellViewModel>(parameters);
+            (view as FrameworkElement).DataContext = GetViewModel<TViewModel>(parameters);
 
             (view as FrameworkElement).Resources.MergedDictionaries.Add(GetMetroResource("Blue"));
             (view as FrameworkElement).Resources.MergedDictionaries.Add(GetMetroResource("BaseDark"));

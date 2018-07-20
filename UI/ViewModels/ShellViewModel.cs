@@ -60,10 +60,6 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         #endregion Properties
 
-        #region Events
-
-        #endregion Events
-
         #region Methods
 
         private void Loaded()
