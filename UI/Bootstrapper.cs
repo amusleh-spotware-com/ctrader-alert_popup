@@ -7,24 +7,30 @@ namespace cAlgo.API.Alert.UI
     {
         #region Fields
 
-        private readonly string _theme, _accent;
-
         private readonly Views.ShellView _shellView;
 
         #endregion Fields
 
         #region Constructors
 
-        public Bootstrapper(string theme, string accent)
+        public Bootstrapper()
         {
-            _theme = theme;
-
-            _accent = accent;
-
             _shellView = CreateView<Views.ShellView>(this);
         }
 
         #endregion Constructors
+
+        #region Properties
+
+        public Window ShellView
+        {
+            get
+            {
+                return _shellView;
+            }
+        }
+
+        #endregion Properties
 
         #region Methods
 
@@ -70,8 +76,8 @@ namespace cAlgo.API.Alert.UI
 
             (view as FrameworkElement).DataContext = GetViewModel<ViewModels.ShellViewModel>(parameters);
 
-            (view as FrameworkElement).Resources.MergedDictionaries.Add(GetMetroResource(_theme));
-            (view as FrameworkElement).Resources.MergedDictionaries.Add(GetMetroResource(_accent));
+            (view as FrameworkElement).Resources.MergedDictionaries.Add(GetMetroResource("Blue"));
+            (view as FrameworkElement).Resources.MergedDictionaries.Add(GetMetroResource("BaseDark"));
 
             return view;
         }

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using cAlgo.API.Alert.UI;
+﻿using cAlgo.API.Alert.UI;
+using System;
 using System.Globalization;
+using System.Threading;
 
 namespace cAlgo.API.Alert.Tester
 {
@@ -16,7 +13,7 @@ namespace cAlgo.API.Alert.Tester
             {
                 try
                 {
-                    Bootstrapper bootstrapper = new Bootstrapper("baseLight", "Blue");
+                    Bootstrapper bootstrapper = new Bootstrapper();
 
                     bootstrapper.Run();
                 }
