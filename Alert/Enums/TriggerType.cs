@@ -1,4 +1,4 @@
-﻿namespace cAlgo.API.Alert
+﻿namespace Alert
 {
     public enum TriggerType
     {

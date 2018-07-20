@@ -1,10 +1,10 @@
 ﻿<Page
-    x:Class="cAlgo.API.Alert.Pages.AlertsPage"
+    x:Class="Alert.Pages.AlertsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:cAlgo.API.Alert"
+    xmlns:local="clr-namespace:Alert"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Alerts"
     d:DesignHeight="300"
@@ -14,7 +14,7 @@
     <Page.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/cAlgo.API.Alert;component/Resource.xaml" />
+                <ResourceDictionary Source="/Alert;component/Resource.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

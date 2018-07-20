@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace cAlgo.API.Alert.Pages
+namespace Alert.Pages
 {
     /// <summary>
     /// Interaction logic for AlertsPage.xaml
