@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace cAlgo.API.Alert.UI
 {
@@ -9,6 +11,10 @@ namespace cAlgo.API.Alert.UI
 
         private readonly Views.ShellView _shellView;
 
+        private string _currentView;
+
+        private readonly List<string> _navigationJournal;
+
         #endregion Fields
 
         #region Constructors
@@ -16,6 +22,8 @@ namespace cAlgo.API.Alert.UI
         public Bootstrapper()
         {
             _shellView = CreateView<Views.ShellView>(this);
+
+            _navigationJournal = new List<string>();
         }
 
         #endregion Constructors
@@ -27,6 +35,22 @@ namespace cAlgo.API.Alert.UI
             get
             {
                 return _shellView;
+            }
+        }
+
+        public string CurrentView
+        {
+            get
+            {
+                return _currentView;
+            }
+        }
+
+        public List<string> NavigationJournal
+        {
+            get
+            {
+                return _navigationJournal;
             }
         }
 
@@ -46,6 +70,15 @@ namespace cAlgo.API.Alert.UI
 
         public void Navigate(string viewName)
         {
+            if (viewName.Equals(_currentView, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return;
+            }
+
+            _currentView = viewName;
+
+            _navigationJournal.Add(_currentView);
+
             switch (viewName)
             {
                 case ViewNames.AlertsView:

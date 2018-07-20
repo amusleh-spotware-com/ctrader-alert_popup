@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:iconsPack="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:cAlgo.API.Alert.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -21,6 +22,15 @@
     WindowTransitionsEnabled="False"
     mc:Ignorable="d">
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=LoadedCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Unloaded">
+            <i:InvokeCommandAction Command="{Binding Path=UnloadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -29,11 +39,26 @@
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
 
+    <Controls:MetroWindow.LeftWindowCommands>
+        <Controls:WindowCommands ShowSeparators="False">
+            <Button
+                Command="{Binding Path=GoBackCommand}"
+                ToolTip="Go Back"
+                ToolTipService.ShowOnDisabled="True">
+                <iconsPack:PackIconMaterial
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Kind="ArrowLeft" />
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.LeftWindowCommands>
+
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands ShowLastSeparator="False">
             <Button
                 Command="{Binding Path=NavigateCommand}"
                 CommandParameter="{x:Static local:ViewNames.OptionsView}"
+                IsEnabled="{Binding Path=IsOptionsButtonEnabled}"
                 ToolTip="Settings">
                 <iconsPack:PackIconMaterial Kind="Settings" />
             </Button>
