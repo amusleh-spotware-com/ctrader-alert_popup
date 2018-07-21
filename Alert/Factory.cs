@@ -259,6 +259,7 @@ namespace Alert
                         CsvWriter csvWriter = new CsvWriter(writer);
 
                         csvWriter.Configuration.HasHeaderRecord = false;
+                        csvWriter.Configuration.CultureInfo = CultureInfo.InvariantCulture;
 
                         csvWriter.WriteRecords(alerts);
                     }
