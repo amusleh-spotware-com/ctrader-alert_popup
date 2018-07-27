@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using Prism.Mvvm;
 using Prism.Commands;
+using MahApps.Metro;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {

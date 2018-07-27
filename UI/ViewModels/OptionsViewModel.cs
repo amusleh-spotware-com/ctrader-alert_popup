@@ -7,15 +7,15 @@ namespace cAlgo.API.Alert.UI.ViewModels
     {
         #region Fields
 
-        private Bootstrapper _bootstrapper;
+        private Models.OptionsModel _model;
 
         #endregion Fields
 
         #region Constructor
 
-        public OptionsViewModel(Bootstrapper bootstrapper)
+        public OptionsViewModel(Models.OptionsModel model)
         {
-            _bootstrapper = bootstrapper;
+            _model = model;
 
             LoadedCommand = new DelegateCommand(Loaded);
 
@@ -29,6 +29,14 @@ namespace cAlgo.API.Alert.UI.ViewModels
         public DelegateCommand LoadedCommand { get; set; }
 
         public DelegateCommand UnloadedCommand { get; set; }
+
+        public Models.OptionsModel Model
+        {
+            get
+            {
+                return _model;
+            }
+        }
 
         #endregion Properties
 

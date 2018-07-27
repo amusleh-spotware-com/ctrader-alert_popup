@@ -15,6 +15,8 @@ namespace cAlgo.API.Alert.Tester
                 {
                     Bootstrapper bootstrapper = new Bootstrapper();
 
+                    bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "How we can trade with this", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
+
                     bootstrapper.Run();
                 }
                 catch (Exception ex)

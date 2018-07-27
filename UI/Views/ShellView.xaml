@@ -12,6 +12,7 @@
     Width="650"
     Height="500"
     BorderThickness="0"
+    GlowBrush="Black"
     ResizeMode="CanResizeWithGrip"
     SaveWindowPosition="True"
     ShowIconOnTitleBar="False"
@@ -34,7 +35,7 @@
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Resource.xaml" />
+                <ResourceDictionary Source="../Resources/SharedResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>

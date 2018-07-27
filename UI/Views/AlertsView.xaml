@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:iconsPack="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:cAlgo.API.Alert.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,10 +14,20 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Resource.xaml" />
+                <ResourceDictionary Source="../Resources/AlertsViewResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=LoadedCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Unloaded">
+            <i:InvokeCommandAction Command="{Binding Path=UnloadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -27,101 +38,42 @@
         <DataGrid
             Grid.Row="1"
             ItemsSource="{Binding Path=Alerts}"
-            SelectedItem="{Binding Path=SelectedAlert, Mode=TwoWay}"
             Style="{StaticResource ReadOnlyDataGridStyle}">
-            <DataGrid.Resources>
-                <DataTemplate x:Key="HeaderTemplate">
-                    <StackPanel
-                        Margin="3"
-                        HorizontalAlignment="Center"
-                        Orientation="Horizontal">
-                        <Button Command="{Binding Path=DataContext.RemoveSelectedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" ToolTip="Remove Selected">
-                            <iconsPack:PackIconMaterial Kind="Delete" />
-                        </Button>
-                    </StackPanel>
-                </DataTemplate>
-                <DataTemplate x:Key="CellTemplate">
-                    <StackPanel
-                        Margin="3"
-                        HorizontalAlignment="Center"
-                        Orientation="Horizontal">
-                        <Button
-                            Command="{Binding Path=DataContext.RemoveCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                            CommandParameter="{Binding}"
-                            ToolTip="Remove Selected">
-                            <iconsPack:PackIconMaterial Kind="Delete" />
-                        </Button>
-                    </StackPanel>
-                </DataTemplate>
-                <DataTemplate x:Key="TwelveHourTimeTemplate">
-                    <TextBlock Text="{Binding Path=Time, StringFormat={}{0:h:mm tt}}" />
-                </DataTemplate>
-                <DataTemplate x:Key="TwentyFourHourTimeTemplate">
-                    <TextBlock Text="{Binding Path=Time, StringFormat={}{0:H:mm}}" />
-                </DataTemplate>
-                <DataTemplate x:Key="TimeTemplate">
-                    <ContentControl Content="{Binding}">
-                        <ContentControl.Style>
-                            <Style TargetType="ContentControl">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=DataContext.CurrentTimeFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Value="12 Hour">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource TwelveHourTimeTemplate}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Path=DataContext.CurrentTimeFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Value="24 Hour">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource TwentyFourHourTimeTemplate}" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ContentControl.Style>
-                    </ContentControl>
-                </DataTemplate>
-            </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn
+                <DataGridTemplateColumn
                     Width="Auto"
-                    Binding="{Binding Path=TradeSide}"
+                    CellTemplate="{StaticResource TradeSideTemplate}"
                     Header="Trade Side" />
-                <DataGridTextColumn
+                <DataGridTemplateColumn
                     Width="Auto"
-                    Binding="{Binding Path=Symbol}"
+                    CellTemplate="{StaticResource SymbolTemplate}"
                     Header="Symbol" />
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding Path=TimeFrame}"
-                    Header="Time Frame" />
                 <DataGridTemplateColumn
                     Width="Auto"
                     CellTemplate="{StaticResource TimeTemplate}"
                     Header="Time" />
-                <DataGridTextColumn
+                <DataGridTemplateColumn
+                    Width="Auto"
+                    CellTemplate="{StaticResource TimeFrameTemplate}"
+                    Header="Time Frame" />
+                <DataGridTemplateColumn
+                    Width="Auto"
+                    CellTemplate="{StaticResource TriggeredByTemplate}"
+                    Header="Triggered By" />
+                <DataGridTemplateColumn
                     Width="*"
-                    Binding="{Binding Path=Comment}"
+                    CellTemplate="{StaticResource CommentTemplate}"
                     Header="Comment" />
                 <DataGridTemplateColumn
                     Width="Auto"
                     CellTemplate="{StaticResource CellTemplate}"
                     HeaderTemplate="{StaticResource HeaderTemplate}" />
             </DataGrid.Columns>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding Path=SelectionChangedCommand}" CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </DataGrid>
-
-        <StatusBar Grid.Row="2" VerticalAlignment="Bottom">
-            <StatusBar.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="20" />
-                        </Grid.ColumnDefinitions>
-                    </Grid>
-                </ItemsPanelTemplate>
-            </StatusBar.ItemsPanel>
-
-            <StatusBarItem Grid.Column="0">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock HorizontalAlignment="Left" Text="Alerts #: " />
-                    <TextBlock HorizontalAlignment="Left" Text="{Binding Path=Alerts.Count}" />
-                </StackPanel>
-            </StatusBarItem>
-        </StatusBar>
     </Grid>
 </UserControl>
