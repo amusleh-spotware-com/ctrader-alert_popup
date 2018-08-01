@@ -190,7 +190,14 @@ namespace Alert
 
             Registry.CreateKey("cTrader Alert");
 
-            Alert alert = new Alert() { TradeSide = tradeType.ToString(), Symbol = symbol.Code, TimeFrame = timeFrame.ToString(), Time = time, Comment = comment };
+            Alert alert = new Alert()
+            {
+                TradeSide = tradeType.ToString(),
+                Symbol = symbol.Code,
+                TimeFrame = timeFrame.ToString(),
+                Time = time.ToOffset(CurrentTimeZone.BaseUtcOffset),
+                Comment = comment
+            };
 
             WriteAlert(alert);
 
