@@ -107,8 +107,6 @@ namespace Alert.Pages
                     Factory.WriteAlerts(alerts.ToList());
                 }
 
-                //alerts.ForEach(alert => alert.Time = alert.Time.ToOffset(Factory.CurrentTimeZone.BaseUtcOffset));
-
                 alertsModel.Alerts = new ObservableCollection<Alert>(alerts);
                 alertsModel.SelectedAlert = alertsModel.Alerts.LastOrDefault();
 

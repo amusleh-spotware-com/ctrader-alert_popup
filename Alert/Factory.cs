@@ -199,8 +199,6 @@ namespace Alert
                 Comment = comment
             };
 
-            WriteAlert(alert);
-
             if (IsSoundAlertEnabled)
             {
                 PlaySound(SoundFilePath);
@@ -214,6 +212,8 @@ namespace Alert
 
                 SendEmail(FromEmail, ToEmail, emailSubject, emailBody);
             }
+
+            WriteAlert(alert);
 
             CloseWindow();
 
@@ -252,7 +252,10 @@ namespace Alert
 
         public static void WriteAlert(Alert alert)
         {
-            WriteAlerts(new List<Alert>() { alert });
+            if (alert != null)
+            {
+                WriteAlerts(new List<Alert>() { alert });
+            }
         }
 
         public static void WriteAlerts(IEnumerable<Alert> alerts, FileMode mode = FileMode.Append)
