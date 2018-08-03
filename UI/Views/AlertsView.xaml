@@ -28,52 +28,44 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <DataGrid
-            Grid.Row="1"
-            ItemsSource="{Binding Path=Alerts}"
-            Style="{StaticResource ReadOnlyDataGridStyle}">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn
-                    Width="Auto"
-                    CellTemplate="{StaticResource TradeSideTemplate}"
-                    Header="Trade Side" />
-                <DataGridTemplateColumn
-                    Width="Auto"
-                    CellTemplate="{StaticResource SymbolTemplate}"
-                    Header="Symbol" />
-                <DataGridTemplateColumn
-                    Width="Auto"
-                    CellTemplate="{StaticResource TimeTemplate}"
-                    Header="Time" />
-                <DataGridTemplateColumn
-                    Width="Auto"
-                    CellTemplate="{StaticResource TimeFrameTemplate}"
-                    Header="Time Frame" />
-                <DataGridTemplateColumn
-                    Width="Auto"
-                    CellTemplate="{StaticResource TriggeredByTemplate}"
-                    Header="Triggered By" />
-                <DataGridTemplateColumn
-                    Width="*"
-                    CellTemplate="{StaticResource CommentTemplate}"
-                    Header="Comment" />
-                <DataGridTemplateColumn
-                    Width="Auto"
-                    CellTemplate="{StaticResource CellTemplate}"
-                    HeaderTemplate="{StaticResource HeaderTemplate}" />
-            </DataGrid.Columns>
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectionChanged">
-                    <i:InvokeCommandAction Command="{Binding Path=SelectionChangedCommand}" CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </DataGrid>
-    </Grid>
+    <DataGrid
+        Grid.Row="1"
+        ItemsSource="{Binding Path=Alerts}"
+        Style="{StaticResource ReadOnlyDataGridStyle}">
+        <DataGrid.Columns>
+            <DataGridTemplateColumn
+                Width="Auto"
+                CellTemplate="{StaticResource TradeSideTemplate}"
+                Header="Trade Side" />
+            <DataGridTemplateColumn
+                Width="Auto"
+                CellTemplate="{StaticResource SymbolTemplate}"
+                Header="Symbol" />
+            <DataGridTemplateColumn
+                Width="Auto"
+                CellTemplate="{StaticResource TimeTemplate}"
+                Header="Time" />
+            <DataGridTemplateColumn
+                Width="Auto"
+                CellTemplate="{StaticResource TimeFrameTemplate}"
+                Header="Time Frame" />
+            <DataGridTemplateColumn
+                Width="Auto"
+                CellTemplate="{StaticResource TriggeredByTemplate}"
+                Header="Triggered By" />
+            <DataGridTemplateColumn
+                Width="*"
+                CellTemplate="{StaticResource CommentTemplate}"
+                Header="Comment" />
+            <DataGridTemplateColumn
+                Width="Auto"
+                CellTemplate="{StaticResource CellTemplate}"
+                HeaderTemplate="{StaticResource HeaderTemplate}" />
+        </DataGrid.Columns>
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="SelectionChanged">
+                <i:InvokeCommandAction Command="{Binding Path=SelectionChangedCommand}" CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+    </DataGrid>
 </UserControl>

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Windows;
+﻿using MahApps.Metro;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Media;
-using MahApps.Metro;
 
 namespace cAlgo.API.Alert.UI
 {
@@ -20,7 +20,7 @@ namespace cAlgo.API.Alert.UI
 
         private readonly ObservableCollection<Models.AlertModel> _alerts;
 
-        private readonly Models.OptionsModel _options;
+        private Models.OptionsModel _options;
 
         #endregion Fields
 
@@ -51,22 +51,6 @@ namespace cAlgo.API.Alert.UI
             _navigationJournal = new List<string>();
 
             _alerts = new ObservableCollection<Models.AlertModel>();
-
-            _options = new Models.OptionsModel
-            {
-                TimeFormat = Enums.TimeFormat.TwentyFourHour,
-                TimeFrameColor = Brushes.DarkMagenta,
-                TimeColor = Brushes.DimGray,
-                TimeZone = TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(tz => tz.BaseUtcOffset.Equals(new TimeSpan(0, 0, 0))),
-                ThemeBase = ThemeManager.AppThemes.FirstOrDefault(
-                    theme => theme.Name.Equals("Light", StringComparison.InvariantCultureIgnoreCase)),
-                ThemeAccent = ThemeManager.Accents.FirstOrDefault(
-                    accent => accent.Name.Equals("Blue", StringComparison.InvariantCultureIgnoreCase)),
-                BuySideColor = Brushes.Green,
-                SellSideColor = Brushes.Red,
-                SymbolColor = Brushes.DarkGoldenrod,
-                TriggeredByColor = Brushes.DeepPink,
-            };
 
             OptionsChangedEvent += Bootstrapper_OptionsChangedEvent;
         }
@@ -120,9 +104,18 @@ namespace cAlgo.API.Alert.UI
 
         #region Methods
 
+        public void Run(Models.OptionsModel options)
+        {
+            _options = options;
+
+            _shellView.ShowDialog();
+        }
+
         public void Run()
         {
-            _shellView.ShowDialog();
+            Models.OptionsModel options = ViewModels.OptionsBaseViewModel.GetDefaultOptions();
+
+            Run(options);
         }
 
         public void Shutdown()
@@ -196,7 +189,7 @@ namespace cAlgo.API.Alert.UI
 
         private void Bootstrapper_OptionsChangedEvent(Models.OptionsModel options)
         {
-            ThemeManager.ChangeAppStyle(SharedResources, options.ThemeAccent, options.ThemeBase);
+            ThemeManager.ChangeAppStyle(SharedResources, options.General.ThemeAccent.Accent, options.General.ThemeBase.Base);
         }
 
         #endregion Methods

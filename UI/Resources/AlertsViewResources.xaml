@@ -9,24 +9,6 @@
         <ResourceDictionary Source="SharedResources.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style
-        x:Key="CustomizedAccentedSquareButtonStyle"
-        BasedOn="{StaticResource AccentedSquareButtonStyle}"
-        TargetType="Button">
-        <Setter Property="Controls:ButtonHelper.PreserveTextCase" Value="True" />
-        <Setter Property="MinWidth" Value="80" />
-        <Setter Property="Margin" Value="5" />
-    </Style>
-
-    <Style
-        x:Key="CustomizedSquareButtonStyle"
-        BasedOn="{StaticResource SquareButtonStyle}"
-        TargetType="Button">
-        <Setter Property="Controls:ButtonHelper.PreserveTextCase" Value="True" />
-        <Setter Property="MinWidth" Value="80" />
-        <Setter Property="Margin" Value="5" />
-    </Style>
-
     <Style x:Key="BoldCenteredTextBlock" TargetType="TextBlock">
         <Setter Property="Margin" Value="3" />
         <Setter Property="HorizontalAlignment" Value="Center" />
@@ -82,13 +64,13 @@
     </DataTemplate>
 
     <DataTemplate x:Key="TwelveHourTimeTemplate">
-        <Border Background="{Binding Path=DataContext.Options.TimeColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.TimeColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
             <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Time, StringFormat={}{0:MM/dd/yyyy hh:mm tt}}" />
         </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="TwentyFourHourTimeTemplate">
-        <Border Background="{Binding Path=DataContext.Options.TimeColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.TimeColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
             <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Time, StringFormat={}{0:MM/dd/yyyy HH:mm}}" />
         </Border>
     </DataTemplate>
@@ -98,10 +80,10 @@
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=DataContext.Options.TimeFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Converter={StaticResource EnumToInt}}" Value="0">
+                        <DataTrigger Binding="{Binding Path=DataContext.Options.Alerts.TimeFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Converter={StaticResource EnumToInt}}" Value="0">
                             <Setter Property="ContentTemplate" Value="{StaticResource TwelveHourTimeTemplate}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=DataContext.Options.TimeFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Converter={StaticResource EnumToInt}}" Value="1">
+                        <DataTrigger Binding="{Binding Path=DataContext.Options.Alerts.TimeFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Converter={StaticResource EnumToInt}}" Value="1">
                             <Setter Property="ContentTemplate" Value="{StaticResource TwentyFourHourTimeTemplate}" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -111,13 +93,13 @@
     </DataTemplate>
 
     <DataTemplate x:Key="SellSideTemplate">
-        <Border Background="{Binding Path=DataContext.Options.SellSideColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.SellSideColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
             <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=TradeSide}" />
         </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="BuySideTemplate">
-        <Border Background="{Binding Path=DataContext.Options.BuySideColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.BuySideColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
             <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=TradeSide}" />
         </Border>
     </DataTemplate>
@@ -140,19 +122,19 @@
     </DataTemplate>
 
     <DataTemplate x:Key="SymbolTemplate">
-        <Border Background="{Binding Path=DataContext.Options.SymbolColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.SymbolColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
             <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Symbol}" />
         </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="TimeFrameTemplate">
-        <Border Background="{Binding Path=DataContext.Options.TimeFrameColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.TimeFrameColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
             <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=TimeFrame}" />
         </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="TriggeredByTemplate">
-        <Border Background="{Binding Path=DataContext.Options.TriggeredByColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.TriggeredByColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
             <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=TriggeredBy}" />
         </Border>
     </DataTemplate>
@@ -160,7 +142,11 @@
     <DataTemplate x:Key="CommentTemplate">
         <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Hidden">
             <FlowDocument>
-                <Paragraph>
+                <Paragraph
+                    FontFamily="{Binding Path=DataContext.Options.Alerts.CommentFontModel.Family, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                    FontSize="{Binding Path=DataContext.Options.Alerts.CommentFontModel.Size, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                    FontStyle="{Binding Path=DataContext.Options.Alerts.CommentFontModel.StyleModel.Style, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                    FontWeight="{Binding Path=DataContext.Options.Alerts.CommentFontModel.WeightModel.Weight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
                     <Run Text="{Binding Path=Comment}" />
                 </Paragraph>
             </FlowDocument>

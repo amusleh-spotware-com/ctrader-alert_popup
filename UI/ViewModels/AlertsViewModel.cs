@@ -3,6 +3,9 @@ using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.Collections;
 using System.Linq;
+using System.Windows.Media;
+using System.Windows;
+using System.Collections.Generic;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
@@ -90,6 +93,16 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private void Loaded()
         {
+            if (Alerts.Count > _options.Alerts.MaxAlertNumber)
+            {
+                Alerts.OrderByDescending(alert => alert.Time).Skip(_options.Alerts.MaxAlertNumber).ToList().ForEach(alert => Remove(alert));
+            }
+
+            // Changing the alerts time zone
+            Alerts.Where(alert => !alert.Time.Offset.Equals(_options.Alerts.TimeZone.BaseUtcOffset)).ToList().ForEach(alert =>
+            {
+                alert.Time = alert.Time.ToOffset(_options.Alerts.TimeZone.BaseUtcOffset);
+            });
         }
 
         private void Unloaded()

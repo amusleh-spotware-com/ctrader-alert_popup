@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Prism.Mvvm;
-using MahApps.Metro;
-using System.Windows.Media;
+﻿using Prism.Mvvm;
 
 namespace cAlgo.API.Alert.UI.Models
 {
@@ -13,213 +6,73 @@ namespace cAlgo.API.Alert.UI.Models
     {
         #region Fields
 
-        private Enums.TimeFormat _timeFormat;
-
-        private TimeZoneInfo _timeZone;
-
-        private bool _isSoundAlertEnabled, _isEmailAlertEnabled, _isTelegramAlertEnabled;
-
-        private string _senderEmail, _recipientEmail, _soundFilePath;
-
-        private AppTheme _themeBase;
-
-        private Accent _themeAccent;
-
-        private Brush _buySideColor, _sellSideColor, _symbolColor, _timeColor, _triggeredByColor, _timeFrameColor;
+        private GeneralOptionsModel _general;
+        private AlertOptionsModel _alerts;
+        private SoundOptionsModel _sound;
+        private EmailOptionsModel _email;
+        private TelegramOptionsModel _telegram;
 
         #endregion Fields
 
         #region Properties
 
-        public Enums.TimeFormat TimeFormat
+        public GeneralOptionsModel General
         {
             get
             {
-                return _timeFormat;
+                return _general;
             }
             set
             {
-                SetProperty(ref _timeFormat, value);
+                SetProperty(ref _general, value);
             }
         }
 
-        public TimeZoneInfo TimeZone
+        public AlertOptionsModel Alerts
         {
             get
             {
-                return _timeZone;
+                return _alerts;
             }
             set
             {
-                SetProperty(ref _timeZone, value);
+                SetProperty(ref _alerts, value);
             }
         }
 
-        public bool IsSoundAlertEnabled
+        public SoundOptionsModel Sound
         {
             get
             {
-                return _isSoundAlertEnabled;
+                return _sound;
             }
             set
             {
-                SetProperty(ref _isSoundAlertEnabled, value);
+                SetProperty(ref _sound, value);
             }
         }
 
-        public bool IsEmailAlertEnabled
+        public EmailOptionsModel Email
         {
             get
             {
-                return _isEmailAlertEnabled;
+                return _email;
             }
             set
             {
-                SetProperty(ref _isEmailAlertEnabled, value);
+                SetProperty(ref _email, value);
             }
         }
 
-        public bool IsTelegramAlertEnabled
+        public TelegramOptionsModel Telegram
         {
             get
             {
-                return _isTelegramAlertEnabled;
+                return _telegram;
             }
             set
             {
-                SetProperty(ref _isTelegramAlertEnabled, value);
-            }
-        }
-
-        public string SenderEmail
-        {
-            get
-            {
-                return _senderEmail;
-            }
-            set
-            {
-                SetProperty(ref _senderEmail, value);
-            }
-        }
-
-        public string RecipientEmail
-        {
-            get
-            {
-                return _recipientEmail;
-            }
-            set
-            {
-                SetProperty(ref _recipientEmail, value);
-            }
-        }
-
-        public string SoundFilePath
-        {
-            get
-            {
-                return _soundFilePath;
-            }
-            set
-            {
-                SetProperty(ref _soundFilePath, value);
-            }
-        }
-
-        public AppTheme ThemeBase
-        {
-            get
-            {
-                return _themeBase;
-            }
-            set
-            {
-                SetProperty(ref _themeBase, value);
-            }
-        }
-
-        public Accent ThemeAccent
-        {
-            get
-            {
-                return _themeAccent;
-            }
-            set
-            {
-                SetProperty(ref _themeAccent, value);
-            }
-        }
-
-        public Brush BuySideColor
-        {
-            get
-            {
-                return _buySideColor;
-            }
-            set
-            {
-                SetProperty(ref _buySideColor, value);
-            }
-        }
-
-        public Brush SellSideColor
-        {
-            get
-            {
-                return _sellSideColor;
-            }
-            set
-            {
-                SetProperty(ref _sellSideColor, value);
-            }
-        }
-
-        public Brush SymbolColor
-        {
-            get
-            {
-                return _symbolColor;
-            }
-            set
-            {
-                SetProperty(ref _symbolColor, value);
-            }
-        }
-
-        public Brush TimeColor
-        {
-            get
-            {
-                return _timeColor;
-            }
-            set
-            {
-                SetProperty(ref _timeColor, value);
-            }
-        }
-
-        public Brush TriggeredByColor
-        {
-            get
-            {
-                return _triggeredByColor;
-            }
-            set
-            {
-                SetProperty(ref _triggeredByColor, value);
-            }
-        }
-
-        public Brush TimeFrameColor
-        {
-            get
-            {
-                return _timeFrameColor;
-            }
-            set
-            {
-                SetProperty(ref _timeFrameColor, value);
+                SetProperty(ref _telegram, value);
             }
         }
 
