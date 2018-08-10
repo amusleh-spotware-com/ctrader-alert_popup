@@ -362,7 +362,7 @@
                                 </controls:MetroHeader>
                                 <controls:MetroHeader Header="Body">
                                     <TextBox
-                                        Height="150"
+                                        Height="100"
                                         Text="{Binding Path=Model.Email.Template.Body, Mode=TwoWay}"
                                         TextWrapping="Wrap">
                                         <i:Interaction.Triggers>
@@ -408,6 +408,85 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="Telegram">
+                <StackPanel Orientation="Vertical">
+                    <controls:ToggleSwitch
+                        Margin="5"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Header="Enable Telegram Bot Alert"
+                        IsChecked="{Binding Path=Model.Telegram.IsEnabled, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="IsCheckedChanged">
+                                <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                <i:InvokeCommandAction Command="{Binding Path=TelegramOptionsChangedCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </controls:ToggleSwitch>
+
+                    <StackPanel IsEnabled="{Binding Path=Model.Telegram.IsEnabled}" Orientation="Vertical">
+                        <controls:MetroHeader Header="Bot Token">
+                            <TextBox Text="{Binding Path=Model.Telegram.BotToken, Mode=TwoWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="TextChanged">
+                                        <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                        <i:InvokeCommandAction Command="{Binding Path=TelegramOptionsChangedCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                        </controls:MetroHeader>
+
+                        <GroupBox Margin="5" Header="Message Template">
+                            <StackPanel Orientation="Vertical">
+                                <TextBox
+                                    Height="100"
+                                    Text="{Binding Path=Model.Telegram.MessageTemplate, Mode=TwoWay}"
+                                    TextWrapping="Wrap">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="TextChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=TelegramOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBox>
+                                <Button
+                                    HorizontalAlignment="Right"
+                                    Command="{Binding Path=ResetTelegramTemplateCommand}"
+                                    Content="Reset"
+                                    Style="{StaticResource CustomizedAccentedSquareButtonStyle}" />
+                                <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                    <FlowDocument>
+                                        <Paragraph FontWeight="Bold">
+                                            Keywords
+                                        </Paragraph>
+                                        <Paragraph>
+                                            {TradeSide}, {Symbol}, {TimeFrame}, {Time}, {Comment}, and {TriggeredBy}
+                                        </Paragraph>
+                                        <Paragraph>
+                                            You can use any of the above keywords in message
+                                        </Paragraph>
+                                    </FlowDocument>
+                                </FlowDocumentScrollViewer>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+
+                    <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                        <FlowDocument>
+                            <Paragraph FontWeight="Bold">
+                                How it works
+                            </Paragraph>
+                            <Paragraph>
+                                After an alert is triggered the alert data is put in the above message template and is send to all bot open chats, so to get alert messages you have to have at least one open chat or conversation with the bot
+                            </Paragraph>
+                            <Paragraph>
+                                <Run Text="To create a telegram bot use" />
+                                <Hyperlink Command="{Binding Path=RequestNavigateCommand}" CommandParameter="https://telegram.me/botfather">
+                                    <Run Text="@BotFather" />
+                                </Hyperlink>
+                            </Paragraph>
+                        </FlowDocument>
+                    </FlowDocumentScrollViewer>
+                </StackPanel>
             </TabItem>
         </TabControl>
     </ScrollViewer>

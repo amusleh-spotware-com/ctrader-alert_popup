@@ -74,19 +74,17 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
             Models.SoundOptionsModel sound = new Models.SoundOptionsModel();
 
-            Models.EmailTemplateModel emailTemplate = new Models.EmailTemplateModel()
-            {
-                Subject = "{TradeSide} {Symbol} | Trade Alert",
-                Body = "An alert triggered at {Time} to {TradeSide} {Symbol} on {TimeFrame} time frame, comment: {Comment}"
-            };
-
             Models.EmailOptionsModel email = new Models.EmailOptionsModel()
             {
-                Template = emailTemplate,
-                DefaultTemplate = emailTemplate,
+                Template = GetDefaultEmailTemplate(),
+                DefaultTemplate = GetDefaultEmailTemplate(),
             };
 
-            Models.TelegramOptionsModel telegram = new Models.TelegramOptionsModel();
+            Models.TelegramOptionsModel telegram = new Models.TelegramOptionsModel()
+            {
+                DefaultMessageTemplate = GetDefaultTelegramMessageTemplate(),
+                MessageTemplate = GetDefaultTelegramMessageTemplate(),
+            };
 
             Models.OptionsModel options = new Models.OptionsModel()
             {
@@ -136,6 +134,20 @@ namespace cAlgo.API.Alert.UI.ViewModels
         public static List<TimeZoneInfo> GetTimeZones()
         {
             return TimeZoneInfo.GetSystemTimeZones().ToList();
+        }
+
+        public static Models.EmailTemplateModel GetDefaultEmailTemplate()
+        {
+            return new Models.EmailTemplateModel()
+            {
+                Subject = "{TradeSide} {Symbol} | Trade Alert",
+                Body = "An alert triggered by {TriggeredBy} at {Time} to {TradeSide} {Symbol} on {TimeFrame} time frame, comment: {Comment}"
+            };
+        }
+
+        public static string GetDefaultTelegramMessageTemplate()
+        {
+            return "An alert triggered by {TriggeredBy} at {Time} to {TradeSide} {Symbol} on {TimeFrame} time frame, comment: {Comment}";
         }
     }
 }

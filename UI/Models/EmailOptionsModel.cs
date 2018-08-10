@@ -56,7 +56,7 @@ namespace cAlgo.API.Alert.UI.Models
         {
             get
             {
-                return _template != null ? _template : _defaultTemplate;
+                return _template;
             }
             set
             {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.Win32;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Windows.Media;
-using Prism.Events;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
@@ -59,6 +59,12 @@ namespace cAlgo.API.Alert.UI.ViewModels
             SoundOptionsChangedCommand = new DelegateCommand(SoundOptionsChanged);
 
             EmailOptionsChangedCommand = new DelegateCommand(EmailOptionsChanged);
+
+            TelegramOptionsChangedCommand = new DelegateCommand(TelegramOptionsChanged);
+
+            ResetTelegramTemplateCommand = new DelegateCommand(ResetTelegramTemplate);
+
+            RequestNavigateCommand = new DelegateCommand<string>(RequestNavigate);
         }
 
         #endregion Constructor
@@ -187,6 +193,12 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public DelegateCommand EmailOptionsChangedCommand { get; set; }
 
+        public DelegateCommand TelegramOptionsChangedCommand { get; set; }
+
+        public DelegateCommand ResetTelegramTemplateCommand { get; set; }
+
+        public DelegateCommand<string> RequestNavigateCommand { get; set; }
+
         #endregion Properties
 
         #region Methods
@@ -255,6 +267,21 @@ namespace cAlgo.API.Alert.UI.ViewModels
         private void EmailOptionsChanged()
         {
             _eventAggregator.GetEvent<Events.EmailOptionsChangedEvent>().Publish(Model.Email);
+        }
+
+        private void TelegramOptionsChanged()
+        {
+            _eventAggregator.GetEvent<Events.TelegramOptionsChangedEvent>().Publish(Model.Telegram);
+        }
+
+        private void ResetTelegramTemplate()
+        {
+            Model.Telegram.MessageTemplate = Model.Telegram.DefaultMessageTemplate;
+        }
+
+        private void RequestNavigate(string url)
+        {
+            System.Diagnostics.Process.Start(url);
         }
 
         #endregion Methods

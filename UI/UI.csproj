@@ -82,6 +82,7 @@
     <Compile Include="Events\EmailOptionsChangedEvent.cs" />
     <Compile Include="Events\SoundOptionsChangedEvent.cs" />
     <Compile Include="Events\OptionsChangedEvent.cs" />
+    <Compile Include="Events\TelegramOptionsChangedEvent.cs" />
     <Compile Include="Models\AlertModel.cs" />
     <Compile Include="Models\AlertOptionsModel.cs" />
     <Compile Include="Models\EmailTemplateModel.cs" />

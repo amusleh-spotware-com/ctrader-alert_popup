@@ -46,6 +46,7 @@ namespace cAlgo.API.Alert.UI
             _eventAggregator.GetEvent<Events.AlertOptionsChangedEvent>().Subscribe(AlertOptionsChangedEvent_Handler);
             _eventAggregator.GetEvent<Events.SoundOptionsChangedEvent>().Subscribe(SoundOptionsChangedEvent_Handler);
             _eventAggregator.GetEvent<Events.EmailOptionsChangedEvent>().Subscribe(EmailOptionsChangedEvent_Handler);
+            _eventAggregator.GetEvent<Events.TelegramOptionsChangedEvent>().Subscribe(TelegramOptionsChangedEvent_Handler);
 
             _shellView = CreateView<Views.ShellView, ViewModels.ShellViewModel>(this);
         }
@@ -212,6 +213,10 @@ namespace cAlgo.API.Alert.UI
         }
 
         private void AlertOptionsChangedEvent_Handler(Models.AlertOptionsModel options)
+        {
+        }
+
+        private void TelegramOptionsChangedEvent_Handler(Models.TelegramOptionsModel options)
         {
         }
 

@@ -3,6 +3,11 @@ using System;
 using System.Globalization;
 using System.Threading;
 using System.Linq;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using System.Net;
+using System.IO;
+using System.Text;
 
 namespace cAlgo.API.Alert.Tester
 {
