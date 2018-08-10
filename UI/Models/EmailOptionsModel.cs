@@ -10,6 +10,8 @@ namespace cAlgo.API.Alert.UI.Models
 
         private string _sender, _recipient;
 
+        private EmailTemplateModel _template, _defaultTemplate;
+
         #endregion Fields
 
         #region Properties
@@ -47,6 +49,30 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 SetProperty(ref _recipient, value);
+            }
+        }
+
+        public EmailTemplateModel Template
+        {
+            get
+            {
+                return _template != null ? _template : _defaultTemplate;
+            }
+            set
+            {
+                SetProperty(ref _template, value);
+            }
+        }
+
+        public EmailTemplateModel DefaultTemplate
+        {
+            get
+            {
+                return _defaultTemplate;
+            }
+            set
+            {
+                SetProperty(ref _defaultTemplate, value);
             }
         }
 

@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Windows.Media;
+using Prism.Events;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
@@ -29,19 +30,35 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private List<TimeZoneInfo> _timeZones;
 
+        private EventAggregator _eventAggregator;
+
         #endregion Fields
 
         #region Constructor
 
-        public OptionsViewModel(Models.OptionsModel model)
+        public OptionsViewModel(Models.OptionsModel model, EventAggregator eventAggregator)
         {
             _model = model;
+
+            _eventAggregator = eventAggregator;
 
             LoadedCommand = new DelegateCommand(Loaded);
 
             UnloadedCommand = new DelegateCommand(Unloaded);
 
             BrowserSoundFileCommand = new DelegateCommand(BrowserSoundFile);
+
+            ResetEmailTemplateCommand = new DelegateCommand(ResetEmailTemplate);
+
+            OptionsChangedCommand = new DelegateCommand(OptionsChanged);
+
+            GeneralOptionsChangedCommand = new DelegateCommand(GeneralOptionsChanged);
+
+            AlertOptionsChangedCommand = new DelegateCommand(AlertOptionsChanged);
+
+            SoundOptionsChangedCommand = new DelegateCommand(SoundOptionsChanged);
+
+            EmailOptionsChangedCommand = new DelegateCommand(EmailOptionsChanged);
         }
 
         #endregion Constructor
@@ -158,6 +175,18 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public DelegateCommand BrowserSoundFileCommand { get; set; }
 
+        public DelegateCommand ResetEmailTemplateCommand { get; set; }
+
+        public DelegateCommand OptionsChangedCommand { get; set; }
+
+        public DelegateCommand GeneralOptionsChangedCommand { get; set; }
+
+        public DelegateCommand AlertOptionsChangedCommand { get; set; }
+
+        public DelegateCommand SoundOptionsChangedCommand { get; set; }
+
+        public DelegateCommand EmailOptionsChangedCommand { get; set; }
+
         #endregion Properties
 
         #region Methods
@@ -195,6 +224,37 @@ namespace cAlgo.API.Alert.UI.ViewModels
             {
                 Model.Sound.FilePath = openFileDialog.FileName;
             }
+        }
+
+        private void ResetEmailTemplate()
+        {
+            Model.Email.Template.Subject = Model.Email.DefaultTemplate.Subject;
+            Model.Email.Template.Body = Model.Email.DefaultTemplate.Body;
+        }
+
+        private void OptionsChanged()
+        {
+            _eventAggregator.GetEvent<Events.OptionsChangedEvent>().Publish(Model);
+        }
+
+        private void GeneralOptionsChanged()
+        {
+            _eventAggregator.GetEvent<Events.GeneralOptionsChangedEvent>().Publish(Model.General);
+        }
+
+        private void AlertOptionsChanged()
+        {
+            _eventAggregator.GetEvent<Events.AlertOptionsChangedEvent>().Publish(Model.Alerts);
+        }
+
+        private void SoundOptionsChanged()
+        {
+            _eventAggregator.GetEvent<Events.SoundOptionsChangedEvent>().Publish(Model.Sound);
+        }
+
+        private void EmailOptionsChanged()
+        {
+            _eventAggregator.GetEvent<Events.EmailOptionsChangedEvent>().Publish(Model.Email);
         }
 
         #endregion Methods

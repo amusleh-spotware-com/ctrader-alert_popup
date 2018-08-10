@@ -74,7 +74,17 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
             Models.SoundOptionsModel sound = new Models.SoundOptionsModel();
 
-            Models.EmailOptionsModel email = new Models.EmailOptionsModel();
+            Models.EmailTemplateModel emailTemplate = new Models.EmailTemplateModel()
+            {
+                Subject = "{TradeSide} {Symbol} | Trade Alert",
+                Body = "An alert triggered at {Time} to {TradeSide} {Symbol} on {TimeFrame} time frame, comment: {Comment}"
+            };
+
+            Models.EmailOptionsModel email = new Models.EmailOptionsModel()
+            {
+                Template = emailTemplate,
+                DefaultTemplate = emailTemplate,
+            };
 
             Models.TelegramOptionsModel telegram = new Models.TelegramOptionsModel();
 

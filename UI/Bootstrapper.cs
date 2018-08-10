@@ -1,10 +1,11 @@
 ﻿using MahApps.Metro;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace cAlgo.API.Alert.UI
 {
@@ -22,37 +23,31 @@ namespace cAlgo.API.Alert.UI
 
         private Models.OptionsModel _options;
 
+        private readonly EventAggregator _eventAggregator;
+
+        private readonly ResourceDictionary _themeResources;
+
         #endregion Fields
-
-        #region Delegates
-
-        public delegate void AlertChangeHandler(Models.AlertModel alert);
-
-        public delegate void OptionsChangedHandler(Models.OptionsModel options);
-
-        #endregion Delegates
-
-        #region Events
-
-        public event AlertChangeHandler AlertAddedEvent;
-
-        public event AlertChangeHandler AlertRemovedEvent;
-
-        public event OptionsChangedHandler OptionsChangedEvent;
-
-        #endregion Events
 
         #region Constructors
 
         public Bootstrapper()
         {
-            _shellView = CreateView<Views.ShellView, ViewModels.ShellViewModel>(this);
+            _themeResources = new ResourceDictionary();
 
             _navigationJournal = new List<string>();
 
             _alerts = new ObservableCollection<Models.AlertModel>();
 
-            OptionsChangedEvent += Bootstrapper_OptionsChangedEvent;
+            _eventAggregator = new EventAggregator();
+
+            _eventAggregator.GetEvent<Events.OptionsChangedEvent>().Subscribe(OptionsChangedEvent_Handler);
+            _eventAggregator.GetEvent<Events.GeneralOptionsChangedEvent>().Subscribe(GeneralOptionsChangedEvent_Handler);
+            _eventAggregator.GetEvent<Events.AlertOptionsChangedEvent>().Subscribe(AlertOptionsChangedEvent_Handler);
+            _eventAggregator.GetEvent<Events.SoundOptionsChangedEvent>().Subscribe(SoundOptionsChangedEvent_Handler);
+            _eventAggregator.GetEvent<Events.EmailOptionsChangedEvent>().Subscribe(EmailOptionsChangedEvent_Handler);
+
+            _shellView = CreateView<Views.ShellView, ViewModels.ShellViewModel>(this);
         }
 
         #endregion Constructors
@@ -91,12 +86,19 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
-        public ResourceDictionary SharedResources
+        public ResourceDictionary ThemeResources
         {
             get
             {
-                return _shellView.Resources.MergedDictionaries.FirstOrDefault(resource =>
-                resource.Source.AbsolutePath.IndexOf("SharedResources.xaml", StringComparison.InvariantCultureIgnoreCase) >= 0);
+                return _themeResources;
+            }
+        }
+
+        public EventAggregator EventAggregator
+        {
+            get
+            {
+                return _eventAggregator;
             }
         }
 
@@ -107,6 +109,9 @@ namespace cAlgo.API.Alert.UI
         public void Run(Models.OptionsModel options)
         {
             _options = options;
+
+            _themeResources.MergedDictionaries.Add(_options.General.ThemeAccent.Accent.Resources);
+            _themeResources.MergedDictionaries.Add(_options.General.ThemeBase.Base.Resources);
 
             _shellView.ShowDialog();
         }
@@ -137,11 +142,11 @@ namespace cAlgo.API.Alert.UI
             switch (viewName)
             {
                 case ViewNames.AlertsView:
-                    _shellView.Content = CreateView<Views.AlertsView, ViewModels.AlertsViewModel>(_alerts, _options);
+                    _shellView.Content = CreateView<Views.AlertsView, ViewModels.AlertsViewModel>(_alerts, _options, _eventAggregator);
                     break;
 
                 case ViewNames.OptionsView:
-                    _shellView.Content = CreateView<Views.OptionsView, ViewModels.OptionsViewModel>(_options);
+                    _shellView.Content = CreateView<Views.OptionsView, ViewModels.OptionsViewModel>(_options, _eventAggregator);
                     break;
             }
         }
@@ -150,14 +155,14 @@ namespace cAlgo.API.Alert.UI
         {
             _alerts.Add(alert);
 
-            AlertAddedEvent?.Invoke(alert);
+            EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert);
         }
 
         public void RemoveAlert(Models.AlertModel alert)
         {
             _alerts.Remove(alert);
 
-            AlertRemovedEvent?.Invoke(alert);
+            EventAggregator.GetEvent<Events.AlertRemovedEvent>().Publish(alert);
         }
 
         public List<Models.AlertModel> GetAlerts()
@@ -182,14 +187,32 @@ namespace cAlgo.API.Alert.UI
         {
             TView view = (TView)Activator.CreateInstance(typeof(TView));
 
+            (view as ContentControl).Resources.MergedDictionaries.Add(_themeResources);
+
             (view as FrameworkElement).DataContext = GetViewModel<TViewModel>(parameters);
 
             return view;
         }
 
-        private void Bootstrapper_OptionsChangedEvent(Models.OptionsModel options)
+        private void OptionsChangedEvent_Handler(Models.OptionsModel options)
         {
-            ThemeManager.ChangeAppStyle(SharedResources, options.General.ThemeAccent.Accent, options.General.ThemeBase.Base);
+        }
+
+        private void GeneralOptionsChangedEvent_Handler(Models.GeneralOptionsModel options)
+        {
+            ThemeManager.ChangeAppStyle(_themeResources, options.ThemeAccent.Accent, options.ThemeBase.Base);
+        }
+
+        private void EmailOptionsChangedEvent_Handler(Models.EmailOptionsModel options)
+        {
+        }
+
+        private void SoundOptionsChangedEvent_Handler(Models.SoundOptionsModel options)
+        {
+        }
+
+        private void AlertOptionsChangedEvent_Handler(Models.AlertOptionsModel options)
+        {
         }
 
         #endregion Methods

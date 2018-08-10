@@ -75,8 +75,16 @@
     <Compile Include="Converters\EnumToDescription.cs" />
     <Compile Include="Converters\EnumToInt.cs" />
     <Compile Include="Enums\TimeFormat.cs" />
+    <Compile Include="Events\AlertRemovedEvent.cs" />
+    <Compile Include="Events\AlertAddedEvent.cs" />
+    <Compile Include="Events\GeneralOptionsChangedEvent.cs" />
+    <Compile Include="Events\AlertOptionsChangedEvent.cs" />
+    <Compile Include="Events\EmailOptionsChangedEvent.cs" />
+    <Compile Include="Events\SoundOptionsChangedEvent.cs" />
+    <Compile Include="Events\OptionsChangedEvent.cs" />
     <Compile Include="Models\AlertModel.cs" />
     <Compile Include="Models\AlertOptionsModel.cs" />
+    <Compile Include="Models\EmailTemplateModel.cs" />
     <Compile Include="Models\FontModel.cs" />
     <Compile Include="Models\FontStyleModel.cs" />
     <Compile Include="Models\FontWeightModel.cs" />

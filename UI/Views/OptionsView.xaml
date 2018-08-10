@@ -40,14 +40,28 @@
                                 <ComboBox
                                     DisplayMemberPath="Name"
                                     ItemsSource="{Binding Path=ThemeBases}"
-                                    SelectedItem="{Binding Path=Model.General.ThemeBase, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.General.ThemeBase, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=GeneralOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
 
                             <controls:MetroHeader Header="Accent">
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxAccentItemTemplate}"
                                     ItemsSource="{Binding Path=ThemeAccents}"
-                                    SelectedItem="{Binding Path=Model.General.ThemeAccent, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.General.ThemeAccent, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=GeneralOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
                         </WrapPanel>
                     </GroupBox>
@@ -61,42 +75,84 @@
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
                                     ItemsSource="{Binding Path=Colors}"
-                                    SelectedItem="{Binding Path=Model.Alerts.BuySideColor, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.Alerts.BuySideColor, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
 
                             <controls:MetroHeader Header="Sell Side">
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
                                     ItemsSource="{Binding Path=Colors}"
-                                    SelectedItem="{Binding Path=Model.Alerts.SellSideColor, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.Alerts.SellSideColor, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
 
                             <controls:MetroHeader Header="Symbol">
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
                                     ItemsSource="{Binding Path=Colors}"
-                                    SelectedItem="{Binding Path=Model.Alerts.SymbolColor, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.Alerts.SymbolColor, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
 
                             <controls:MetroHeader Header="Time">
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
                                     ItemsSource="{Binding Path=Colors}"
-                                    SelectedItem="{Binding Path=Model.Alerts.TimeColor, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.Alerts.TimeColor, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
 
                             <controls:MetroHeader Header="Triggered By">
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
                                     ItemsSource="{Binding Path=Colors}"
-                                    SelectedItem="{Binding Path=Model.Alerts.TriggeredByColor, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.Alerts.TriggeredByColor, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
 
                             <controls:MetroHeader HorizontalAlignment="Left" Header="Time Frame">
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
                                     ItemsSource="{Binding Path=Colors}"
-                                    SelectedItem="{Binding Path=Model.Alerts.TimeFrameColor, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.Alerts.TimeFrameColor, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
                         </WrapPanel>
                     </GroupBox>
@@ -107,21 +163,42 @@
                                 <ComboBox
                                     DisplayMemberPath="Source"
                                     ItemsSource="{Binding Path=Fonts}"
-                                    SelectedItem="{Binding Path=Model.Alerts.CommentFontModel.Family, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.Alerts.CommentFontModel.Family, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
 
                             <controls:MetroHeader Header="Weight">
                                 <ComboBox
                                     DisplayMemberPath="Name"
                                     ItemsSource="{Binding Path=FontWeights}"
-                                    SelectedItem="{Binding Path=Model.Alerts.CommentFontModel.WeightModel, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.Alerts.CommentFontModel.WeightModel, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
 
                             <controls:MetroHeader Header="Style">
                                 <ComboBox
                                     DisplayMemberPath="Name"
                                     ItemsSource="{Binding Path=FontStyles}"
-                                    SelectedItem="{Binding Path=Model.Alerts.CommentFontModel.StyleModel, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.Alerts.CommentFontModel.StyleModel, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
 
                             <controls:MetroHeader Header="Size">
@@ -129,7 +206,14 @@
                                     HasDecimals="True"
                                     Interval="1"
                                     Minimum="1"
-                                    Value="{Binding Path=Model.Alerts.CommentFontModel.Size}" />
+                                    Value="{Binding Path=Model.Alerts.CommentFontModel.Size}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="ValueChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </controls:NumericUpDown>
                             </controls:MetroHeader>
                         </WrapPanel>
                     </GroupBox>
@@ -140,11 +224,25 @@
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxEnumItemTemplate}"
                                     ItemsSource="{Binding Path=TimeFormats}"
-                                    SelectedItem="{Binding Path=Model.Alerts.TimeFormat, Mode=TwoWay}" />
+                                    SelectedItem="{Binding Path=Model.Alerts.TimeFormat, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
 
                             <controls:MetroHeader Header="Zone">
-                                <ComboBox ItemsSource="{Binding Path=TimeZones}" SelectedItem="{Binding Path=Model.Alerts.TimeZone, Mode=TwoWay}" />
+                                <ComboBox ItemsSource="{Binding Path=TimeZones}" SelectedItem="{Binding Path=Model.Alerts.TimeZone, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                             </controls:MetroHeader>
                         </WrapPanel>
                     </GroupBox>
@@ -155,7 +253,14 @@
                             Interval="1"
                             Maximum="200"
                             Minimum="1"
-                            Value="{Binding Path=Model.Alerts.MaxAlertNumber}" />
+                            Value="{Binding Path=Model.Alerts.MaxAlertNumber}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="ValueChanged">
+                                    <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                    <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </controls:NumericUpDown>
                     </controls:MetroHeader>
                 </StackPanel>
             </TabItem>
@@ -166,7 +271,14 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Header="Enable Sound Alert"
-                        IsChecked="{Binding Path=Model.Sound.IsEnabled, Mode=TwoWay}" />
+                        IsChecked="{Binding Path=Model.Sound.IsEnabled, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="IsCheckedChanged">
+                                <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                <i:InvokeCommandAction Command="{Binding Path=SoundOptionsChangedCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </controls:ToggleSwitch>
 
                     <Grid IsEnabled="{Binding Path=Model.Sound.IsEnabled}">
                         <Grid.ColumnDefinitions>
@@ -177,7 +289,14 @@
                         <TextBox
                             Grid.Column="0"
                             Margin="5"
-                            Text="{Binding Path=Model.Sound.FilePath, Mode=TwoWay}" />
+                            Text="{Binding Path=Model.Sound.FilePath, Mode=TwoWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="TextChanged">
+                                    <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                    <i:InvokeCommandAction Command="{Binding Path=SoundOptionsChangedCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBox>
 
                         <Button
                             Grid.Column="1"
@@ -194,18 +313,101 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Header="Enable Email Alert"
-                        IsChecked="{Binding Path=Model.Email.IsEnabled, Mode=TwoWay}" />
+                        IsChecked="{Binding Path=Model.Email.IsEnabled, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="IsCheckedChanged">
+                                <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                <i:InvokeCommandAction Command="{Binding Path=EmailOptionsChangedCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </controls:ToggleSwitch>
 
                     <StackPanel IsEnabled="{Binding Path=Model.Email.IsEnabled}" Orientation="Vertical">
                         <controls:MetroHeader Header="Sender">
-                            <TextBox Text="{Binding Path=Model.Email.Sender, Mode=TwoWay}" />
+                            <TextBox Text="{Binding Path=Model.Email.Sender, Mode=TwoWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="TextChanged">
+                                        <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                        <i:InvokeCommandAction Command="{Binding Path=EmailOptionsChangedCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
                         </controls:MetroHeader>
 
                         <controls:MetroHeader Header="Recipient">
-                            <TextBox Text="{Binding Path=Model.Email.Recipient, Mode=TwoWay}" />
+                            <TextBox Text="{Binding Path=Model.Email.Recipient, Mode=TwoWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="TextChanged">
+                                        <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                        <i:InvokeCommandAction Command="{Binding Path=EmailOptionsChangedCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
                         </controls:MetroHeader>
+
+                        <Expander
+                            Margin="5"
+                            Header="Template"
+                            IsExpanded="False">
+                            <StackPanel Orientation="Vertical">
+                                <controls:MetroHeader Header="Subject">
+                                    <TextBox Text="{Binding Path=Model.Email.Template.Subject, Mode=TwoWay}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="TextChanged">
+                                                <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                                <i:InvokeCommandAction Command="{Binding Path=EmailOptionsChangedCommand}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </TextBox>
+                                </controls:MetroHeader>
+                                <controls:MetroHeader Header="Body">
+                                    <TextBox
+                                        Height="150"
+                                        Text="{Binding Path=Model.Email.Template.Body, Mode=TwoWay}"
+                                        TextWrapping="Wrap">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="TextChanged">
+                                                <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                                <i:InvokeCommandAction Command="{Binding Path=EmailOptionsChangedCommand}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </TextBox>
+                                </controls:MetroHeader>
+                                <Button
+                                    HorizontalAlignment="Right"
+                                    Command="{Binding Path=ResetEmailTemplateCommand}"
+                                    Content="Reset"
+                                    Style="{StaticResource CustomizedAccentedSquareButtonStyle}" />
+                                <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                    <FlowDocument>
+                                        <Paragraph FontWeight="Bold">
+                                            Keywords
+                                        </Paragraph>
+                                        <Paragraph>
+                                            {TradeSide}, {Symbol}, {TimeFrame}, {Time}, {Comment}, and {TriggeredBy}
+                                        </Paragraph>
+                                        <Paragraph>
+                                            You can use any of the above keywords in email subject or body
+                                        </Paragraph>
+                                    </FlowDocument>
+                                </FlowDocumentScrollViewer>
+                            </StackPanel>
+                        </Expander>
                     </StackPanel>
+
+                    <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                        <FlowDocument>
+                            <Paragraph FontWeight="Bold">
+                                Important
+                            </Paragraph>
+                            <Paragraph>
+                                The email alert only works if you already configured your cTrader platform email notification settings
+                            </Paragraph>
+                        </FlowDocument>
+                    </FlowDocumentScrollViewer>
                 </StackPanel>
+            </TabItem>
+            <TabItem Header="Telegram">
             </TabItem>
         </TabControl>
     </ScrollViewer>

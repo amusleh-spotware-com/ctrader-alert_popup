@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Media;
 using System.Windows;
 using System.Collections.Generic;
+using Prism.Events;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
@@ -19,15 +20,19 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private Models.OptionsModel _options;
 
+        private EventAggregator _eventAggregator;
+
         #endregion Fields
 
         #region Constructor
 
-        public AlertsViewModel(ObservableCollection<Models.AlertModel> alerts, Models.OptionsModel options)
+        public AlertsViewModel(ObservableCollection<Models.AlertModel> alerts, Models.OptionsModel options, EventAggregator eventAggregator)
         {
             Alerts = alerts;
 
             _options = options;
+
+            _eventAggregator = eventAggregator;
 
             LoadedCommand = new DelegateCommand(Loaded);
 
