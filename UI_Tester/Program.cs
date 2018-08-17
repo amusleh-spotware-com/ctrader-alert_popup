@@ -23,7 +23,7 @@ namespace cAlgo.API.Alert.Tester
                 {
                     bootstrapper = new Bootstrapper(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\alerts.csv");
 
-                    bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Sell", Comment = "How we can trade with this", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
+                    //bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Sell", Comment = "Alert 1 comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
 
                     bootstrapper.Run(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\options.xml");
                 }
@@ -41,7 +41,7 @@ namespace cAlgo.API.Alert.Tester
 
             Thread.Sleep(10000);
 
-            bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "How we can trade with this", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
+            //bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "Alert 2 comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
         }
     }
 }

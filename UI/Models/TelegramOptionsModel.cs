@@ -1,4 +1,5 @@
 ﻿using Prism.Mvvm;
+using System.Collections.ObjectModel;
 
 namespace cAlgo.API.Alert.UI.Models
 {
@@ -8,7 +9,9 @@ namespace cAlgo.API.Alert.UI.Models
 
         private bool _isEnabled;
 
-        private string _botToken, _messageTemplate, _defaultMessageTemplate;
+        private string _messageTemplate, _defaultMessageTemplate;
+
+        private ObservableCollection<TelegramBot> _bots;
 
         #endregion Fields
 
@@ -26,15 +29,15 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public string BotToken
+        public ObservableCollection<TelegramBot> Bots
         {
             get
             {
-                return _botToken;
+                return _bots;
             }
             set
             {
-                SetProperty(ref _botToken, value);
+                SetProperty(ref _bots, value);
             }
         }
 

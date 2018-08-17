@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Collections.ObjectModel;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
@@ -117,6 +118,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
             {
                 DefaultMessageTemplate = GetDefaultTelegramMessageTemplate(),
                 MessageTemplate = GetDefaultTelegramMessageTemplate(),
+                Bots = new ObservableCollection<Models.TelegramBot>()
             };
 
             Models.OptionsModel options = new Models.OptionsModel()

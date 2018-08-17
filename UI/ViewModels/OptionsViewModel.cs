@@ -5,6 +5,8 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Windows.Media;
+using System.Collections;
+using System.Linq;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
@@ -31,6 +33,8 @@ namespace cAlgo.API.Alert.UI.ViewModels
         private List<TimeZoneInfo> _timeZones;
 
         private EventAggregator _eventAggregator;
+
+        private Models.TelegramBot _telegramBot;
 
         #endregion Fields
 
@@ -65,6 +69,12 @@ namespace cAlgo.API.Alert.UI.ViewModels
             ResetTelegramTemplateCommand = new DelegateCommand(ResetTelegramTemplate);
 
             RequestNavigateCommand = new DelegateCommand<string>(RequestNavigate);
+
+            AddTelegramBotCommand = new DelegateCommand(AddTelegramBot);
+
+            RemoveTelegramBotCommand = new DelegateCommand<Models.TelegramBot>(RemoveTelegramBot);
+
+            RemoveSelectedTelegramBotsCommand = new DelegateCommand<IList>(RemoveSelectedTelegramBots);
         }
 
         #endregion Constructor
@@ -199,6 +209,24 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public DelegateCommand<string> RequestNavigateCommand { get; set; }
 
+        public Models.TelegramBot TelegramBot
+        {
+            get
+            {
+                return _telegramBot;
+            }
+            set
+            {
+                SetProperty(ref _telegramBot, value);
+            }
+        }
+
+        public DelegateCommand AddTelegramBotCommand { get; set; }
+
+        public DelegateCommand<Models.TelegramBot> RemoveTelegramBotCommand { get; set; }
+
+        public DelegateCommand<IList> RemoveSelectedTelegramBotsCommand { get; set; }
+
         #endregion Properties
 
         #region Methods
@@ -220,6 +248,8 @@ namespace cAlgo.API.Alert.UI.ViewModels
             TimeFormats = OptionsBaseViewModel.GetTimeFormats();
 
             TimeZones = OptionsBaseViewModel.GetTimeZones();
+
+            TelegramBot = new Models.TelegramBot();
         }
 
         private void Unloaded()
@@ -282,6 +312,35 @@ namespace cAlgo.API.Alert.UI.ViewModels
         private void TelegramOptionsChanged()
         {
             _eventAggregator.GetEvent<Events.TelegramOptionsChangedEvent>().Publish(Model.Telegram);
+        }
+
+        private void AddTelegramBot()
+        {
+            if (!string.IsNullOrEmpty(TelegramBot.Name) && !string.IsNullOrEmpty(TelegramBot.Token))
+            {
+                Model.Telegram.Bots.Add(TelegramBot);
+
+                TelegramBot = new Models.TelegramBot();
+
+                OptionsChangedCommand.Execute();
+                TelegramOptionsChangedCommand.Execute();
+            }
+        }
+
+        private void RemoveTelegramBot(Models.TelegramBot bot)
+        {
+            if (Model.Telegram.Bots.Contains(bot))
+            {
+                Model.Telegram.Bots.Remove(bot);
+
+                OptionsChangedCommand.Execute();
+                TelegramOptionsChangedCommand.Execute();
+            }
+        }
+
+        private void RemoveSelectedTelegramBots(IList selectedItems)
+        {
+            selectedItems.Cast<Models.TelegramBot>().ToList().ForEach(bot => RemoveTelegramBot(bot));
         }
 
         #endregion Methods

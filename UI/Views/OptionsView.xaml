@@ -438,16 +438,55 @@
                     </controls:ToggleSwitch>
 
                     <StackPanel IsEnabled="{Binding Path=Model.Telegram.IsEnabled}" Orientation="Vertical">
-                        <controls:MetroHeader Header="Bot Token">
-                            <TextBox Text="{Binding Path=Model.Telegram.BotToken, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="TextChanged">
-                                        <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
-                                        <i:InvokeCommandAction Command="{Binding Path=TelegramOptionsChangedCommand}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </TextBox>
-                        </controls:MetroHeader>
+                        <Expander
+                            Margin="5"
+                            Header="Bots"
+                            IsExpanded="True">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DataGrid
+                                    Height="200"
+                                    Margin="0,0,0,5"
+                                    BorderBrush="{StaticResource ControlBorderBrush}"
+                                    BorderThickness="1"
+                                    ItemsSource="{Binding Path=Model.Telegram.Bots, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource ReadOnlyDataGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn
+                                            Width="Auto"
+                                            Binding="{Binding Path=Name}"
+                                            Header="Name" />
+                                        <DataGridTextColumn
+                                            Width="*"
+                                            Binding="{Binding Path=Token}"
+                                            Header="Token" />
+                                        <DataGridTemplateColumn
+                                            Width="Auto"
+                                            CellTemplate="{StaticResource TelegramBotsCellTemplate}"
+                                            HeaderTemplate="{StaticResource TelegramBotsHeaderTemplate}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <StackPanel Grid.Row="1">
+                                    <controls:MetroHeader Header="Name">
+                                        <TextBox Text="{Binding Path=TelegramBot.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    </controls:MetroHeader>
+
+                                    <controls:MetroHeader Header="Token">
+                                        <TextBox Text="{Binding Path=TelegramBot.Token, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    </controls:MetroHeader>
+
+                                    <Button
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding Path=AddTelegramBotCommand}"
+                                        Content="Add"
+                                        Style="{StaticResource CustomizedAccentedSquareButtonStyle}" />
+                                </StackPanel>
+                            </Grid>
+                        </Expander>
 
                         <Expander
                             Margin="5"
@@ -493,7 +532,7 @@
                                 How it works
                             </Paragraph>
                             <Paragraph>
-                                After an alert is triggered the alert data is put in the above message template and is send to all bot open chats, so to get alert messages you have to have at least one open chat or conversation with the bot
+                                After an alert is triggered the alert data is replaced instead of message template keywords, it sends the message to all added bots and anyone who has an open chat/conversation with any of the added bots will receive the message
                             </Paragraph>
                             <Paragraph>
                                 <Run Text="To create a telegram bot use" />

@@ -89,6 +89,7 @@
     <Compile Include="Models\FontModel.cs" />
     <Compile Include="Models\FontStyleModel.cs" />
     <Compile Include="Models\FontWeightModel.cs" />
+    <Compile Include="Models\TelegramBot.cs" />
     <Compile Include="Models\ThemeAccentModel.cs" />
     <Compile Include="Models\ThemeBaseModel.cs" />
     <Compile Include="Models\GeneralOptionsModel.cs" />

@@ -42,4 +42,27 @@
     <DataTemplate x:Key="ComboBoxEnumItemTemplate">
         <TextBlock Text="{Binding Converter={StaticResource EnumToDescription}}" />
     </DataTemplate>
+
+    <DataTemplate x:Key="TelegramBotsHeaderTemplate">
+        <StackPanel>
+            <Button
+                Command="{Binding Path=DataContext.RemoveSelectedTelegramBotsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                ToolTip="Remove Selected">
+                <iconsPack:Material Kind="Delete" />
+            </Button>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TelegramBotsCellTemplate">
+        <StackPanel>
+            <Button
+                HorizontalAlignment="Center"
+                Command="{Binding Path=DataContext.RemoveTelegramBotCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                CommandParameter="{Binding}"
+                ToolTip="Remove">
+                <iconsPack:Material Kind="Delete" />
+            </Button>
+        </StackPanel>
+    </DataTemplate>
 </ResourceDictionary>
