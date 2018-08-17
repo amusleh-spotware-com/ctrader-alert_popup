@@ -1,14 +1,35 @@
 ﻿using System;
 using System.Windows;
+using System.Xml.Serialization;
+using System.Linq;
 
 namespace cAlgo.API.Alert.UI.Models
 {
     public class FontWeightModel
     {
+        #region Fields
+
+        private string _name;
+
+        #endregion Fields
+
         #region Properites
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
 
+                Weight = (FontWeight)typeof(FontWeights).GetProperty(_name).GetValue(null);
+            }
+        }
+
+        [XmlIgnore]
         public FontWeight Weight { get; set; }
 
         #endregion Properites
@@ -55,7 +76,6 @@ namespace cAlgo.API.Alert.UI.Models
             int hash = 17;
 
             hash += (hash * 31) + (!string.IsNullOrEmpty(Name) ? Name.GetHashCode() : 0);
-            hash += (hash * 31) + (Weight != null ? Weight.GetHashCode() : 0);
 
             return hash;
         }

@@ -1,14 +1,35 @@
 ﻿using System;
 using System.Windows;
+using System.Xml.Serialization;
+using System.Linq;
 
 namespace cAlgo.API.Alert.UI.Models
 {
     public class FontStyleModel
     {
+        #region Fields
+
+        private string _name;
+
+        #endregion Fields
+
         #region Properties
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
 
+                Style = (FontStyle)typeof(FontStyles).GetProperty(_name).GetValue(null);
+            }
+        }
+
+        [XmlIgnore]
         public FontStyle Style { get; set; }
 
         #endregion Properties
@@ -55,7 +76,6 @@ namespace cAlgo.API.Alert.UI.Models
             int hash = 17;
 
             hash += (hash * 31) + (!string.IsNullOrEmpty(Name) ? Name.GetHashCode() : 0);
-            hash += (hash * 31) + (Style != null ? Style.GetHashCode() : 0);
 
             return hash;
         }

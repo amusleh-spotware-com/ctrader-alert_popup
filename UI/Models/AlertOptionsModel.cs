@@ -1,6 +1,9 @@
 ﻿using Prism.Mvvm;
 using System.Windows.Media;
 using System;
+using System.Xml.Serialization;
+using System.Linq;
+using System.Globalization;
 
 namespace cAlgo.API.Alert.UI.Models
 {
@@ -8,7 +11,7 @@ namespace cAlgo.API.Alert.UI.Models
     {
         #region Fields
 
-        private Brush _buySideColor, _sellSideColor, _symbolColor, _timeColor, _triggeredByColor, _timeFrameColor;
+        private SolidColorBrush _buySideColor, _sellSideColor, _symbolColor, _timeColor, _triggeredByColor, _timeFrameColor;
 
         private int _maxAlertNumber;
 
@@ -22,7 +25,8 @@ namespace cAlgo.API.Alert.UI.Models
 
         #region Properties
 
-        public Brush BuySideColor
+        [XmlIgnore]
+        public SolidColorBrush BuySideColor
         {
             get
             {
@@ -34,7 +38,20 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public Brush SellSideColor
+        public string BuySideColorCode
+        {
+            get
+            {
+                return BuySideColor.ToString();
+            }
+            set
+            {
+                BuySideColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+            }
+        }
+
+        [XmlIgnore]
+        public SolidColorBrush SellSideColor
         {
             get
             {
@@ -46,7 +63,20 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public Brush SymbolColor
+        public string SellSideColorCode
+        {
+            get
+            {
+                return SellSideColor.ToString();
+            }
+            set
+            {
+                SellSideColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+            }
+        }
+
+        [XmlIgnore]
+        public SolidColorBrush SymbolColor
         {
             get
             {
@@ -58,7 +88,20 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public Brush TimeColor
+        public string SymbolColorCode
+        {
+            get
+            {
+                return SymbolColor.ToString();
+            }
+            set
+            {
+                SymbolColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+            }
+        }
+
+        [XmlIgnore]
+        public SolidColorBrush TimeColor
         {
             get
             {
@@ -70,7 +113,20 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public Brush TriggeredByColor
+        public string TimeColorCode
+        {
+            get
+            {
+                return TimeColor.ToString();
+            }
+            set
+            {
+                TimeColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+            }
+        }
+
+        [XmlIgnore]
+        public SolidColorBrush TriggeredByColor
         {
             get
             {
@@ -82,7 +138,20 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public Brush TimeFrameColor
+        public string TriggeredByColorCode
+        {
+            get
+            {
+                return TriggeredByColor.ToString();
+            }
+            set
+            {
+                TriggeredByColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+            }
+        }
+
+        [XmlIgnore]
+        public SolidColorBrush TimeFrameColor
         {
             get
             {
@@ -91,6 +160,18 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 SetProperty(ref _timeFrameColor, value);
+            }
+        }
+
+        public string TimeFrameColorCode
+        {
+            get
+            {
+                return TimeFrameColor.ToString();
+            }
+            set
+            {
+                TimeFrameColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
             }
         }
 
@@ -130,6 +211,7 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
+        [XmlIgnore]
         public TimeZoneInfo TimeZone
         {
             get
@@ -139,6 +221,18 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 SetProperty(ref _timeZone, value);
+            }
+        }
+
+        public string TimeZoneName
+        {
+            get
+            {
+                return TimeZone.DisplayName;
+            }
+            set
+            {
+                TimeZone = TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(tz => tz.DisplayName.Equals(value, StringComparison.InvariantCultureIgnoreCase));
             }
         }
 

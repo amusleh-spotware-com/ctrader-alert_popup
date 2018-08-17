@@ -23,7 +23,7 @@ namespace cAlgo.API.Alert.Tester
 
                     bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "How we can trade with this", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
 
-                    bootstrapper.Run();
+                    bootstrapper.Run(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\options.xml");
                 }
                 catch (Exception ex)
                 {

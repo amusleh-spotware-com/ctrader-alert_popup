@@ -30,15 +30,15 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }).ToList();
         }
 
-        public static Brush GetAccentColor(Accent accent)
+        public static SolidColorBrush GetAccentColor(Accent accent)
         {
-            Brush result = typeof(Brushes).GetProperties().FirstOrDefault(
+            SolidColorBrush result = typeof(Brushes).GetProperties().FirstOrDefault(
                 property => property.Name.Equals(accent.Name, StringComparison.InvariantCultureIgnoreCase))?
-                .GetValue(null) as Brush
+                .GetValue(null) as SolidColorBrush
                 ??
                 typeof(Brushes).GetProperties().FirstOrDefault(
                 property => property.Name.IndexOf(accent.Name, StringComparison.InvariantCultureIgnoreCase) >= 0)?
-                .GetValue(null) as Brush;
+                .GetValue(null) as SolidColorBrush;
 
             if (result == null)
             {
@@ -180,6 +180,27 @@ namespace cAlgo.API.Alert.UI.ViewModels
         public static string GetDefaultTelegramMessageTemplate()
         {
             return "An alert triggered by {TriggeredBy} at {Time} to {TradeSide} {Symbol} on {TimeFrame} time frame, comment: {Comment}";
+        }
+
+        public static SolidColorBrush GetColorFromString(string colorCode)
+        {
+            List<SolidColorBrush> colors = GetColors();
+
+            return colors.FirstOrDefault(color => color.ToString().Equals(colorCode, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        public static FontStyle GetFontStyleFromString(string styleName)
+        {
+            List<Models.FontStyleModel> styles = GetFontStyles();
+
+            return styles.FirstOrDefault(style => style.Name.Equals(styleName, StringComparison.InvariantCultureIgnoreCase)).Style;
+        }
+
+        public static FontWeight GetFontWeightFromString(string weightName)
+        {
+            List<Models.FontWeightModel> weights = GetFontWeights();
+
+            return weights.FirstOrDefault(weight => weight.Name.Equals(weightName, StringComparison.InvariantCultureIgnoreCase)).Weight;
         }
     }
 }

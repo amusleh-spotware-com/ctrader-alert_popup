@@ -244,6 +244,16 @@ namespace cAlgo.API.Alert.UI.ViewModels
             Model.Email.Template.Body = Model.Email.DefaultTemplate.Body;
         }
 
+        private void ResetTelegramTemplate()
+        {
+            //Model.Telegram.MessageTemplate = Model.Telegram.DefaultMessageTemplate;
+        }
+
+        private void RequestNavigate(string url)
+        {
+            System.Diagnostics.Process.Start(url);
+        }
+
         private void OptionsChanged()
         {
             _eventAggregator.GetEvent<Events.OptionsChangedEvent>().Publish(Model);
@@ -272,16 +282,6 @@ namespace cAlgo.API.Alert.UI.ViewModels
         private void TelegramOptionsChanged()
         {
             _eventAggregator.GetEvent<Events.TelegramOptionsChangedEvent>().Publish(Model.Telegram);
-        }
-
-        private void ResetTelegramTemplate()
-        {
-            Model.Telegram.MessageTemplate = Model.Telegram.DefaultMessageTemplate;
-        }
-
-        private void RequestNavigate(string url)
-        {
-            System.Diagnostics.Process.Start(url);
         }
 
         #endregion Methods

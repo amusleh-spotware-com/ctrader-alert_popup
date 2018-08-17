@@ -1,15 +1,66 @@
 ﻿using MahApps.Metro;
 using System;
+using System.Xml.Serialization;
 
 namespace cAlgo.API.Alert.UI.Models
 {
     public class ThemeBaseModel
     {
+        #region Fields
+
+        private AppTheme _base;
+
+        private string _name, _sourceUri;
+
+        #endregion Fields
+
         #region Properties
 
-        public AppTheme Base { get; set; }
+        [XmlIgnore]
+        public AppTheme Base
+        {
+            get
+            {
+                if (_base == null)
+                {
+                    _base = new AppTheme(_name, new Uri(_sourceUri));
+                }
 
-        public string Name { get; set; }
+                return _base;
+            }
+            set
+            {
+                _base = value;
+
+                Name = value.Name;
+
+                SourceUri = value.Resources.Source.ToString();
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
+
+        public string SourceUri
+        {
+            get
+            {
+                return _sourceUri;
+            }
+            set
+            {
+                _sourceUri = value;
+            }
+        }
 
         #endregion Properties
 
@@ -55,7 +106,6 @@ namespace cAlgo.API.Alert.UI.Models
             int hash = 17;
 
             hash += (hash * 31) + (!string.IsNullOrEmpty(Name) ? Name.GetHashCode() : 0);
-            hash += (hash * 31) + (Base != null ? Base.GetHashCode() : 0);
 
             return hash;
         }

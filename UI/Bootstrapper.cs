@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace cAlgo.API.Alert.UI
 {
@@ -26,6 +28,8 @@ namespace cAlgo.API.Alert.UI
         private readonly EventAggregator _eventAggregator;
 
         private readonly ResourceDictionary _themeResources;
+
+        private string _optionsFilePath;
 
         #endregion Fields
 
@@ -103,6 +107,14 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
+        public string OptionsFilePath
+        {
+            get
+            {
+                return _optionsFilePath;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -122,6 +134,61 @@ namespace cAlgo.API.Alert.UI
             Models.OptionsModel options = ViewModels.OptionsBaseViewModel.GetDefaultOptions();
 
             Run(options);
+        }
+
+        public void Run(string optionsFilePath)
+        {
+            Models.OptionsModel options;
+
+            _optionsFilePath = optionsFilePath;
+
+            if (File.Exists(_optionsFilePath))
+            {
+                options = GetOptions(_optionsFilePath);
+            }
+            else
+            {
+                options = ViewModels.OptionsBaseViewModel.GetDefaultOptions();
+
+                SaveOptions(_optionsFilePath);
+            }
+
+            Run(options);
+        }
+
+        public void SaveOptions(string path)
+        {
+            using (FileStream fileStream = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            {
+                using (TextWriter writer = new StreamWriter(fileStream))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(Models.OptionsModel));
+
+                    serializer.Serialize(writer, Options);
+                }
+            }
+        }
+
+        public Models.OptionsModel GetOptions(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("The options file doesn't exist on provided path: " + path);
+            }
+
+            Models.OptionsModel result;
+
+            using (FileStream fileStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (TextReader reader = new StreamReader(fileStream))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(Models.OptionsModel));
+
+                    result = serializer.Deserialize(reader) as Models.OptionsModel;
+                }
+            }
+
+            return result;
         }
 
         public void Shutdown()
@@ -197,6 +264,10 @@ namespace cAlgo.API.Alert.UI
 
         private void OptionsChangedEvent_Handler(Models.OptionsModel options)
         {
+            if (!string.IsNullOrEmpty(_optionsFilePath))
+            {
+                SaveOptions(_optionsFilePath);
+            }
         }
 
         private void GeneralOptionsChangedEvent_Handler(Models.GeneralOptionsModel options)

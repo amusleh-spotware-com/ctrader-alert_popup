@@ -1,16 +1,82 @@
 ﻿using MahApps.Metro;
 using System.Windows.Media;
 using System;
+using System.Xml.Serialization;
 
 namespace cAlgo.API.Alert.UI.Models
 {
     public class ThemeAccentModel
     {
+        #region Fields
+
+        private Accent _accent;
+
+        private string _name, _sourceUri;
+
+        #endregion Fields
+
         #region Properties
 
-        public Accent Accent { get; set; }
+        [XmlIgnore]
+        public Accent Accent
+        {
+            get
+            {
+                if (_accent == null)
+                {
+                    _accent = new Accent(_name, new Uri(_sourceUri));
+                }
 
-        public Brush Color { get; set; }
+                return _accent;
+            }
+            set
+            {
+                _accent = value;
+
+                Name = value.Name;
+
+                SourceUri = value.Resources.Source.ToString();
+            }
+        }
+
+        [XmlIgnore]
+        public SolidColorBrush Color { get; set; }
+
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
+
+        public string SourceUri
+        {
+            get
+            {
+                return _sourceUri;
+            }
+            set
+            {
+                _sourceUri = value;
+            }
+        }
+
+        public string ColorCode
+        {
+            get
+            {
+                return Color.ToString();
+            }
+            set
+            {
+                Color = new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
+            }
+        }
 
         #endregion Properties
 
@@ -55,7 +121,7 @@ namespace cAlgo.API.Alert.UI.Models
         {
             int hash = 17;
 
-            hash += (hash * 31) + (Accent != null ? Accent.GetHashCode() : 0);
+            hash += (hash * 31) + (!string.IsNullOrEmpty(Name) ? Name.GetHashCode() : 0);
 
             return hash;
         }

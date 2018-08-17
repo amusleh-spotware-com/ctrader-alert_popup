@@ -289,7 +289,7 @@
                         <TextBox
                             Grid.Column="0"
                             Margin="5"
-                            Text="{Binding Path=Model.Sound.FilePath, Mode=TwoWay}">
+                            Text="{Binding Path=Model.Sound.FilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="TextChanged">
                                     <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
@@ -324,7 +324,7 @@
 
                     <StackPanel IsEnabled="{Binding Path=Model.Email.IsEnabled}" Orientation="Vertical">
                         <controls:MetroHeader Header="Sender">
-                            <TextBox Text="{Binding Path=Model.Email.Sender, Mode=TwoWay}">
+                            <TextBox Text="{Binding Path=Model.Email.Sender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="TextChanged">
                                         <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
@@ -335,7 +335,7 @@
                         </controls:MetroHeader>
 
                         <controls:MetroHeader Header="Recipient">
-                            <TextBox Text="{Binding Path=Model.Email.Recipient, Mode=TwoWay}">
+                            <TextBox Text="{Binding Path=Model.Email.Recipient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="TextChanged">
                                         <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
@@ -348,10 +348,10 @@
                         <Expander
                             Margin="5"
                             Header="Template"
-                            IsExpanded="False">
+                            IsExpanded="{Binding Path=Model.Email.IsEnabled, Mode=OneWay}">
                             <StackPanel Orientation="Vertical">
                                 <controls:MetroHeader Header="Subject">
-                                    <TextBox Text="{Binding Path=Model.Email.Template.Subject, Mode=TwoWay}">
+                                    <TextBox Text="{Binding Path=Model.Email.Template.Subject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="TextChanged">
                                                 <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
@@ -363,7 +363,7 @@
                                 <controls:MetroHeader Header="Body">
                                     <TextBox
                                         Height="100"
-                                        Text="{Binding Path=Model.Email.Template.Body, Mode=TwoWay}"
+                                        Text="{Binding Path=Model.Email.Template.Body, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         TextWrapping="Wrap">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="TextChanged">
@@ -425,7 +425,7 @@
 
                     <StackPanel IsEnabled="{Binding Path=Model.Telegram.IsEnabled}" Orientation="Vertical">
                         <controls:MetroHeader Header="Bot Token">
-                            <TextBox Text="{Binding Path=Model.Telegram.BotToken, Mode=TwoWay}">
+                            <TextBox Text="{Binding Path=Model.Telegram.BotToken, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="TextChanged">
                                         <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
@@ -435,11 +435,14 @@
                             </TextBox>
                         </controls:MetroHeader>
 
-                        <GroupBox Margin="5" Header="Message Template">
+                        <Expander
+                            Margin="5"
+                            Header="Message Template"
+                            IsExpanded="{Binding Path=Model.Telegram.IsEnabled, Mode=OneWay}">
                             <StackPanel Orientation="Vertical">
                                 <TextBox
                                     Height="100"
-                                    Text="{Binding Path=Model.Telegram.MessageTemplate, Mode=TwoWay}"
+                                    Text="{Binding Path=Model.Telegram.MessageTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextWrapping="Wrap">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="TextChanged">
@@ -467,7 +470,7 @@
                                     </FlowDocument>
                                 </FlowDocumentScrollViewer>
                             </StackPanel>
-                        </GroupBox>
+                        </Expander>
                     </StackPanel>
 
                     <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Hidden">

@@ -1,5 +1,6 @@
 ﻿using Prism.Mvvm;
 using System.Windows.Media;
+using System.Xml.Serialization;
 
 namespace cAlgo.API.Alert.UI.Models
 {
@@ -31,6 +32,7 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
+        [XmlIgnore]
         public FontFamily Family
         {
             get
@@ -40,6 +42,18 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 SetProperty(ref _family, value);
+            }
+        }
+
+        public string FamilyName
+        {
+            get
+            {
+                return Family.Source;
+            }
+            set
+            {
+                Family = new FontFamily(value);
             }
         }
 
