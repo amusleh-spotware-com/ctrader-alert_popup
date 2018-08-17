@@ -11,7 +11,7 @@ namespace cAlgo.API.Alert.UI.Models
     {
         #region Fields
 
-        private SolidColorBrush _buySideColor, _sellSideColor, _symbolColor, _timeColor, _triggeredByColor, _timeFrameColor;
+        private SolidColorBrush _buySideColor, _sellSideColor, _neutralSideColor, _symbolColor, _timeColor, _triggeredByColor, _timeFrameColor;
 
         private int _maxAlertNumber;
 
@@ -72,6 +72,31 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 SellSideColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+            }
+        }
+
+        [XmlIgnore]
+        public SolidColorBrush NeutralSideColor
+        {
+            get
+            {
+                return _neutralSideColor;
+            }
+            set
+            {
+                SetProperty(ref _neutralSideColor, value);
+            }
+        }
+
+        public string NeutralSideColorCode
+        {
+            get
+            {
+                return NeutralSideColor.ToString();
+            }
+            set
+            {
+                NeutralSideColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
             }
         }
 

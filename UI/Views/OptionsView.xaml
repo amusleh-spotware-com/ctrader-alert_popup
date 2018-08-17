@@ -99,6 +99,20 @@
                                 </ComboBox>
                             </controls:MetroHeader>
 
+                            <controls:MetroHeader Header="Neutral Side">
+                                <ComboBox
+                                    ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
+                                    ItemsSource="{Binding Path=Colors}"
+                                    SelectedItem="{Binding Path=Model.Alerts.NeutralSideColor, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                            </controls:MetroHeader>
+
                             <controls:MetroHeader Header="Symbol">
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"

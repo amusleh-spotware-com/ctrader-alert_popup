@@ -104,11 +104,20 @@
         </Border>
     </DataTemplate>
 
+    <DataTemplate x:Key="NeutralSideTemplate">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.NeutralSideColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=TradeSide}" />
+        </Border>
+    </DataTemplate>
+
     <DataTemplate x:Key="TradeSideTemplate">
         <ContentControl Content="{Binding}">
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=TradeSide}" Value="Neutral">
+                            <Setter Property="ContentTemplate" Value="{StaticResource NeutralSideTemplate}" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding Path=TradeSide}" Value="Sell">
                             <Setter Property="ContentTemplate" Value="{StaticResource SellSideTemplate}" />
                         </DataTrigger>

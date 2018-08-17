@@ -87,6 +87,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
             {
                 BuySideColor = Brushes.Green,
                 SellSideColor = Brushes.Red,
+                NeutralSideColor = Brushes.Yellow,
                 SymbolColor = Brushes.DarkGoldenrod,
                 TriggeredByColor = Brushes.DeepPink,
                 TimeFrameColor = Brushes.DarkMagenta,
