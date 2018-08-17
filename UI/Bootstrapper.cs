@@ -8,6 +8,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Serialization;
 using System.IO;
+using CsvHelper;
+using System.Globalization;
 
 namespace cAlgo.API.Alert.UI
 {
@@ -29,14 +31,18 @@ namespace cAlgo.API.Alert.UI
 
         private readonly ResourceDictionary _themeResources;
 
+        private readonly string _alertsFilePath;
+
         private string _optionsFilePath;
 
         #endregion Fields
 
         #region Constructors
 
-        public Bootstrapper()
+        public Bootstrapper(string alertsFilePath)
         {
+            _alertsFilePath = alertsFilePath;
+
             _themeResources = new ResourceDictionary();
 
             _navigationJournal = new List<string>();
@@ -53,6 +59,13 @@ namespace cAlgo.API.Alert.UI
             _eventAggregator.GetEvent<Events.TelegramOptionsChangedEvent>().Subscribe(TelegramOptionsChangedEvent_Handler);
 
             _shellView = CreateView<Views.ShellView, ViewModels.ShellViewModel>(this);
+
+            if (File.Exists(_alertsFilePath))
+            {
+                List<Models.AlertModel> fileAlerts = GetAlertsFromFile(alertsFilePath);
+
+                _alerts.AddRange(fileAlerts);
+            }
         }
 
         #endregion Constructors
@@ -115,6 +128,14 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
+        public string AlertsFilePath
+        {
+            get
+            {
+                return _alertsFilePath;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -150,13 +171,13 @@ namespace cAlgo.API.Alert.UI
             {
                 options = ViewModels.OptionsBaseViewModel.GetDefaultOptions();
 
-                SaveOptions(_optionsFilePath);
+                SaveOptions(_optionsFilePath, options);
             }
 
             Run(options);
         }
 
-        public void SaveOptions(string path)
+        public void SaveOptions(string path, Models.OptionsModel options)
         {
             using (FileStream fileStream = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {
@@ -164,7 +185,7 @@ namespace cAlgo.API.Alert.UI
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(Models.OptionsModel));
 
-                    serializer.Serialize(writer, Options);
+                    serializer.Serialize(writer, options);
                 }
             }
         }
@@ -219,16 +240,98 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
+        public void AddAlertToFile(Models.AlertModel alert, FileMode mode = FileMode.Append)
+        {
+            if (!File.Exists(AlertsFilePath))
+            {
+                mode = FileMode.Create;
+            }
+
+            using (FileStream fileStream = File.Open(AlertsFilePath, mode, FileAccess.Write, FileShare.ReadWrite))
+            {
+                using (TextWriter writer = new StreamWriter(fileStream))
+                {
+                    CsvWriter csvWriter = new CsvWriter(writer);
+
+                    csvWriter.Configuration.CultureInfo = CultureInfo.InvariantCulture;
+                    csvWriter.Configuration.HasHeaderRecord = false;
+
+                    csvWriter.WriteRecord(alert);
+
+                    csvWriter.NextRecord();
+                }
+            }
+        }
+
         public void AddAlert(Models.AlertModel alert)
         {
+            AddAlertToFile(alert);
+
             _alerts.Add(alert);
 
             EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert);
         }
 
+        public void AddAlertRangeToFile(IEnumerable<Models.AlertModel> alerts, FileMode mode = FileMode.Append)
+        {
+            if (!File.Exists(AlertsFilePath))
+            {
+                mode = FileMode.Create;
+            }
+
+            using (FileStream fileStream = File.Open(AlertsFilePath, mode, FileAccess.Write, FileShare.ReadWrite))
+            {
+                using (TextWriter writer = new StreamWriter(fileStream))
+                {
+                    CsvWriter csvWriter = new CsvWriter(writer);
+
+                    csvWriter.Configuration.CultureInfo = CultureInfo.InvariantCulture;
+                    csvWriter.Configuration.HasHeaderRecord = false;
+
+                    csvWriter.WriteRecords(alerts);
+                }
+            }
+        }
+
+        public void AddAlertRange(IEnumerable<Models.AlertModel> alerts)
+        {
+            AddAlertRangeToFile(alerts);
+
+            _alerts.AddRange(alerts);
+
+            alerts.ToList().ForEach(alert => EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert));
+        }
+
+        public List<Models.AlertModel> GetAlertsFromFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("The alerts file doesn't exist on provided path: " + path);
+            }
+
+            List<Models.AlertModel> result = new List<Models.AlertModel>();
+
+            using (FileStream fileStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (TextReader reader = new StreamReader(fileStream))
+                {
+                    CsvReader csvReader = new CsvReader(reader);
+
+                    csvReader.Configuration.CultureInfo = CultureInfo.InvariantCulture;
+                    csvReader.Configuration.HasHeaderRecord = false;
+
+                    result = csvReader.GetRecords<Models.AlertModel>().ToList();
+                }
+            }
+
+            return result;
+        }
+
         public void RemoveAlert(Models.AlertModel alert)
         {
             _alerts.Remove(alert);
+
+            AddAlertRangeToFile(_alerts, FileMode.Create);
 
             EventAggregator.GetEvent<Events.AlertRemovedEvent>().Publish(alert);
         }
@@ -266,7 +369,7 @@ namespace cAlgo.API.Alert.UI
         {
             if (!string.IsNullOrEmpty(_optionsFilePath))
             {
-                SaveOptions(_optionsFilePath);
+                SaveOptions(_optionsFilePath, options);
             }
         }
 
