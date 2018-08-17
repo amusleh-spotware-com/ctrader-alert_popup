@@ -56,7 +56,6 @@ namespace cAlgo.API.Alert.UI.Models
             int hash = 17;
 
             hash += (hash * 31) + (Accent != null ? Accent.GetHashCode() : 0);
-            hash += (hash * 31) + (Color != null ? Color.GetHashCode() : 0);
 
             return hash;
         }

@@ -32,13 +32,45 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public static Brush GetAccentColor(Accent accent)
         {
-            return typeof(Brushes).GetProperties().FirstOrDefault(
+            Brush result = typeof(Brushes).GetProperties().FirstOrDefault(
                 property => property.Name.Equals(accent.Name, StringComparison.InvariantCultureIgnoreCase))?
                 .GetValue(null) as Brush
                 ??
                 typeof(Brushes).GetProperties().FirstOrDefault(
                 property => property.Name.IndexOf(accent.Name, StringComparison.InvariantCultureIgnoreCase) >= 0)?
                 .GetValue(null) as Brush;
+
+            if (result == null)
+            {
+                switch (accent.Name.ToLowerInvariant())
+                {
+                    case "amber":
+                        result = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF0A30A"));
+                        break;
+
+                    case "emerald":
+                        result = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF008A00"));
+                        break;
+
+                    case "cobalt":
+                        result = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0050EF"));
+                        break;
+
+                    case "mauve":
+                        result = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF76608A"));
+                        break;
+
+                    case "taupe":
+                        result = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF87794E"));
+                        break;
+
+                    default:
+                        result = Brushes.Transparent;
+                        break;
+                }
+            }
+
+            return result;
         }
 
         public static Models.OptionsModel GetDefaultOptions()
