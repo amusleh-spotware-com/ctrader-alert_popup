@@ -1,15 +1,14 @@
-﻿using MahApps.Metro;
+﻿using CsvHelper;
+using MahApps.Metro;
 using Prism.Events;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Serialization;
-using System.IO;
-using CsvHelper;
-using System.Globalization;
 
 namespace cAlgo.API.Alert.UI
 {
@@ -23,7 +22,7 @@ namespace cAlgo.API.Alert.UI
 
         private readonly List<string> _navigationJournal;
 
-        private readonly ObservableCollection<Models.AlertModel> _alerts;
+        private readonly List<Models.AlertModel> _alerts;
 
         private Models.OptionsModel _options;
 
@@ -47,7 +46,7 @@ namespace cAlgo.API.Alert.UI
 
             _navigationJournal = new List<string>();
 
-            _alerts = new ObservableCollection<Models.AlertModel>();
+            _alerts = new List<Models.AlertModel>();
 
             _eventAggregator = new EventAggregator();
 
@@ -57,6 +56,7 @@ namespace cAlgo.API.Alert.UI
             _eventAggregator.GetEvent<Events.SoundOptionsChangedEvent>().Subscribe(SoundOptionsChangedEvent_Handler);
             _eventAggregator.GetEvent<Events.EmailOptionsChangedEvent>().Subscribe(EmailOptionsChangedEvent_Handler);
             _eventAggregator.GetEvent<Events.TelegramOptionsChangedEvent>().Subscribe(TelegramOptionsChangedEvent_Handler);
+            _eventAggregator.GetEvent<Events.AlertRemovedEvent>().Subscribe(AlertRemovedEvent_Handler);
 
             _shellView = CreateView<Views.ShellView, ViewModels.ShellViewModel>(this);
 
@@ -269,7 +269,7 @@ namespace cAlgo.API.Alert.UI
 
             _alerts.Add(alert);
 
-            EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert);
+            InvokeAlertAddedEvent(alert);
         }
 
         public void AddAlertRangeToFile(IEnumerable<Models.AlertModel> alerts, FileMode mode = FileMode.Append)
@@ -299,7 +299,7 @@ namespace cAlgo.API.Alert.UI
 
             _alerts.AddRange(alerts);
 
-            alerts.ToList().ForEach(alert => EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert));
+            alerts.ToList().ForEach(alert => InvokeAlertAddedEvent(alert));
         }
 
         public List<Models.AlertModel> GetAlertsFromFile(string path)
@@ -325,15 +325,6 @@ namespace cAlgo.API.Alert.UI
             }
 
             return result;
-        }
-
-        public void RemoveAlert(Models.AlertModel alert)
-        {
-            _alerts.Remove(alert);
-
-            AddAlertRangeToFile(_alerts, FileMode.Create);
-
-            EventAggregator.GetEvent<Events.AlertRemovedEvent>().Publish(alert);
         }
 
         public List<Models.AlertModel> GetAlerts()
@@ -392,6 +383,31 @@ namespace cAlgo.API.Alert.UI
 
         private void TelegramOptionsChangedEvent_Handler(Models.TelegramOptionsModel options)
         {
+        }
+
+        public void AlertRemovedEvent_Handler(Models.AlertModel alert)
+        {
+            if (_alerts.Contains(alert))
+            {
+                _alerts.Remove(alert);
+
+                AddAlertRangeToFile(_alerts, FileMode.Create);
+            }
+        }
+
+        public void InvokeAlertAddedEvent(Models.AlertModel alert)
+        {
+            if (ShellView != null)
+            {
+                ShellView.Dispatcher.Invoke(() =>
+                {
+                    EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert);
+                });
+            }
+            else
+            {
+                EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert);
+            }
         }
 
         #endregion Methods

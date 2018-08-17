@@ -15,15 +15,15 @@ namespace cAlgo.API.Alert.Tester
     {
         private static void Main(string[] args)
         {
+            Bootstrapper bootstrapper = null;
+
             Thread windowThread = new Thread(new ThreadStart(() =>
             {
                 try
                 {
-                    Bootstrapper bootstrapper = new Bootstrapper(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\alerts.csv");
+                    bootstrapper = new Bootstrapper(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\alerts.csv");
 
                     bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Sell", Comment = "How we can trade with this", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
-                    bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "How we can trade with this", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
-                    bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Neutral", Comment = "How we can trade with this", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
 
                     bootstrapper.Run(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\options.xml");
                 }
@@ -34,11 +34,14 @@ namespace cAlgo.API.Alert.Tester
             }));
 
             windowThread.SetApartmentState(ApartmentState.STA);
-
             windowThread.CurrentCulture = CultureInfo.InvariantCulture;
             windowThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
             windowThread.Start();
+
+            Thread.Sleep(10000);
+
+            bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "How we can trade with this", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
         }
     }
 }

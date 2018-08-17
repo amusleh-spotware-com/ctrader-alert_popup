@@ -26,9 +26,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         #region Constructor
 
-        public AlertsViewModel(ObservableCollection<Models.AlertModel> alerts, Models.OptionsModel options, EventAggregator eventAggregator)
+        public AlertsViewModel(List<Models.AlertModel> alerts, Models.OptionsModel options, EventAggregator eventAggregator)
         {
-            Alerts = alerts;
+            Alerts = new ObservableCollection<Models.AlertModel>(alerts);
 
             _options = options;
 
@@ -98,10 +98,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private void Loaded()
         {
-            if (Alerts.Count > _options.Alerts.MaxAlertNumber)
-            {
-                Alerts.OrderByDescending(alert => alert.Time).Skip(_options.Alerts.MaxAlertNumber).ToList().ForEach(alert => Remove(alert));
-            }
+            Cleanup();
+
+            _eventAggregator.GetEvent<Events.AlertAddedEvent>().Subscribe(AlertAddedEvent_Handler);
 
             // Changing the alerts time zone
             Alerts.Where(alert => !alert.Time.Offset.Equals(_options.Alerts.TimeZone.BaseUtcOffset)).ToList().ForEach(alert =>
@@ -128,7 +127,24 @@ namespace cAlgo.API.Alert.UI.ViewModels
         {
             if (Alerts.Contains(alert))
             {
+                _eventAggregator.GetEvent<Events.AlertRemovedEvent>().Publish(alert);
+
                 Alerts.Remove(alert);
+            }
+        }
+
+        private void AlertAddedEvent_Handler(Models.AlertModel alert)
+        {
+            Alerts.Add(alert);
+
+            Cleanup();
+        }
+
+        private void Cleanup()
+        {
+            if (Alerts.Count > _options.Alerts.MaxAlertNumber)
+            {
+                Alerts.OrderByDescending(alert => alert.Time).Skip(_options.Alerts.MaxAlertNumber).ToList().ForEach(alert => Remove(alert));
             }
         }
 
