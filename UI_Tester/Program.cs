@@ -21,11 +21,9 @@ namespace cAlgo.API.Alert.Tester
             {
                 try
                 {
-                    bootstrapper = new Bootstrapper(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\alerts.csv");
+                    bootstrapper = new Bootstrapper(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\alerts.csv", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\options.xml");
 
-                    //bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Sell", Comment = "Alert 1 comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
-
-                    bootstrapper.Run(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\options.xml");
+                    bootstrapper.Run();
                 }
                 catch (Exception ex)
                 {
@@ -39,7 +37,7 @@ namespace cAlgo.API.Alert.Tester
 
             windowThread.Start();
 
-            Thread.Sleep(20000);
+            Thread.Sleep(10000);
 
             bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "Alert new comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
         }

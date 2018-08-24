@@ -30,15 +30,31 @@ namespace cAlgo.API.Alert.UI
 
         #region Constructors
 
-        public Bootstrapper(string alertsFilePath)
+        public Bootstrapper(string alertsFilePath, string optionsFilePath)
         {
             _alertsFilePath = alertsFilePath;
 
+            _optionsFilePath = optionsFilePath;
+
             _themeResources = new ResourceDictionary();
 
-            _navigationJournal = new List<string>();
+            _shellView = CreateView<Views.ShellView, ViewModels.ShellViewModel>(this);
 
-            _alerts = new List<Models.AlertModel>();
+            if (File.Exists(_optionsFilePath))
+            {
+                _options = GetOptions(_optionsFilePath);
+            }
+            else
+            {
+                _options = ViewModels.OptionsBaseViewModel.GetDefaultOptions();
+
+                SaveOptions(_optionsFilePath, _options);
+            }
+
+            _themeResources.MergedDictionaries.Add(_options.General.ThemeAccent.Accent.Resources);
+            _themeResources.MergedDictionaries.Add(_options.General.ThemeBase.Base.Resources);
+
+            _navigationJournal = new List<string>();
 
             _eventAggregator = new EventAggregator();
 
@@ -50,7 +66,7 @@ namespace cAlgo.API.Alert.UI
             _eventAggregator.GetEvent<Events.TelegramOptionsChangedEvent>().Subscribe(TelegramOptionsChangedEvent_Handler);
             _eventAggregator.GetEvent<Events.AlertRemovedEvent>().Subscribe(AlertRemovedEvent_Handler);
 
-            _shellView = CreateView<Views.ShellView, ViewModels.ShellViewModel>(this);
+            _alerts = new List<Models.AlertModel>();
 
             if (File.Exists(_alertsFilePath))
             {
@@ -299,41 +315,9 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
-        public void Run(Models.OptionsModel options)
-        {
-            _options = options;
-
-            _themeResources.MergedDictionaries.Add(_options.General.ThemeAccent.Accent.Resources);
-            _themeResources.MergedDictionaries.Add(_options.General.ThemeBase.Base.Resources);
-
-            _shellView.ShowDialog();
-        }
-
         public void Run()
         {
-            Models.OptionsModel options = ViewModels.OptionsBaseViewModel.GetDefaultOptions();
-
-            Run(options);
-        }
-
-        public void Run(string optionsFilePath)
-        {
-            Models.OptionsModel options;
-
-            _optionsFilePath = optionsFilePath;
-
-            if (File.Exists(_optionsFilePath))
-            {
-                options = GetOptions(_optionsFilePath);
-            }
-            else
-            {
-                options = ViewModels.OptionsBaseViewModel.GetDefaultOptions();
-
-                SaveOptions(_optionsFilePath, options);
-            }
-
-            Run(options);
+            _shellView.ShowDialog();
         }
 
         public void SaveOptions(string path, Models.OptionsModel options)
@@ -377,13 +361,6 @@ namespace cAlgo.API.Alert.UI
         private void GeneralOptionsChangedEvent_Handler(Models.GeneralOptionsModel options)
         {
             ThemeManager.ChangeAppStyle(_themeResources, options.ThemeAccent.Accent, options.ThemeBase.Base);
-        }
-
-        private ResourceDictionary GetMetroResource(string name)
-        {
-            Uri uri = new Uri(string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", name));
-
-            return new ResourceDictionary() { Source = uri };
         }
 
         private T GetViewModel<T>(params object[] parameters) where T : class

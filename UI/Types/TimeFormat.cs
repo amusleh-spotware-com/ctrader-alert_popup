@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace cAlgo.API.Alert.UI.Enums
+namespace cAlgo.API.Alert.UI.Types
 {
     public enum TimeFormat
     {

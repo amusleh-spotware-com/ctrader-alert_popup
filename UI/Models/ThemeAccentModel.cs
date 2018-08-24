@@ -42,6 +42,18 @@ namespace cAlgo.API.Alert.UI.Models
         [XmlIgnore]
         public SolidColorBrush Color { get; set; }
 
+        public string ColorCode
+        {
+            get
+            {
+                return Color.ToString();
+            }
+            set
+            {
+                Color = new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
+            }
+        }
+
         public string Name
         {
             get
@@ -63,18 +75,6 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 _sourceUri = value;
-            }
-        }
-
-        public string ColorCode
-        {
-            get
-            {
-                return Color.ToString();
-            }
-            set
-            {
-                Color = new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
             }
         }
 

@@ -16,11 +16,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private ObservableCollection<Models.AlertModel> _alerts;
 
-        private IList _selectedAlerts;
-
-        private Models.OptionsModel _options;
-
         private EventAggregator _eventAggregator;
+        private Models.OptionsModel _options;
+        private IList _selectedAlerts;
 
         #endregion Fields
 
@@ -28,11 +26,13 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public AlertsViewModel(List<Models.AlertModel> alerts, Models.OptionsModel options, EventAggregator eventAggregator)
         {
-            Alerts = new ObservableCollection<Models.AlertModel>(alerts);
-
             _options = options;
 
             _eventAggregator = eventAggregator;
+
+            Alerts = new ObservableCollection<Models.AlertModel>();
+
+            alerts.ForEach(alert => AddAlert(alert));
 
             LoadedCommand = new DelegateCommand(Loaded);
 
@@ -50,14 +50,6 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         #region Properties
 
-        public DelegateCommand LoadedCommand { get; set; }
-
-        public DelegateCommand UnloadedCommand { get; set; }
-
-        public DelegateCommand RemoveSelectedCommand { get; set; }
-
-        public DelegateCommand<Models.AlertModel> RemoveCommand { get; set; }
-
         public ObservableCollection<Models.AlertModel> Alerts
         {
             get
@@ -70,7 +62,18 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        public DelegateCommand<IList> SelectionChangedCommand { get; set; }
+        public DelegateCommand LoadedCommand { get; set; }
+
+        public Models.OptionsModel Options
+        {
+            get
+            {
+                return _options;
+            }
+        }
+
+        public DelegateCommand<Models.AlertModel> RemoveCommand { get; set; }
+        public DelegateCommand RemoveSelectedCommand { get; set; }
 
         public IList SelectedAlerts
         {
@@ -84,43 +87,45 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        public Models.OptionsModel Options
-        {
-            get
-            {
-                return _options;
-            }
-        }
+        public DelegateCommand<IList> SelectionChangedCommand { get; set; }
+        public DelegateCommand UnloadedCommand { get; set; }
 
         #endregion Properties
 
         #region Methods
+
+        private void AddAlert(Models.AlertModel alert)
+        {
+            Models.AlertModel alertCopy = alert.Clone() as Models.AlertModel;
+
+            if (!alertCopy.Time.Offset.Equals(_options.Alerts.TimeZone.BaseUtcOffset))
+            {
+                alertCopy.Time = alert.Time.ToOffset(_options.Alerts.TimeZone.BaseUtcOffset);
+            }
+
+            Alerts.Add(alert);
+        }
+
+        private void AlertAddedEvent_Handler(Models.AlertModel alert)
+        {
+            AddAlert(alert);
+
+            Cleanup();
+        }
+
+        private void Cleanup()
+        {
+            if (Alerts.Count > _options.Alerts.MaxAlertNumber)
+            {
+                Alerts.OrderByDescending(alert => alert.Time).Skip(_options.Alerts.MaxAlertNumber).ToList().ForEach(alert => Remove(alert));
+            }
+        }
 
         private void Loaded()
         {
             Cleanup();
 
             _eventAggregator.GetEvent<Events.AlertAddedEvent>().Subscribe(AlertAddedEvent_Handler);
-
-            // Changing the alerts time zone
-            Alerts.Where(alert => !alert.Time.Offset.Equals(_options.Alerts.TimeZone.BaseUtcOffset)).ToList().ForEach(alert =>
-            {
-                alert.Time = alert.Time.ToOffset(_options.Alerts.TimeZone.BaseUtcOffset);
-            });
-        }
-
-        private void Unloaded()
-        {
-        }
-
-        private void SelectionChanged(IList selectedItems)
-        {
-            SelectedAlerts = selectedItems;
-        }
-
-        private void RemoveSelected()
-        {
-            SelectedAlerts.Cast<Models.AlertModel>().ToList().ForEach(alert => Remove(alert));
         }
 
         private void Remove(Models.AlertModel alert)
@@ -133,19 +138,18 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        private void AlertAddedEvent_Handler(Models.AlertModel alert)
+        private void RemoveSelected()
         {
-            Alerts.Add(alert);
-
-            Cleanup();
+            SelectedAlerts.Cast<Models.AlertModel>().ToList().ForEach(alert => Remove(alert));
         }
 
-        private void Cleanup()
+        private void SelectionChanged(IList selectedItems)
         {
-            if (Alerts.Count > _options.Alerts.MaxAlertNumber)
-            {
-                Alerts.OrderByDescending(alert => alert.Time).Skip(_options.Alerts.MaxAlertNumber).ToList().ForEach(alert => Remove(alert));
-            }
+            SelectedAlerts = selectedItems;
+        }
+
+        private void Unloaded()
+        {
         }
 
         #endregion Methods

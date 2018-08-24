@@ -13,11 +13,9 @@ namespace cAlgo.API.Alert.UI.Models
 
         private SolidColorBrush _buySideColor, _sellSideColor, _neutralSideColor, _symbolColor, _timeColor, _triggeredByColor, _timeFrameColor;
 
-        private int _maxAlertNumber;
-
         private FontModel _commentFontModel;
-
-        private Enums.TimeFormat _timeFormat;
+        private int _maxAlertNumber;
+        private Types.TimeFormat _timeFormat;
 
         private TimeZoneInfo _timeZone;
 
@@ -50,28 +48,27 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        [XmlIgnore]
-        public SolidColorBrush SellSideColor
+        public FontModel CommentFontModel
         {
             get
             {
-                return _sellSideColor;
+                return _commentFontModel;
             }
             set
             {
-                SetProperty(ref _sellSideColor, value);
+                SetProperty(ref _commentFontModel, value);
             }
         }
 
-        public string SellSideColorCode
+        public int MaxAlertNumber
         {
             get
             {
-                return SellSideColor.ToString();
+                return _maxAlertNumber;
             }
             set
             {
-                SellSideColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+                SetProperty(ref _maxAlertNumber, value);
             }
         }
 
@@ -97,6 +94,31 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 NeutralSideColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+            }
+        }
+
+        [XmlIgnore]
+        public SolidColorBrush SellSideColor
+        {
+            get
+            {
+                return _sellSideColor;
+            }
+            set
+            {
+                SetProperty(ref _sellSideColor, value);
+            }
+        }
+
+        public string SellSideColorCode
+        {
+            get
+            {
+                return SellSideColor.ToString();
+            }
+            set
+            {
+                SellSideColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
             }
         }
 
@@ -150,28 +172,15 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        [XmlIgnore]
-        public SolidColorBrush TriggeredByColor
+        public Types.TimeFormat TimeFormat
         {
             get
             {
-                return _triggeredByColor;
+                return _timeFormat;
             }
             set
             {
-                SetProperty(ref _triggeredByColor, value);
-            }
-        }
-
-        public string TriggeredByColorCode
-        {
-            get
-            {
-                return TriggeredByColor.ToString();
-            }
-            set
-            {
-                TriggeredByColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+                SetProperty(ref _timeFormat, value);
             }
         }
 
@@ -200,42 +209,6 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public int MaxAlertNumber
-        {
-            get
-            {
-                return _maxAlertNumber;
-            }
-            set
-            {
-                SetProperty(ref _maxAlertNumber, value);
-            }
-        }
-
-        public FontModel CommentFontModel
-        {
-            get
-            {
-                return _commentFontModel;
-            }
-            set
-            {
-                SetProperty(ref _commentFontModel, value);
-            }
-        }
-
-        public Enums.TimeFormat TimeFormat
-        {
-            get
-            {
-                return _timeFormat;
-            }
-            set
-            {
-                SetProperty(ref _timeFormat, value);
-            }
-        }
-
         [XmlIgnore]
         public TimeZoneInfo TimeZone
         {
@@ -258,6 +231,31 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 TimeZone = TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(tz => tz.DisplayName.Equals(value, StringComparison.InvariantCultureIgnoreCase));
+            }
+        }
+
+        [XmlIgnore]
+        public SolidColorBrush TriggeredByColor
+        {
+            get
+            {
+                return _triggeredByColor;
+            }
+            set
+            {
+                SetProperty(ref _triggeredByColor, value);
+            }
+        }
+
+        public string TriggeredByColorCode
+        {
+            get
+            {
+                return TriggeredByColor.ToString();
+            }
+            set
+            {
+                TriggeredByColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
             }
         }
 

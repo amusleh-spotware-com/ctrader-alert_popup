@@ -74,7 +74,7 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Converters\EnumToDescription.cs" />
     <Compile Include="Converters\EnumToInt.cs" />
-    <Compile Include="Enums\TimeFormat.cs" />
+    <Compile Include="Types\TimeFormat.cs" />
     <Compile Include="Events\AlertRemovedEvent.cs" />
     <Compile Include="Events\AlertAddedEvent.cs" />
     <Compile Include="Events\GeneralOptionsChangedEvent.cs" />

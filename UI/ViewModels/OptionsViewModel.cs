@@ -28,7 +28,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private List<Models.FontStyleModel> _fontStyles;
 
-        private List<Enums.TimeFormat> _timeFormats;
+        private List<Types.TimeFormat> _timeFormats;
 
         private List<TimeZoneInfo> _timeZones;
 
@@ -165,7 +165,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        public List<Enums.TimeFormat> TimeFormats
+        public List<Types.TimeFormat> TimeFormats
         {
             get
             {

@@ -3,27 +3,26 @@ using System;
 
 namespace cAlgo.API.Alert.UI.Models
 {
-    public class AlertModel : BindableBase
+    public class AlertModel : BindableBase, ICloneable
     {
         #region Fields
 
-        private string _timeFrame, _symbol, _triggeredBy, _tradeSide, _comment;
-
         private DateTimeOffset _time;
+        private string _timeFrame, _symbol, _triggeredBy, _tradeSide, _comment;
 
         #endregion Fields
 
         #region Properties
 
-        public string TimeFrame
+        public string Comment
         {
             get
             {
-                return _timeFrame;
+                return _comment;
             }
             set
             {
-                SetProperty(ref _timeFrame, value);
+                SetProperty(ref _comment, value);
             }
         }
 
@@ -39,18 +38,6 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public string TriggeredBy
-        {
-            get
-            {
-                return _triggeredBy;
-            }
-            set
-            {
-                SetProperty(ref _triggeredBy, value);
-            }
-        }
-
         public DateTimeOffset Time
         {
             get
@@ -60,6 +47,18 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 SetProperty(ref _time, value);
+            }
+        }
+
+        public string TimeFrame
+        {
+            get
+            {
+                return _timeFrame;
+            }
+            set
+            {
+                SetProperty(ref _timeFrame, value);
             }
         }
 
@@ -75,18 +74,27 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public string Comment
+        public string TriggeredBy
         {
             get
             {
-                return _comment;
+                return _triggeredBy;
             }
             set
             {
-                SetProperty(ref _comment, value);
+                SetProperty(ref _triggeredBy, value);
             }
         }
 
         #endregion Properties
+
+        #region Methods
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        #endregion Methods
     }
 }
