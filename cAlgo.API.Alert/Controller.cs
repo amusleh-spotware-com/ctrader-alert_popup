@@ -85,7 +85,10 @@ namespace cAlgo.API.Alert
 
             AlertModel alertCopy = alert.Clone() as AlertModel;
 
-            alertCopy.Time = alert.Time.ToOffset(options.Alerts.TimeZone.BaseUtcOffset);
+            if (!alertCopy.Time.Offset.Equals(options.Alerts.TimeZone.BaseUtcOffset))
+            {
+                alertCopy.Time = alert.Time.ToOffset(options.Alerts.TimeZone.BaseUtcOffset);
+            }
 
             if (options.Email.IsEnabled)
             {
