@@ -39,9 +39,9 @@ namespace cAlgo.API.Alert.Tester
 
             windowThread.Start();
 
-            Thread.Sleep(10000);
+            Thread.Sleep(20000);
 
-            //bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "Alert 2 comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
+            bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "Alert new comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
         }
     }
 }

@@ -16,22 +16,14 @@ namespace cAlgo.API.Alert.UI
     {
         #region Fields
 
-        private string _currentView;
-
-        private readonly Views.ShellView _shellView;
-
-        private readonly List<string> _navigationJournal;
-
         private readonly List<Models.AlertModel> _alerts;
-
-        private Models.OptionsModel _options;
-
-        private readonly EventAggregator _eventAggregator;
-
-        private readonly ResourceDictionary _themeResources;
-
         private readonly string _alertsFilePath;
-
+        private readonly EventAggregator _eventAggregator;
+        private readonly List<string> _navigationJournal;
+        private readonly Views.ShellView _shellView;
+        private readonly ResourceDictionary _themeResources;
+        private string _currentView;
+        private Models.OptionsModel _options;
         private string _optionsFilePath;
 
         #endregion Fields
@@ -72,11 +64,11 @@ namespace cAlgo.API.Alert.UI
 
         #region Properties
 
-        public Window ShellView
+        public string AlertsFilePath
         {
             get
             {
-                return _shellView;
+                return _alertsFilePath;
             }
         }
 
@@ -85,6 +77,14 @@ namespace cAlgo.API.Alert.UI
             get
             {
                 return _currentView;
+            }
+        }
+
+        public EventAggregator EventAggregator
+        {
+            get
+            {
+                return _eventAggregator;
             }
         }
 
@@ -104,22 +104,6 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
-        public ResourceDictionary ThemeResources
-        {
-            get
-            {
-                return _themeResources;
-            }
-        }
-
-        public EventAggregator EventAggregator
-        {
-            get
-            {
-                return _eventAggregator;
-            }
-        }
-
         public string OptionsFilePath
         {
             get
@@ -128,17 +112,192 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
-        public string AlertsFilePath
+        public Window ShellView
         {
             get
             {
-                return _alertsFilePath;
+                return _shellView;
+            }
+        }
+
+        public ResourceDictionary ThemeResources
+        {
+            get
+            {
+                return _themeResources;
             }
         }
 
         #endregion Properties
 
         #region Methods
+
+        public void AddAlert(Models.AlertModel alert)
+        {
+            AddAlertToFile(alert);
+
+            _alerts.Add(alert);
+
+            InvokeAlertAddedEvent(alert);
+        }
+
+        public void AddAlertRange(IEnumerable<Models.AlertModel> alerts)
+        {
+            AddAlertRangeToFile(alerts);
+
+            _alerts.AddRange(alerts);
+
+            alerts.ToList().ForEach(alert => InvokeAlertAddedEvent(alert));
+        }
+
+        public void AddAlertRangeToFile(IEnumerable<Models.AlertModel> alerts, FileMode mode = FileMode.Append)
+        {
+            if (!File.Exists(AlertsFilePath))
+            {
+                mode = FileMode.Create;
+            }
+
+            using (FileStream fileStream = File.Open(AlertsFilePath, mode, FileAccess.Write, FileShare.ReadWrite))
+            {
+                using (TextWriter writer = new StreamWriter(fileStream))
+                {
+                    CsvWriter csvWriter = new CsvWriter(writer);
+
+                    csvWriter.Configuration.CultureInfo = CultureInfo.InvariantCulture;
+                    csvWriter.Configuration.HasHeaderRecord = false;
+
+                    csvWriter.WriteRecords(alerts);
+                }
+            }
+        }
+
+        public void AddAlertToFile(Models.AlertModel alert, FileMode mode = FileMode.Append)
+        {
+            if (!File.Exists(AlertsFilePath))
+            {
+                mode = FileMode.Create;
+            }
+
+            using (FileStream fileStream = File.Open(AlertsFilePath, mode, FileAccess.Write, FileShare.ReadWrite))
+            {
+                using (TextWriter writer = new StreamWriter(fileStream))
+                {
+                    CsvWriter csvWriter = new CsvWriter(writer);
+
+                    csvWriter.Configuration.CultureInfo = CultureInfo.InvariantCulture;
+                    csvWriter.Configuration.HasHeaderRecord = false;
+
+                    csvWriter.WriteRecord(alert);
+
+                    csvWriter.NextRecord();
+                }
+            }
+        }
+
+        public void AlertRemovedEvent_Handler(Models.AlertModel alert)
+        {
+            if (_alerts.Contains(alert))
+            {
+                _alerts.Remove(alert);
+
+                AddAlertRangeToFile(_alerts, FileMode.Create);
+            }
+        }
+
+        public List<Models.AlertModel> GetAlerts()
+        {
+            return _alerts.ToList();
+        }
+
+        public List<Models.AlertModel> GetAlertsFromFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("The alerts file doesn't exist on provided path: " + path);
+            }
+
+            List<Models.AlertModel> result = new List<Models.AlertModel>();
+
+            using (FileStream fileStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (TextReader reader = new StreamReader(fileStream))
+                {
+                    CsvReader csvReader = new CsvReader(reader);
+
+                    csvReader.Configuration.CultureInfo = CultureInfo.InvariantCulture;
+                    csvReader.Configuration.HasHeaderRecord = false;
+
+                    result = csvReader.GetRecords<Models.AlertModel>().ToList();
+                }
+            }
+
+            return result;
+        }
+
+        public Models.OptionsModel GetOptions(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("The options file doesn't exist on provided path: " + path);
+            }
+
+            Models.OptionsModel result;
+
+            using (FileStream fileStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (TextReader reader = new StreamReader(fileStream))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(Models.OptionsModel));
+
+                    result = serializer.Deserialize(reader) as Models.OptionsModel;
+                }
+            }
+
+            return result;
+        }
+
+        public void InvokeAlertAddedEvent(Models.AlertModel alert)
+        {
+            if (ShellView != null)
+            {
+                InvokeOnWindowThread(() =>
+                {
+                    EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert);
+                });
+            }
+            else
+            {
+                EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert);
+            }
+        }
+
+        public void InvokeOnWindowThread(Action action)
+        {
+            ShellView.Dispatcher.Invoke(action);
+        }
+
+        public void Navigate(string viewName)
+        {
+            if (viewName.Equals(_currentView, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return;
+            }
+
+            _currentView = viewName;
+
+            _navigationJournal.Add(_currentView);
+
+            switch (viewName)
+            {
+                case ViewNames.AlertsView:
+                    _shellView.Content = CreateView<Views.AlertsView, ViewModels.AlertsViewModel>(_alerts, _options, _eventAggregator);
+                    break;
+
+                case ViewNames.OptionsView:
+                    _shellView.Content = CreateView<Views.OptionsView, ViewModels.OptionsViewModel>(_options, _eventAggregator);
+                    break;
+            }
+        }
 
         public void Run(Models.OptionsModel options)
         {
@@ -190,158 +349,13 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
-        public Models.OptionsModel GetOptions(string path)
-        {
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("The options file doesn't exist on provided path: " + path);
-            }
-
-            Models.OptionsModel result;
-
-            using (FileStream fileStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                using (TextReader reader = new StreamReader(fileStream))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(Models.OptionsModel));
-
-                    result = serializer.Deserialize(reader) as Models.OptionsModel;
-                }
-            }
-
-            return result;
-        }
-
         public void Shutdown()
         {
             _shellView.Close();
         }
 
-        public void Navigate(string viewName)
+        private void AlertOptionsChangedEvent_Handler(Models.AlertOptionsModel options)
         {
-            if (viewName.Equals(_currentView, StringComparison.InvariantCultureIgnoreCase))
-            {
-                return;
-            }
-
-            _currentView = viewName;
-
-            _navigationJournal.Add(_currentView);
-
-            switch (viewName)
-            {
-                case ViewNames.AlertsView:
-                    _shellView.Content = CreateView<Views.AlertsView, ViewModels.AlertsViewModel>(_alerts, _options, _eventAggregator);
-                    break;
-
-                case ViewNames.OptionsView:
-                    _shellView.Content = CreateView<Views.OptionsView, ViewModels.OptionsViewModel>(_options, _eventAggregator);
-                    break;
-            }
-        }
-
-        public void AddAlertToFile(Models.AlertModel alert, FileMode mode = FileMode.Append)
-        {
-            if (!File.Exists(AlertsFilePath))
-            {
-                mode = FileMode.Create;
-            }
-
-            using (FileStream fileStream = File.Open(AlertsFilePath, mode, FileAccess.Write, FileShare.ReadWrite))
-            {
-                using (TextWriter writer = new StreamWriter(fileStream))
-                {
-                    CsvWriter csvWriter = new CsvWriter(writer);
-
-                    csvWriter.Configuration.CultureInfo = CultureInfo.InvariantCulture;
-                    csvWriter.Configuration.HasHeaderRecord = false;
-
-                    csvWriter.WriteRecord(alert);
-
-                    csvWriter.NextRecord();
-                }
-            }
-        }
-
-        public void AddAlert(Models.AlertModel alert)
-        {
-            AddAlertToFile(alert);
-
-            _alerts.Add(alert);
-
-            InvokeAlertAddedEvent(alert);
-        }
-
-        public void AddAlertRangeToFile(IEnumerable<Models.AlertModel> alerts, FileMode mode = FileMode.Append)
-        {
-            if (!File.Exists(AlertsFilePath))
-            {
-                mode = FileMode.Create;
-            }
-
-            using (FileStream fileStream = File.Open(AlertsFilePath, mode, FileAccess.Write, FileShare.ReadWrite))
-            {
-                using (TextWriter writer = new StreamWriter(fileStream))
-                {
-                    CsvWriter csvWriter = new CsvWriter(writer);
-
-                    csvWriter.Configuration.CultureInfo = CultureInfo.InvariantCulture;
-                    csvWriter.Configuration.HasHeaderRecord = false;
-
-                    csvWriter.WriteRecords(alerts);
-                }
-            }
-        }
-
-        public void AddAlertRange(IEnumerable<Models.AlertModel> alerts)
-        {
-            AddAlertRangeToFile(alerts);
-
-            _alerts.AddRange(alerts);
-
-            alerts.ToList().ForEach(alert => InvokeAlertAddedEvent(alert));
-        }
-
-        public List<Models.AlertModel> GetAlertsFromFile(string path)
-        {
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("The alerts file doesn't exist on provided path: " + path);
-            }
-
-            List<Models.AlertModel> result = new List<Models.AlertModel>();
-
-            using (FileStream fileStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                using (TextReader reader = new StreamReader(fileStream))
-                {
-                    CsvReader csvReader = new CsvReader(reader);
-
-                    csvReader.Configuration.CultureInfo = CultureInfo.InvariantCulture;
-                    csvReader.Configuration.HasHeaderRecord = false;
-
-                    result = csvReader.GetRecords<Models.AlertModel>().ToList();
-                }
-            }
-
-            return result;
-        }
-
-        public List<Models.AlertModel> GetAlerts()
-        {
-            return _alerts.ToList();
-        }
-
-        private ResourceDictionary GetMetroResource(string name)
-        {
-            Uri uri = new Uri(string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", name));
-
-            return new ResourceDictionary() { Source = uri };
-        }
-
-        private T GetViewModel<T>(params object[] parameters) where T : class
-        {
-            return (T)Activator.CreateInstance(typeof(T), parameters);
         }
 
         private TView CreateView<TView, TViewModel>(params object[] parameters) where TView : class
@@ -356,6 +370,27 @@ namespace cAlgo.API.Alert.UI
             return view;
         }
 
+        private void EmailOptionsChangedEvent_Handler(Models.EmailOptionsModel options)
+        {
+        }
+
+        private void GeneralOptionsChangedEvent_Handler(Models.GeneralOptionsModel options)
+        {
+            ThemeManager.ChangeAppStyle(_themeResources, options.ThemeAccent.Accent, options.ThemeBase.Base);
+        }
+
+        private ResourceDictionary GetMetroResource(string name)
+        {
+            Uri uri = new Uri(string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", name));
+
+            return new ResourceDictionary() { Source = uri };
+        }
+
+        private T GetViewModel<T>(params object[] parameters) where T : class
+        {
+            return (T)Activator.CreateInstance(typeof(T), parameters);
+        }
+
         private void OptionsChangedEvent_Handler(Models.OptionsModel options)
         {
             if (!string.IsNullOrEmpty(_optionsFilePath))
@@ -364,50 +399,12 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
-        private void GeneralOptionsChangedEvent_Handler(Models.GeneralOptionsModel options)
-        {
-            ThemeManager.ChangeAppStyle(_themeResources, options.ThemeAccent.Accent, options.ThemeBase.Base);
-        }
-
-        private void EmailOptionsChangedEvent_Handler(Models.EmailOptionsModel options)
-        {
-        }
-
         private void SoundOptionsChangedEvent_Handler(Models.SoundOptionsModel options)
-        {
-        }
-
-        private void AlertOptionsChangedEvent_Handler(Models.AlertOptionsModel options)
         {
         }
 
         private void TelegramOptionsChangedEvent_Handler(Models.TelegramOptionsModel options)
         {
-        }
-
-        public void AlertRemovedEvent_Handler(Models.AlertModel alert)
-        {
-            if (_alerts.Contains(alert))
-            {
-                _alerts.Remove(alert);
-
-                AddAlertRangeToFile(_alerts, FileMode.Create);
-            }
-        }
-
-        public void InvokeAlertAddedEvent(Models.AlertModel alert)
-        {
-            if (ShellView != null)
-            {
-                ShellView.Dispatcher.Invoke(() =>
-                {
-                    EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert);
-                });
-            }
-            else
-            {
-                EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert);
-            }
         }
 
         #endregion Methods
