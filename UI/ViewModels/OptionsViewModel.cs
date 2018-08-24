@@ -14,27 +14,18 @@ namespace cAlgo.API.Alert.UI.ViewModels
     {
         #region Fields
 
-        private Models.OptionsModel _model;
-
         private List<SolidColorBrush> _colors;
-
-        private List<Models.ThemeBaseModel> _themeBases;
-
-        private List<Models.ThemeAccentModel> _themeAccents;
-
+        private EventAggregator _eventAggregator;
         private List<FontFamily> _fonts;
-
-        private List<Models.FontWeightModel> _fontWeights;
-
         private List<Models.FontStyleModel> _fontStyles;
-
+        private List<Models.FontWeightModel> _fontWeights;
+        private Models.OptionsModel _model;
+        private Models.TelegramBot _telegramBot;
+        private List<Models.ThemeAccentModel> _themeAccents;
+        private List<Models.ThemeBaseModel> _themeBases;
         private List<Types.TimeFormat> _timeFormats;
 
         private List<TimeZoneInfo> _timeZones;
-
-        private EventAggregator _eventAggregator;
-
-        private Models.TelegramBot _telegramBot;
 
         #endregion Fields
 
@@ -81,17 +72,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         #region Properties
 
-        public DelegateCommand LoadedCommand { get; set; }
-
-        public DelegateCommand UnloadedCommand { get; set; }
-
-        public Models.OptionsModel Model
-        {
-            get
-            {
-                return _model;
-            }
-        }
+        public DelegateCommand AddTelegramBotCommand { get; set; }
+        public DelegateCommand AlertOptionsChangedCommand { get; set; }
+        public DelegateCommand BrowserSoundFileCommand { get; set; }
 
         public List<SolidColorBrush> Colors
         {
@@ -105,29 +88,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        public List<Models.ThemeBaseModel> ThemeBases
-        {
-            get
-            {
-                return _themeBases;
-            }
-            set
-            {
-                SetProperty(ref _themeBases, value);
-            }
-        }
-
-        public List<Models.ThemeAccentModel> ThemeAccents
-        {
-            get
-            {
-                return _themeAccents;
-            }
-            set
-            {
-                SetProperty(ref _themeAccents, value);
-            }
-        }
+        public DelegateCommand EmailOptionsChangedCommand { get; set; }
 
         public List<FontFamily> Fonts
         {
@@ -138,6 +99,18 @@ namespace cAlgo.API.Alert.UI.ViewModels
             set
             {
                 SetProperty(ref _fonts, value);
+            }
+        }
+
+        public List<Models.FontStyleModel> FontStyles
+        {
+            get
+            {
+                return _fontStyles;
+            }
+            set
+            {
+                SetProperty(ref _fontStyles, value);
             }
         }
 
@@ -153,15 +126,60 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        public List<Models.FontStyleModel> FontStyles
+        public DelegateCommand GeneralOptionsChangedCommand { get; set; }
+        public DelegateCommand LoadedCommand { get; set; }
+
+        public Models.OptionsModel Model
         {
             get
             {
-                return _fontStyles;
+                return _model;
+            }
+        }
+
+        public DelegateCommand OptionsChangedCommand { get; set; }
+        public DelegateCommand<IList> RemoveSelectedTelegramBotsCommand { get; set; }
+        public DelegateCommand<Models.TelegramBot> RemoveTelegramBotCommand { get; set; }
+        public DelegateCommand<string> RequestNavigateCommand { get; set; }
+        public DelegateCommand ResetEmailTemplateCommand { get; set; }
+        public DelegateCommand ResetTelegramTemplateCommand { get; set; }
+        public DelegateCommand SoundOptionsChangedCommand { get; set; }
+
+        public Models.TelegramBot TelegramBot
+        {
+            get
+            {
+                return _telegramBot;
             }
             set
             {
-                SetProperty(ref _fontStyles, value);
+                SetProperty(ref _telegramBot, value);
+            }
+        }
+
+        public DelegateCommand TelegramOptionsChangedCommand { get; set; }
+
+        public List<Models.ThemeAccentModel> ThemeAccents
+        {
+            get
+            {
+                return _themeAccents;
+            }
+            set
+            {
+                SetProperty(ref _themeAccents, value);
+            }
+        }
+
+        public List<Models.ThemeBaseModel> ThemeBases
+        {
+            get
+            {
+                return _themeBases;
+            }
+            set
+            {
+                SetProperty(ref _themeBases, value);
             }
         }
 
@@ -189,47 +207,51 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        public DelegateCommand BrowserSoundFileCommand { get; set; }
-
-        public DelegateCommand ResetEmailTemplateCommand { get; set; }
-
-        public DelegateCommand OptionsChangedCommand { get; set; }
-
-        public DelegateCommand GeneralOptionsChangedCommand { get; set; }
-
-        public DelegateCommand AlertOptionsChangedCommand { get; set; }
-
-        public DelegateCommand SoundOptionsChangedCommand { get; set; }
-
-        public DelegateCommand EmailOptionsChangedCommand { get; set; }
-
-        public DelegateCommand TelegramOptionsChangedCommand { get; set; }
-
-        public DelegateCommand ResetTelegramTemplateCommand { get; set; }
-
-        public DelegateCommand<string> RequestNavigateCommand { get; set; }
-
-        public Models.TelegramBot TelegramBot
-        {
-            get
-            {
-                return _telegramBot;
-            }
-            set
-            {
-                SetProperty(ref _telegramBot, value);
-            }
-        }
-
-        public DelegateCommand AddTelegramBotCommand { get; set; }
-
-        public DelegateCommand<Models.TelegramBot> RemoveTelegramBotCommand { get; set; }
-
-        public DelegateCommand<IList> RemoveSelectedTelegramBotsCommand { get; set; }
+        public DelegateCommand UnloadedCommand { get; set; }
 
         #endregion Properties
 
         #region Methods
+
+        private void AddTelegramBot()
+        {
+            if (!string.IsNullOrEmpty(TelegramBot.Name) && !string.IsNullOrEmpty(TelegramBot.Token))
+            {
+                Model.Telegram.Bots.Add(TelegramBot);
+
+                TelegramBot = new Models.TelegramBot();
+
+                OptionsChangedCommand.Execute();
+                TelegramOptionsChangedCommand.Execute();
+            }
+        }
+
+        private void AlertOptionsChanged()
+        {
+            _eventAggregator.GetEvent<Events.AlertOptionsChangedEvent>().Publish(Model.Alerts);
+        }
+
+        private void BrowserSoundFile()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "WAV files (*.wav)|*.wav";
+            openFileDialog.InitialDirectory = string.IsNullOrEmpty(Model.Sound.FilePath) ? Environment.GetFolderPath(Environment.SpecialFolder.Desktop) : Model.Sound.FilePath;
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Model.Sound.FilePath = openFileDialog.FileName;
+            }
+        }
+
+        private void EmailOptionsChanged()
+        {
+            _eventAggregator.GetEvent<Events.EmailOptionsChangedEvent>().Publish(Model.Email);
+        }
+
+        private void GeneralOptionsChanged()
+        {
+            _eventAggregator.GetEvent<Events.GeneralOptionsChangedEvent>().Publish(Model.General);
+        }
 
         private void Loaded()
         {
@@ -252,79 +274,14 @@ namespace cAlgo.API.Alert.UI.ViewModels
             TelegramBot = new Models.TelegramBot();
         }
 
-        private void Unloaded()
-        {
-        }
-
-        private void BrowserSoundFile()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "WAV files (*.wav)|*.wav";
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                Model.Sound.FilePath = openFileDialog.FileName;
-            }
-        }
-
-        private void ResetEmailTemplate()
-        {
-            Model.Email.Template.Subject = Model.Email.DefaultTemplate.Subject;
-            Model.Email.Template.Body = Model.Email.DefaultTemplate.Body;
-        }
-
-        private void ResetTelegramTemplate()
-        {
-            //Model.Telegram.MessageTemplate = Model.Telegram.DefaultMessageTemplate;
-        }
-
-        private void RequestNavigate(string url)
-        {
-            System.Diagnostics.Process.Start(url);
-        }
-
         private void OptionsChanged()
         {
             _eventAggregator.GetEvent<Events.OptionsChangedEvent>().Publish(Model);
         }
 
-        private void GeneralOptionsChanged()
+        private void RemoveSelectedTelegramBots(IList selectedItems)
         {
-            _eventAggregator.GetEvent<Events.GeneralOptionsChangedEvent>().Publish(Model.General);
-        }
-
-        private void AlertOptionsChanged()
-        {
-            _eventAggregator.GetEvent<Events.AlertOptionsChangedEvent>().Publish(Model.Alerts);
-        }
-
-        private void SoundOptionsChanged()
-        {
-            _eventAggregator.GetEvent<Events.SoundOptionsChangedEvent>().Publish(Model.Sound);
-        }
-
-        private void EmailOptionsChanged()
-        {
-            _eventAggregator.GetEvent<Events.EmailOptionsChangedEvent>().Publish(Model.Email);
-        }
-
-        private void TelegramOptionsChanged()
-        {
-            _eventAggregator.GetEvent<Events.TelegramOptionsChangedEvent>().Publish(Model.Telegram);
-        }
-
-        private void AddTelegramBot()
-        {
-            if (!string.IsNullOrEmpty(TelegramBot.Name) && !string.IsNullOrEmpty(TelegramBot.Token))
-            {
-                Model.Telegram.Bots.Add(TelegramBot);
-
-                TelegramBot = new Models.TelegramBot();
-
-                OptionsChangedCommand.Execute();
-                TelegramOptionsChangedCommand.Execute();
-            }
+            selectedItems.Cast<Models.TelegramBot>().ToList().ForEach(bot => RemoveTelegramBot(bot));
         }
 
         private void RemoveTelegramBot(Models.TelegramBot bot)
@@ -338,9 +295,34 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        private void RemoveSelectedTelegramBots(IList selectedItems)
+        private void RequestNavigate(string url)
         {
-            selectedItems.Cast<Models.TelegramBot>().ToList().ForEach(bot => RemoveTelegramBot(bot));
+            System.Diagnostics.Process.Start(url);
+        }
+
+        private void ResetEmailTemplate()
+        {
+            Model.Email.Template.Subject = Model.Email.DefaultTemplate.Subject;
+            Model.Email.Template.Body = Model.Email.DefaultTemplate.Body;
+        }
+
+        private void ResetTelegramTemplate()
+        {
+            //Model.Telegram.MessageTemplate = Model.Telegram.DefaultMessageTemplate;
+        }
+
+        private void SoundOptionsChanged()
+        {
+            _eventAggregator.GetEvent<Events.SoundOptionsChangedEvent>().Publish(Model.Sound);
+        }
+
+        private void TelegramOptionsChanged()
+        {
+            _eventAggregator.GetEvent<Events.TelegramOptionsChangedEvent>().Publish(Model.Telegram);
+        }
+
+        private void Unloaded()
+        {
         }
 
         #endregion Methods

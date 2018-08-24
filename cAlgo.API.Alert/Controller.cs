@@ -9,6 +9,7 @@ using cAlgo.API.Alert.UI;
 using cAlgo.API.Alert.UI.Models;
 using System.Threading;
 using System.Globalization;
+using System.Media;
 
 namespace cAlgo.API.Alert
 {
@@ -24,6 +25,22 @@ namespace cAlgo.API.Alert
             Configuration.Tracer?.Invoke(string.Format("Exception Source: {0}", ex.Source));
             Configuration.Tracer?.Invoke(string.Format("Exception StackTrace: {0}", ex.StackTrace));
             Configuration.Tracer?.Invoke(string.Format("Exception InnerException: {0}", ex.InnerException));
+        }
+
+        public static void PlaySound(string path)
+        {
+            try
+            {
+                SoundPlayer soundPlayer = new SoundPlayer(path);
+
+                soundPlayer.PlaySync();
+
+                soundPlayer.Dispose();
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
         }
 
         public static string PutObjectInTemplate(object obj, string template)
@@ -47,15 +64,29 @@ namespace cAlgo.API.Alert
 
         public static void SendEmail(INotifications notifications, EmailOptionsModel options, AlertModel alert)
         {
-            string subject = PutObjectInTemplate(alert, options.Template.Subject);
-            string body = PutObjectInTemplate(alert, options.Template.Body);
+            try
+            {
+                string subject = PutObjectInTemplate(alert, options.Template.Subject);
+                string body = PutObjectInTemplate(alert, options.Template.Body);
 
-            notifications.SendEmail(options.Sender, options.Recipient, subject, body);
+                notifications.SendEmail(options.Sender, options.Recipient, subject, body);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
         }
 
         public static void SendTelegramMessage(TelegramOptionsModel options, AlertModel alert)
         {
-            string message = PutObjectInTemplate(alert, options.MessageTemplate);
+            try
+            {
+                string message = PutObjectInTemplate(alert, options.MessageTemplate);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
         }
 
         public static void SetupConfigurationPaths()
@@ -80,7 +111,7 @@ namespace cAlgo.API.Alert
         {
             if (options.Sound.IsEnabled)
             {
-                notifications.PlaySound(options.Sound.FilePath);
+                PlaySound(options.Sound.FilePath);
             }
 
             AlertModel alertCopy = alert.Clone() as AlertModel;
