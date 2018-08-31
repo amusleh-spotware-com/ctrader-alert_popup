@@ -2,12 +2,6 @@
 using System;
 using System.Globalization;
 using System.Threading;
-using System.Linq;
-using Telegram.Bot;
-using Telegram.Bot.Types;
-using System.Net;
-using System.IO;
-using System.Text;
 
 namespace cAlgo.API.Alert.Tester
 {
@@ -23,6 +17,11 @@ namespace cAlgo.API.Alert.Tester
                 {
                     bootstrapper = new Bootstrapper(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\alerts.csv", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\options.xml");
 
+                    bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "Alert new comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour", Price = 1.21232342 });
+                    bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "Alert new comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour", Price = 1.213331342 });
+                    bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "Alert new comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour", Price = 1.12 });
+                    bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "Alert new comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour", Price = 1 });
+
                     bootstrapper.Run();
                 }
                 catch (Exception ex)
@@ -37,9 +36,12 @@ namespace cAlgo.API.Alert.Tester
 
             windowThread.Start();
 
-            //Thread.Sleep(10000);
+            Thread.Sleep(10000);
 
-            //bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "Alert new comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour" });
+            bootstrapper.AddAlert(new UI.Models.AlertModel { TradeSide = "Buy", Comment = "Alert new comment", TriggeredBy = "afhacker algo", Time = DateTimeOffset.Now, Symbol = "EURUSD", TimeFrame = "1 Hour", Price = 1.21342 });
+
+            //Telegram.Bot.TelegramBotClient client = new Telegram.Bot.TelegramBotClient("650453366:AAG--Ok1yGvv-I8jbst1zgb23gSeiIT_7_4");
+            //client.GetUpdates().ToList().ForEach(update => client.SendTextMessage(new Telegram.Bot.Types.ChatId(update.Message.Chat.Id), "hi"));
         }
     }
 }

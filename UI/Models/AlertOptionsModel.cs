@@ -1,9 +1,8 @@
 ﻿using Prism.Mvvm;
-using System.Windows.Media;
 using System;
-using System.Xml.Serialization;
 using System.Linq;
-using System.Globalization;
+using System.Windows.Media;
+using System.Xml.Serialization;
 
 namespace cAlgo.API.Alert.UI.Models
 {
@@ -11,10 +10,10 @@ namespace cAlgo.API.Alert.UI.Models
     {
         #region Fields
 
-        private SolidColorBrush _buySideColor, _sellSideColor, _neutralSideColor, _symbolColor, _timeColor, _triggeredByColor, _timeFrameColor;
+        private SolidColorBrush _buySideColor, _sellSideColor, _neutralSideColor, _priceColor, _symbolColor, _timeColor, _triggeredByColor, _timeFrameColor;
 
         private FontModel _commentFontModel;
-        private int _maxAlertNumber;
+        private int _maxAlertNumber, _maxPriceDecimalPlacesNumber;
         private Types.TimeFormat _timeFormat;
 
         private TimeZoneInfo _timeZone;
@@ -69,6 +68,18 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 SetProperty(ref _maxAlertNumber, value);
+            }
+        }
+
+        public int MaxPriceDecimalPlacesNumber
+        {
+            get
+            {
+                return _maxPriceDecimalPlacesNumber;
+            }
+            set
+            {
+                SetProperty(ref _maxPriceDecimalPlacesNumber, value);
             }
         }
 
@@ -256,6 +267,31 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 TriggeredByColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+            }
+        }
+
+        [XmlIgnore]
+        public SolidColorBrush PriceColor
+        {
+            get
+            {
+                return _priceColor;
+            }
+            set
+            {
+                SetProperty(ref _priceColor, value);
+            }
+        }
+
+        public string PriceColorCode
+        {
+            get
+            {
+                return PriceColor.ToString();
+            }
+            set
+            {
+                PriceColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
             }
         }
 

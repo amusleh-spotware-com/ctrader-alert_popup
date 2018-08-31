@@ -9,6 +9,7 @@ namespace cAlgo.API.Alert.UI.Models
 
         private DateTimeOffset _time;
         private string _timeFrame, _symbol, _triggeredBy, _tradeSide, _comment;
+        private double _price;
 
         #endregion Fields
 
@@ -83,6 +84,18 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 SetProperty(ref _triggeredBy, value);
+            }
+        }
+
+        public double Price
+        {
+            get
+            {
+                return _price;
+            }
+            set
+            {
+                SetProperty(ref _price, value);
             }
         }
 

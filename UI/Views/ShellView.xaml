@@ -9,7 +9,7 @@
     xmlns:local="clr-namespace:cAlgo.API.Alert.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Alerts - cTrader"
-    Width="650"
+    Width="700"
     Height="500"
     BorderThickness="0"
     GlowBrush="Black"

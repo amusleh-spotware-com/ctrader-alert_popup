@@ -1,13 +1,10 @@
 ﻿using MahApps.Metro;
-using Microsoft.Win32;
-using Prism.Commands;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using System.Collections.ObjectModel;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
@@ -72,8 +69,8 @@ namespace cAlgo.API.Alert.UI.ViewModels
         {
             return new Models.EmailTemplateModel()
             {
-                Subject = "{TradeSide} {Symbol} | Trade Alert",
-                Body = "An alert triggered by {TriggeredBy} at {Time} to {TradeSide} {Symbol} on {TimeFrame} time frame, comment: {Comment}"
+                Subject = "{TradeSide} {Symbol} {Price} | Trade Alert",
+                Body = "An alert triggered by {TriggeredBy} at {Time} to {TradeSide} {Symbol} at price {Price} on {TimeFrame} time frame, comment: {Comment}"
             };
         }
 
@@ -92,11 +89,13 @@ namespace cAlgo.API.Alert.UI.ViewModels
                 BuySideColor = Brushes.Green,
                 SellSideColor = Brushes.Red,
                 NeutralSideColor = Brushes.Yellow,
+                PriceColor = Brushes.SlateGray,
                 SymbolColor = Brushes.DarkGoldenrod,
                 TriggeredByColor = Brushes.DeepPink,
                 TimeFrameColor = Brushes.DarkMagenta,
                 TimeColor = Brushes.DimGray,
                 MaxAlertNumber = 200,
+                MaxPriceDecimalPlacesNumber = 5,
                 CommentFontModel = new Models.FontModel()
                 {
                     Family = Fonts.SystemFontFamilies.FirstOrDefault(family => family.Source.Equals("Arial",
@@ -121,7 +120,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
             {
                 DefaultMessageTemplate = GetDefaultTelegramMessageTemplate(),
                 MessageTemplate = GetDefaultTelegramMessageTemplate(),
-                Bots = new ObservableCollection<Models.TelegramBot>()
+                Conversations = new ObservableCollection<Models.TelegramConversation>()
             };
 
             Models.OptionsModel options = new Models.OptionsModel()
@@ -138,7 +137,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public static string GetDefaultTelegramMessageTemplate()
         {
-            return "An alert triggered by {TriggeredBy} at {Time} to {TradeSide} {Symbol} on {TimeFrame} time frame, comment: {Comment}";
+            return "An alert triggered by {TriggeredBy} at {Time} to {TradeSide} {Symbol} at price {Price} on {TimeFrame} time frame, comment: {Comment}";
         }
 
         public static List<FontFamily> GetFontFamilies()

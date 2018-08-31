@@ -11,7 +11,7 @@ namespace cAlgo.API.Alert.UI.Models
 
         private string _messageTemplate, _defaultMessageTemplate;
 
-        private ObservableCollection<TelegramBot> _bots;
+        private ObservableCollection<TelegramConversation> _conversations;
 
         #endregion Fields
 
@@ -29,15 +29,15 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public ObservableCollection<TelegramBot> Bots
+        public ObservableCollection<TelegramConversation> Conversations
         {
             get
             {
-                return _bots;
+                return _conversations;
             }
             set
             {
-                SetProperty(ref _bots, value);
+                SetProperty(ref _conversations, value);
             }
         }
 

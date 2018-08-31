@@ -243,7 +243,18 @@ namespace cAlgo.API.Alert.UI
                     csvReader.Configuration.CultureInfo = CultureInfo.InvariantCulture;
                     csvReader.Configuration.HasHeaderRecord = false;
 
-                    result = csvReader.GetRecords<Models.AlertModel>().ToList();
+                    try
+                    {
+                        result = csvReader.GetRecords<Models.AlertModel>().ToList();
+                    }
+                    catch (CsvHelperException ex)
+                    {
+                        fileStream.Close();
+
+                        File.Delete(path);
+
+                        throw ex;
+                    }
                 }
             }
 
@@ -265,7 +276,18 @@ namespace cAlgo.API.Alert.UI
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(Models.OptionsModel));
 
-                    result = serializer.Deserialize(reader) as Models.OptionsModel;
+                    try
+                    {
+                        result = serializer.Deserialize(reader) as Models.OptionsModel;
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        fileStream.Close();
+
+                        File.Delete(path);
+
+                        throw ex;
+                    }
                 }
             }
 

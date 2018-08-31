@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+﻿using cAlgo.API.Alert.UI.Models;
 using cAlgo.API.Internals;
-using cAlgo.API.Alert.UI;
-using cAlgo.API.Alert.UI.Models;
-using System.Threading;
-using System.Globalization;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Media;
+using Telegram.Bot;
 
 namespace cAlgo.API.Alert
 {
@@ -82,6 +78,13 @@ namespace cAlgo.API.Alert
             try
             {
                 string message = PutObjectInTemplate(alert, options.MessageTemplate);
+
+                foreach (TelegramConversation conversation in options.Conversations)
+                {
+                    TelegramBotClient telegramBotClient = new TelegramBotClient(conversation.BotToken);
+
+                    telegramBotClient.SendTextMessage(conversation.Id, message);
+                }
             }
             catch (Exception ex)
             {
@@ -115,6 +118,8 @@ namespace cAlgo.API.Alert
             }
 
             AlertModel alertCopy = alert.Clone() as AlertModel;
+
+            alertCopy.Price = Math.Round(alertCopy.Price, options.Alerts.MaxPriceDecimalPlacesNumber);
 
             if (!alertCopy.Time.Offset.Equals(options.Alerts.TimeZone.BaseUtcOffset))
             {

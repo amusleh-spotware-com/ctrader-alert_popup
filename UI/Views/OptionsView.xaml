@@ -113,6 +113,20 @@
                                 </ComboBox>
                             </controls:MetroHeader>
 
+                            <controls:MetroHeader Header="Price">
+                                <ComboBox
+                                    ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
+                                    ItemsSource="{Binding Path=Colors}"
+                                    SelectedItem="{Binding Path=Model.Alerts.PriceColor, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                            </controls:MetroHeader>
+
                             <controls:MetroHeader Header="Symbol">
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
@@ -261,21 +275,39 @@
                         </WrapPanel>
                     </GroupBox>
 
-                    <controls:MetroHeader HorizontalAlignment="Left" Header="Maximum Alert #">
-                        <controls:NumericUpDown
-                            HasDecimals="False"
-                            Interval="1"
-                            Maximum="200"
-                            Minimum="1"
-                            Value="{Binding Path=Model.Alerts.MaxAlertNumber}">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="ValueChanged">
-                                    <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
-                                    <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </controls:NumericUpDown>
-                    </controls:MetroHeader>
+                    <GroupBox Header="Numeric">
+                        <WrapPanel>
+                            <controls:MetroHeader HorizontalAlignment="Left" Header="Maximum Alert #">
+                                <controls:NumericUpDown
+                                    HasDecimals="False"
+                                    Interval="1"
+                                    Minimum="1"
+                                    Value="{Binding Path=Model.Alerts.MaxAlertNumber, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="ValueChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </controls:NumericUpDown>
+                            </controls:MetroHeader>
+
+                            <controls:MetroHeader HorizontalAlignment="Left" Header="Maximum Price Decimal Places #">
+                                <controls:NumericUpDown
+                                    HasDecimals="False"
+                                    Interval="1"
+                                    Minimum="0"
+                                    Value="{Binding Path=Model.Alerts.MaxPriceDecimalPlacesNumber, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="ValueChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=AlertOptionsChangedCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </controls:NumericUpDown>
+                            </controls:MetroHeader>
+                        </WrapPanel>
+                    </GroupBox>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Sound">
@@ -398,7 +430,7 @@
                                             Keywords
                                         </Paragraph>
                                         <Paragraph>
-                                            {TradeSide}, {Symbol}, {TimeFrame}, {Time}, {Comment}, and {TriggeredBy}
+                                            {TradeSide}, {Symbol}, {Price}, {TimeFrame}, {Time}, {Comment}, and {TriggeredBy}
                                         </Paragraph>
                                         <Paragraph>
                                             You can use any of the above keywords in email subject or body
@@ -440,11 +472,12 @@
                     <StackPanel IsEnabled="{Binding Path=Model.Telegram.IsEnabled}" Orientation="Vertical">
                         <Expander
                             Margin="5"
-                            Header="Bots"
+                            Header="Conversations"
                             IsExpanded="True">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <DataGrid
@@ -452,17 +485,19 @@
                                     Margin="0,0,0,5"
                                     BorderBrush="{StaticResource ControlBorderBrush}"
                                     BorderThickness="1"
-                                    ItemsSource="{Binding Path=Model.Telegram.Bots, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    ItemsSource="{Binding Path=Model.Telegram.Conversations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Style="{StaticResource ReadOnlyDataGridStyle}">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn
                                             Width="Auto"
                                             Binding="{Binding Path=Name}"
-                                            Header="Name" />
+                                            Header="Username/Channel Title"
+                                            SortMemberPath="Name" />
                                         <DataGridTextColumn
                                             Width="*"
-                                            Binding="{Binding Path=Token}"
-                                            Header="Token" />
+                                            Binding="{Binding Path=BotToken}"
+                                            Header="Bot Token"
+                                            SortMemberPath="BotToken" />
                                         <DataGridTemplateColumn
                                             Width="Auto"
                                             CellTemplate="{StaticResource TelegramBotsCellTemplate}"
@@ -471,20 +506,28 @@
                                 </DataGrid>
 
                                 <StackPanel Grid.Row="1">
-                                    <controls:MetroHeader Header="Name">
-                                        <TextBox Text="{Binding Path=TelegramBot.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <controls:MetroHeader Header="Username/Channel Title">
+                                        <TextBox Text="{Binding Path=TelegramConversation.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                     </controls:MetroHeader>
 
-                                    <controls:MetroHeader Header="Token">
-                                        <TextBox Text="{Binding Path=TelegramBot.Token, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <controls:MetroHeader Header="Bot Token">
+                                        <TextBox Text="{Binding Path=TelegramConversation.BotToken, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                     </controls:MetroHeader>
 
                                     <Button
                                         HorizontalAlignment="Right"
-                                        Command="{Binding Path=AddTelegramBotCommand}"
+                                        Command="{Binding Path=AddTelegramConversationCommand}"
                                         Content="Add"
                                         Style="{StaticResource CustomizedAccentedSquareButtonStyle}" />
                                 </StackPanel>
+
+                                <FlowDocumentScrollViewer Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                    <FlowDocument>
+                                        <Paragraph FontWeight="Bold" Foreground="Red">
+                                            <Run Text="{Binding Path=TelegramErrorMessage}" />
+                                        </Paragraph>
+                                    </FlowDocument>
+                                </FlowDocumentScrollViewer>
                             </Grid>
                         </Expander>
 
@@ -515,7 +558,7 @@
                                             Keywords
                                         </Paragraph>
                                         <Paragraph>
-                                            {TradeSide}, {Symbol}, {TimeFrame}, {Time}, {Comment}, and {TriggeredBy}
+                                            {TradeSide}, {Symbol}, {Price}, {TimeFrame}, {Time}, {Comment}, and {TriggeredBy}
                                         </Paragraph>
                                         <Paragraph>
                                             You can use any of the above keywords in message
@@ -529,16 +572,36 @@
                     <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Hidden">
                         <FlowDocument>
                             <Paragraph FontWeight="Bold">
-                                How it works
+                                Follow this steps:
                             </Paragraph>
                             <Paragraph>
-                                After an alert is triggered the alert data is replaced instead of message template keywords, it sends the message to all added bots and anyone who has an open chat/conversation with any of the added bots will receive the message
-                            </Paragraph>
-                            <Paragraph>
-                                <Run Text="To create a telegram bot use" />
+                                <Run Text="1. First create a Telegram Bot with " />
                                 <Hyperlink Command="{Binding Path=RequestNavigateCommand}" CommandParameter="https://telegram.me/botfather">
                                     <Run Text="@BotFather" />
                                 </Hyperlink>
+                            </Paragraph>
+                            <Paragraph>
+                                2. Once your bot is created you will receive an access Token from BotFather, save it somewhere safe
+                            </Paragraph>
+                            <Paragraph>
+                                3. Create a conversation/chat with the created bot by searching its name and then sending it a test (ex: &quot;Hell World!&quot;) message or add the bot to a channel and then send a test message on channel if you want to receive the alerts on a channel
+                            </Paragraph>
+                            <Paragraph>
+                                4. Once you sent the message, write your Telegram username or bot added channel title to the &quot;Username/Channel Title&quot; field and the bot saved access token from step 2 to the &quot;Bot Token&quot; field
+                            </Paragraph>
+                            <Paragraph>
+                                5. Click &quot;Add&quot; button
+                            </Paragraph>
+                        </FlowDocument>
+                    </FlowDocumentScrollViewer>
+
+                    <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                        <FlowDocument>
+                            <Paragraph FontWeight="Bold">
+                                How it works
+                            </Paragraph>
+                            <Paragraph>
+                                Once an alert is triggered the triggered alert data is inserted inside the above message template and sent to the all added Telegram conversations
                             </Paragraph>
                         </FlowDocument>
                     </FlowDocumentScrollViewer>

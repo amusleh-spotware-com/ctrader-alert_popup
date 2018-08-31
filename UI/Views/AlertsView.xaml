@@ -38,6 +38,11 @@
                 SortMemberPath="TradeSide" />
             <DataGridTemplateColumn
                 Width="Auto"
+                CellTemplate="{StaticResource PriceTemplate}"
+                Header="Price"
+                SortMemberPath="Price" />
+            <DataGridTemplateColumn
+                Width="Auto"
                 CellTemplate="{StaticResource SymbolTemplate}"
                 Header="Symbol"
                 SortMemberPath="Symbol" />

@@ -1,12 +1,11 @@
 ﻿using Prism.Commands;
-using Prism.Mvvm;
-using System.Collections.ObjectModel;
-using System.Collections;
-using System.Linq;
-using System.Windows.Media;
-using System.Windows;
-using System.Collections.Generic;
 using Prism.Events;
+using Prism.Mvvm;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
@@ -103,7 +102,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
                 alertCopy.Time = alert.Time.ToOffset(_options.Alerts.TimeZone.BaseUtcOffset);
             }
 
-            Alerts.Add(alert);
+            alertCopy.Price = Math.Round(alertCopy.Price, Options.Alerts.MaxPriceDecimalPlacesNumber);
+
+            Alerts.Add(alertCopy);
         }
 
         private void AlertAddedEvent_Handler(Models.AlertModel alert)

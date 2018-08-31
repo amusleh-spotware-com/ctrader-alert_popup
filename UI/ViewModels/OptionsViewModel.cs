@@ -3,10 +3,13 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
-using System.Windows.Media;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Windows.Media;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
@@ -20,12 +23,14 @@ namespace cAlgo.API.Alert.UI.ViewModels
         private List<Models.FontStyleModel> _fontStyles;
         private List<Models.FontWeightModel> _fontWeights;
         private Models.OptionsModel _model;
-        private Models.TelegramBot _telegramBot;
+        private Models.TelegramConversation _telegramConversation;
         private List<Models.ThemeAccentModel> _themeAccents;
         private List<Models.ThemeBaseModel> _themeBases;
         private List<Types.TimeFormat> _timeFormats;
 
         private List<TimeZoneInfo> _timeZones;
+
+        private string _telegramErrorMessage;
 
         #endregion Fields
 
@@ -61,9 +66,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
             RequestNavigateCommand = new DelegateCommand<string>(RequestNavigate);
 
-            AddTelegramBotCommand = new DelegateCommand(AddTelegramBot);
+            AddTelegramConversationCommand = new DelegateCommand(AddTelegramConversation);
 
-            RemoveTelegramBotCommand = new DelegateCommand<Models.TelegramBot>(RemoveTelegramBot);
+            RemoveTelegramBotCommand = new DelegateCommand<Models.TelegramConversation>(RemoveTelegramBot);
 
             RemoveSelectedTelegramBotsCommand = new DelegateCommand<IList>(RemoveSelectedTelegramBots);
         }
@@ -72,7 +77,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         #region Properties
 
-        public DelegateCommand AddTelegramBotCommand { get; set; }
+        public DelegateCommand AddTelegramConversationCommand { get; set; }
         public DelegateCommand AlertOptionsChangedCommand { get; set; }
         public DelegateCommand BrowserSoundFileCommand { get; set; }
 
@@ -139,21 +144,21 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public DelegateCommand OptionsChangedCommand { get; set; }
         public DelegateCommand<IList> RemoveSelectedTelegramBotsCommand { get; set; }
-        public DelegateCommand<Models.TelegramBot> RemoveTelegramBotCommand { get; set; }
+        public DelegateCommand<Models.TelegramConversation> RemoveTelegramBotCommand { get; set; }
         public DelegateCommand<string> RequestNavigateCommand { get; set; }
         public DelegateCommand ResetEmailTemplateCommand { get; set; }
         public DelegateCommand ResetTelegramTemplateCommand { get; set; }
         public DelegateCommand SoundOptionsChangedCommand { get; set; }
 
-        public Models.TelegramBot TelegramBot
+        public Models.TelegramConversation TelegramConversation
         {
             get
             {
-                return _telegramBot;
+                return _telegramConversation;
             }
             set
             {
-                SetProperty(ref _telegramBot, value);
+                SetProperty(ref _telegramConversation, value);
             }
         }
 
@@ -209,21 +214,91 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public DelegateCommand UnloadedCommand { get; set; }
 
+        public string TelegramErrorMessage
+        {
+            get
+            {
+                return _telegramErrorMessage;
+            }
+            set
+            {
+                SetProperty(ref _telegramErrorMessage, value);
+            }
+        }
+
         #endregion Properties
 
         #region Methods
 
-        private void AddTelegramBot()
+        private void AddTelegramConversation()
         {
-            if (!string.IsNullOrEmpty(TelegramBot.Name) && !string.IsNullOrEmpty(TelegramBot.Token))
+            if (string.IsNullOrEmpty(TelegramConversation.Name) || string.IsNullOrEmpty(TelegramConversation.BotToken))
             {
-                Model.Telegram.Bots.Add(TelegramBot);
+                TelegramErrorMessage = "You have to provide both bot token and username/channel title";
 
-                TelegramBot = new Models.TelegramBot();
-
-                OptionsChangedCommand.Execute();
-                TelegramOptionsChangedCommand.Execute();
+                return;
             }
+
+            TelegramBotClient telegramBotClient = new TelegramBotClient(TelegramConversation.BotToken);
+
+            Update[] updates;
+
+            try
+            {
+                updates = telegramBotClient.GetUpdates();
+            }
+            catch (WebException ex)
+            {
+                TelegramErrorMessage = ex.Message;
+
+                return;
+            }
+
+            Update requiredUpdate = updates.FirstOrDefault(update =>
+            {
+                StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
+
+                string username = update.Message != null ? update.Message.Chat.Username : string.Empty;
+
+                string channelTitle = update.ChannelPost != null ? update.ChannelPost.Chat.Title : string.Empty;
+
+                if (!string.IsNullOrEmpty(username) && TelegramConversation.Name.Equals(username, stringComparison))
+                {
+                    return true;
+                }
+                else if (!string.IsNullOrEmpty(channelTitle) && TelegramConversation.Name.Equals(channelTitle, stringComparison))
+                {
+                    return true;
+                }
+
+                return false;
+            });
+
+            if (requiredUpdate == null)
+            {
+                TelegramErrorMessage = "There is no open/new conversation or chat between the bot and user/channel, please send a new test message and try again";
+
+                return;
+            }
+
+            TelegramConversation.Id = requiredUpdate.Message != null ? requiredUpdate.Message.Chat.Id : requiredUpdate.ChannelPost.Chat.Id;
+
+            if (Model.Telegram.Conversations.Contains(TelegramConversation))
+            {
+                TelegramErrorMessage = "This conversation already added";
+
+                return;
+            }
+
+            Model.Telegram.Conversations.Add(TelegramConversation);
+
+            TelegramConversation = new Models.TelegramConversation();
+
+            OptionsChangedCommand.Execute();
+
+            TelegramOptionsChangedCommand.Execute();
+
+            TelegramErrorMessage = string.Empty;
         }
 
         private void AlertOptionsChanged()
@@ -271,7 +346,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
             TimeZones = OptionsBaseViewModel.GetTimeZones();
 
-            TelegramBot = new Models.TelegramBot();
+            TelegramConversation = new Models.TelegramConversation();
         }
 
         private void OptionsChanged()
@@ -281,14 +356,14 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private void RemoveSelectedTelegramBots(IList selectedItems)
         {
-            selectedItems.Cast<Models.TelegramBot>().ToList().ForEach(bot => RemoveTelegramBot(bot));
+            selectedItems.Cast<Models.TelegramConversation>().ToList().ForEach(bot => RemoveTelegramBot(bot));
         }
 
-        private void RemoveTelegramBot(Models.TelegramBot bot)
+        private void RemoveTelegramBot(Models.TelegramConversation bot)
         {
-            if (Model.Telegram.Bots.Contains(bot))
+            if (Model.Telegram.Conversations.Contains(bot))
             {
-                Model.Telegram.Bots.Remove(bot);
+                Model.Telegram.Conversations.Remove(bot);
 
                 OptionsChangedCommand.Execute();
                 TelegramOptionsChangedCommand.Execute();

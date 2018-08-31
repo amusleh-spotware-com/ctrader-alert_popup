@@ -94,6 +94,12 @@
         </Border>
     </DataTemplate>
 
+    <DataTemplate x:Key="PriceTemplate">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.PriceColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Price}" />
+        </Border>
+    </DataTemplate>
+
     <DataTemplate x:Key="TradeSideTemplate">
         <ContentControl Content="{Binding}">
             <ContentControl.Style>
