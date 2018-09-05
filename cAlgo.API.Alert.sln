@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alert", "src\cAlgo.API.Alert\Alert.csproj", "{67AD1D85-119E-4984-A642-AE502BC4AF27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alert", "src\Alert\Alert.csproj", "{67AD1D85-119E-4984-A642-AE502BC4AF27}"
 	ProjectSection(ProjectDependencies) = postProject
 		{63C5A465-9969-4271-8B6C-E37296007BA8} = {63C5A465-9969-4271-8B6C-E37296007BA8}
 	EndProjectSection
