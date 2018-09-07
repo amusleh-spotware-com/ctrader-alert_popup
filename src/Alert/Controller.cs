@@ -94,20 +94,22 @@ namespace cAlgo.API.Alert
 
         public static void SetupConfigurationPaths()
         {
-            if (string.IsNullOrEmpty(Configuration.AlertFilePath) || string.IsNullOrEmpty(Configuration.OptionsFilePath))
+            if (!string.IsNullOrEmpty(Configuration.AlertFilePath) && !string.IsNullOrEmpty(Configuration.OptionsFilePath))
             {
-                string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-                string calgoDirPath = Path.Combine(documentsPath, "cAlgo");
-
-                if (!Directory.Exists(calgoDirPath))
-                {
-                    Directory.CreateDirectory(calgoDirPath);
-                }
-
-                Configuration.AlertFilePath = Configuration.AlertFilePath ?? Path.Combine(calgoDirPath, "Alerts.csv");
-                Configuration.OptionsFilePath = Configuration.OptionsFilePath ?? Path.Combine(calgoDirPath, "PopupOptions.xml");
+                return;
             }
+
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            string calgoDirPath = Path.Combine(documentsPath, "cAlgo");
+
+            if (!Directory.Exists(calgoDirPath))
+            {
+                Directory.CreateDirectory(calgoDirPath);
+            }
+
+            Configuration.AlertFilePath = Configuration.AlertFilePath ?? Path.Combine(calgoDirPath, "Alerts.csv");
+            Configuration.OptionsFilePath = Configuration.OptionsFilePath ?? Path.Combine(calgoDirPath, "PopupOptions.xml");
         }
 
         public static void TriggerAlerts(INotifications notifications, OptionsModel options, AlertModel alert)

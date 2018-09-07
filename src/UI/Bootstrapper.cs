@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Serialization;
@@ -173,7 +174,7 @@ namespace cAlgo.API.Alert.UI
                 mode = FileMode.Create;
             }
 
-            using (FileStream fileStream = File.Open(AlertsFilePath, mode, FileAccess.Write, FileShare.ReadWrite))
+            using (FileStream fileStream = GetStream(AlertsFilePath, mode, FileAccess.Write, FileShare.ReadWrite))
             {
                 using (TextWriter writer = new StreamWriter(fileStream))
                 {
@@ -194,7 +195,7 @@ namespace cAlgo.API.Alert.UI
                 mode = FileMode.Create;
             }
 
-            using (FileStream fileStream = File.Open(AlertsFilePath, mode, FileAccess.Write, FileShare.ReadWrite))
+            using (FileStream fileStream = GetStream(AlertsFilePath, mode, FileAccess.Write, FileShare.ReadWrite))
             {
                 using (TextWriter writer = new StreamWriter(fileStream))
                 {
@@ -234,7 +235,7 @@ namespace cAlgo.API.Alert.UI
 
             List<Models.AlertModel> result = new List<Models.AlertModel>();
 
-            using (FileStream fileStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (FileStream fileStream = GetStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 using (TextReader reader = new StreamReader(fileStream))
                 {
@@ -270,7 +271,7 @@ namespace cAlgo.API.Alert.UI
 
             Models.OptionsModel result;
 
-            using (FileStream fileStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (FileStream fileStream = GetStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 using (TextReader reader = new StreamReader(fileStream))
                 {
@@ -344,7 +345,7 @@ namespace cAlgo.API.Alert.UI
 
         public void SaveOptions(string path, Models.OptionsModel options)
         {
-            using (FileStream fileStream = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            using (FileStream fileStream = GetStream(path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {
                 using (TextWriter writer = new StreamWriter(fileStream))
                 {
@@ -404,6 +405,35 @@ namespace cAlgo.API.Alert.UI
 
         private void TelegramOptionsChangedEvent_Handler(Models.TelegramOptionsModel options)
         {
+        }
+
+        private FileStream GetStream(string path, FileMode fileMode, FileAccess fileAccess, FileShare fileShare = FileShare.ReadWrite,
+            int maxTry = 5)
+        {
+            FileStream stream = null;
+
+            try
+            {
+                maxTry--;
+
+                if (maxTry > 0)
+                {
+                    stream = File.Open(path, fileMode, fileAccess, fileShare);
+                }
+            }
+            catch (IOException)
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+
+                return GetStream(path, fileMode, fileAccess, fileShare, maxTry);
+            }
+
+            if (stream == null)
+            {
+                throw new NullReferenceException("Couldn't get the file stream");
+            }
+
+            return stream;
         }
 
         #endregion Methods

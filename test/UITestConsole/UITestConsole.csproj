@@ -36,6 +36,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="cAlgo.API">
+      <HintPath>..\..\..\..\..\Documents\cAlgo\API\cAlgo.API.dll</HintPath>
+    </Reference>
+    <Reference Include="cAlgo.API.Alert">
+      <HintPath>..\..\src\Alert\bin\Debug\cAlgo.API.Alert.dll</HintPath>
+    </Reference>
     <Reference Include="cAlgo.API.Alert.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\UI\bin\Debug\cAlgo.API.Alert.UI.dll</HintPath>
@@ -93,6 +99,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Notifications.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
