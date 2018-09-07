@@ -34,5 +34,17 @@ namespace cAlgo.API.Alert.Properties {
                 this["PipeName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_mutexName")]
+        public string MutexName {
+            get {
+                return ((string)(this["MutexName"]));
+            }
+            set {
+                this["MutexName"] = value;
+            }
+        }
     }
 }

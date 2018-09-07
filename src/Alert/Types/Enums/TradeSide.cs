@@ -1,4 +1,4 @@
-﻿namespace cAlgo.API.Alert.Types
+﻿namespace cAlgo.API.Alert.Types.Enums
 {
     public enum TradeSide
     {

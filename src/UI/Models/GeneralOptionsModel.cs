@@ -1,7 +1,4 @@
-﻿using MahApps.Metro;
-using Prism.Mvvm;
-using System;
-using System.Windows.Media;
+﻿using Prism.Mvvm;
 
 namespace cAlgo.API.Alert.UI.Models
 {
@@ -12,6 +9,8 @@ namespace cAlgo.API.Alert.UI.Models
         private ThemeBaseModel _themeBase;
 
         private ThemeAccentModel _themeAccent;
+
+        private bool _topMost;
 
         #endregion Fields
 
@@ -38,6 +37,18 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 SetProperty(ref _themeAccent, value);
+            }
+        }
+
+        public bool TopMost
+        {
+            get
+            {
+                return _topMost;
+            }
+            set
+            {
+                SetProperty(ref _topMost, value);
             }
         }
 

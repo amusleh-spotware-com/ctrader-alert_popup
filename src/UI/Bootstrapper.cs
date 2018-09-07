@@ -52,6 +52,8 @@ namespace cAlgo.API.Alert.UI
                 SaveOptions(_optionsFilePath, _options);
             }
 
+            _shellView.Topmost = _options.General.TopMost;
+
             _themeResources.MergedDictionaries.Add(_options.General.ThemeAccent.Accent.Resources);
             _themeResources.MergedDictionaries.Add(_options.General.ThemeBase.Base.Resources);
 
@@ -149,6 +151,52 @@ namespace cAlgo.API.Alert.UI
 
         #region Methods
 
+        public static Models.OptionsModel GetOptions(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("The options file doesn't exist on provided path: " + path);
+            }
+
+            Models.OptionsModel result;
+
+            using (FileStream fileStream = GetStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (TextReader reader = new StreamReader(fileStream))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(Models.OptionsModel));
+
+                    try
+                    {
+                        result = serializer.Deserialize(reader) as Models.OptionsModel;
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        fileStream.Close();
+
+                        File.Delete(path);
+
+                        throw ex;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static void SaveOptions(string path, Models.OptionsModel options)
+        {
+            using (FileStream fileStream = GetStream(path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            {
+                using (TextWriter writer = new StreamWriter(fileStream))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(Models.OptionsModel));
+
+                    serializer.Serialize(writer, options);
+                }
+            }
+        }
+
         public void AddAlert(Models.AlertModel alert)
         {
             AddAlertToFile(alert);
@@ -203,6 +251,7 @@ namespace cAlgo.API.Alert.UI
 
                     csvWriter.Configuration.CultureInfo = CultureInfo.InvariantCulture;
                     csvWriter.Configuration.HasHeaderRecord = false;
+                    csvWriter.Configuration.RegisterClassMap<Types.AlertCsvMap>();
 
                     csvWriter.WriteRecord(alert);
 
@@ -243,45 +292,13 @@ namespace cAlgo.API.Alert.UI
 
                     csvReader.Configuration.CultureInfo = CultureInfo.InvariantCulture;
                     csvReader.Configuration.HasHeaderRecord = false;
+                    csvReader.Configuration.RegisterClassMap<Types.AlertCsvMap>();
 
                     try
                     {
                         result = csvReader.GetRecords<Models.AlertModel>().ToList();
                     }
                     catch (CsvHelperException ex)
-                    {
-                        fileStream.Close();
-
-                        File.Delete(path);
-
-                        throw ex;
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public Models.OptionsModel GetOptions(string path)
-        {
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("The options file doesn't exist on provided path: " + path);
-            }
-
-            Models.OptionsModel result;
-
-            using (FileStream fileStream = GetStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                using (TextReader reader = new StreamReader(fileStream))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(Models.OptionsModel));
-
-                    try
-                    {
-                        result = serializer.Deserialize(reader) as Models.OptionsModel;
-                    }
-                    catch (InvalidOperationException ex)
                     {
                         fileStream.Close();
 
@@ -343,72 +360,13 @@ namespace cAlgo.API.Alert.UI
             _shellView.ShowDialog();
         }
 
-        public void SaveOptions(string path, Models.OptionsModel options)
-        {
-            using (FileStream fileStream = GetStream(path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-            {
-                using (TextWriter writer = new StreamWriter(fileStream))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(Models.OptionsModel));
-
-                    serializer.Serialize(writer, options);
-                }
-            }
-        }
-
         public void Shutdown()
         {
             _shellView.Close();
         }
 
-        private void AlertOptionsChangedEvent_Handler(Models.AlertOptionsModel options)
-        {
-        }
-
-        private TView CreateView<TView, TViewModel>(params object[] parameters) where TView : class
-            where TViewModel : class
-        {
-            TView view = (TView)Activator.CreateInstance(typeof(TView));
-
-            (view as ContentControl).Resources.MergedDictionaries.Add(_themeResources);
-
-            (view as FrameworkElement).DataContext = GetViewModel<TViewModel>(parameters);
-
-            return view;
-        }
-
-        private void EmailOptionsChangedEvent_Handler(Models.EmailOptionsModel options)
-        {
-        }
-
-        private void GeneralOptionsChangedEvent_Handler(Models.GeneralOptionsModel options)
-        {
-            ThemeManager.ChangeAppStyle(_themeResources, options.ThemeAccent.Accent, options.ThemeBase.Base);
-        }
-
-        private T GetViewModel<T>(params object[] parameters) where T : class
-        {
-            return (T)Activator.CreateInstance(typeof(T), parameters);
-        }
-
-        private void OptionsChangedEvent_Handler(Models.OptionsModel options)
-        {
-            if (!string.IsNullOrEmpty(_optionsFilePath))
-            {
-                SaveOptions(_optionsFilePath, options);
-            }
-        }
-
-        private void SoundOptionsChangedEvent_Handler(Models.SoundOptionsModel options)
-        {
-        }
-
-        private void TelegramOptionsChangedEvent_Handler(Models.TelegramOptionsModel options)
-        {
-        }
-
-        private FileStream GetStream(string path, FileMode fileMode, FileAccess fileAccess, FileShare fileShare = FileShare.ReadWrite,
-            int maxTry = 5)
+        private static FileStream GetStream(string path, FileMode fileMode, FileAccess fileAccess, FileShare fileShare = FileShare.ReadWrite,
+int maxTry = 5)
         {
             FileStream stream = null;
 
@@ -434,6 +392,54 @@ namespace cAlgo.API.Alert.UI
             }
 
             return stream;
+        }
+
+        private void AlertOptionsChangedEvent_Handler(Models.AlertOptionsModel options)
+        {
+        }
+
+        private TView CreateView<TView, TViewModel>(params object[] parameters) where TView : class
+            where TViewModel : class
+        {
+            TView view = (TView)Activator.CreateInstance(typeof(TView));
+
+            (view as ContentControl).Resources.MergedDictionaries.Add(_themeResources);
+
+            (view as FrameworkElement).DataContext = GetViewModel<TViewModel>(parameters);
+
+            return view;
+        }
+
+        private void EmailOptionsChangedEvent_Handler(Models.EmailOptionsModel options)
+        {
+        }
+
+        private void GeneralOptionsChangedEvent_Handler(Models.GeneralOptionsModel options)
+        {
+            _shellView.Topmost = options.TopMost;
+
+            ThemeManager.ChangeAppStyle(_themeResources, options.ThemeAccent.Accent, options.ThemeBase.Base);
+        }
+
+        private T GetViewModel<T>(params object[] parameters) where T : class
+        {
+            return (T)Activator.CreateInstance(typeof(T), parameters);
+        }
+
+        private void OptionsChangedEvent_Handler(Models.OptionsModel options)
+        {
+            if (!string.IsNullOrEmpty(_optionsFilePath))
+            {
+                SaveOptions(_optionsFilePath, options);
+            }
+        }
+
+        private void SoundOptionsChangedEvent_Handler(Models.SoundOptionsModel options)
+        {
+        }
+
+        private void TelegramOptionsChangedEvent_Handler(Models.TelegramOptionsModel options)
+        {
         }
 
         #endregion Methods

@@ -1,16 +1,32 @@
-﻿using cAlgo.API.Alert.UI.Models;
+﻿using cAlgo.API.Alert.Types;
+using cAlgo.API.Alert.Types.Enums;
+using cAlgo.API.Alert.UI;
+using cAlgo.API.Alert.UI.Models;
 using cAlgo.API.Internals;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Media;
+using System.Text;
+using System.Threading;
+using System.Xml.Serialization;
 using Telegram.Bot;
 
 namespace cAlgo.API.Alert
 {
     public static class Controller
     {
+        #region Fields
+
+        private static Mutex _mutex;
+
+        private static Bootstrapper _bootstrapper;
+
+        #endregion Fields
+
         #region Methods
 
         public static void LogException(Exception ex)
@@ -92,8 +108,10 @@ namespace cAlgo.API.Alert
             }
         }
 
-        public static void SetupConfigurationPaths()
+        public static void SetupConfiguration()
         {
+            Configuration.Tracer = Configuration.Tracer ?? new Action<string>(message => System.Diagnostics.Trace.WriteLine(message));
+
             if (!string.IsNullOrEmpty(Configuration.AlertFilePath) && !string.IsNullOrEmpty(Configuration.OptionsFilePath))
             {
                 return;
@@ -136,6 +154,194 @@ namespace cAlgo.API.Alert
             if (options.Telegram.IsEnabled)
             {
                 SendTelegramMessage(options.Telegram, alertCopy);
+            }
+        }
+
+        public static void Show(this INotifications notifications, AlertModel alert)
+        {
+            Thread windowThread = new Thread(new ThreadStart(() =>
+            {
+                try
+                {
+                    if (IsMutexNew() || !IsPipeServerAlive())
+                    {
+                        StartPipeServer();
+
+                        Run(notifications, alert);
+                    }
+                    else
+                    {
+                        OptionsModel options = Bootstrapper.GetOptions(Configuration.OptionsFilePath);
+
+                        TriggerAlerts(notifications, options, alert);
+
+                        SendAlertToPipeServer(alert);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Controller.LogException(ex);
+                }
+            }));
+
+            windowThread.SetApartmentState(ApartmentState.STA);
+            windowThread.CurrentCulture = CultureInfo.InvariantCulture;
+            windowThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            windowThread.Start();
+        }
+
+        private static bool IsMutexNew()
+        {
+            bool isNew;
+
+            _mutex = new Mutex(true, Properties.Settings.Default.MutexName, out isNew);
+
+            return isNew;
+        }
+
+        private static bool IsPipeServerAlive()
+        {
+            using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", Properties.Settings.Default.PipeName, PipeDirection.InOut))
+            {
+                try
+                {
+                    pipeClient.Connect(1000);
+
+                    return true;
+                }
+                catch (TimeoutException)
+                {
+                    return false;
+                }
+            }
+        }
+
+        private static void Run(this INotifications notifications, AlertModel alert)
+        {
+            _bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath);
+
+            TriggerAlerts(notifications, _bootstrapper.Options, alert);
+
+            _bootstrapper.AddAlert(alert);
+
+            _bootstrapper.Run();
+        }
+
+        private static void SendAlertToPipeServer(AlertModel alert)
+        {
+            using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", Properties.Settings.Default.PipeName, PipeDirection.InOut))
+            {
+                pipeClient.Connect();
+
+                byte[] data = GetPipePacketBytes(PipePacketType.Alert, alert);
+
+                pipeClient.Write(data, 0, data.Count());
+            }
+        }
+
+        private static string SerializeXml<T>(T obj)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+
+            string xml = string.Empty;
+
+            using (StringWriter textWriter = new StringWriter())
+            {
+                serializer.Serialize(textWriter, obj);
+
+                xml = textWriter.ToString();
+            }
+
+            if (string.IsNullOrEmpty(xml))
+            {
+                throw new InvalidOperationException("Couldn't serialize the pipe packet");
+            }
+
+            return xml;
+        }
+
+        private static T DerserializeXml<T>(string xml)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+
+            using (StringReader textReader = new StringReader(xml))
+            {
+                return (T)serializer.Deserialize(textReader);
+            }
+        }
+
+        private static byte[] GetPipePacketBytes<T>(PipePacketType packetType, T dataObject)
+        {
+            string dataXml = SerializeXml<T>(dataObject);
+
+            PipePacket packet = new PipePacket { PacketType = packetType, XmlData = dataXml };
+
+            string xml = SerializeXml<PipePacket>(packet);
+
+            return Encoding.UTF8.GetBytes(xml);
+        }
+
+        private static void StartPipeServer()
+        {
+            Thread thread = new Thread(new ThreadStart(() =>
+            {
+                try
+                {
+                    using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(Properties.Settings.Default.PipeName,
+                        PipeDirection.InOut,
+                        NamedPipeServerStream.MaxAllowedServerInstances))
+                    {
+                        pipeServer.WaitForConnection();
+
+                        StartPipeServer();
+
+                        Thread.Sleep(1000);
+
+                        byte[] readBuffer = new byte[1024];
+
+                        pipeServer.Read(readBuffer, 0, readBuffer.Count());
+
+                        if (readBuffer.Any(bufferByte => bufferByte != new byte()))
+                        {
+                            string readBufferString = Encoding.UTF8.GetString(readBuffer);
+
+                            PipePacket pipePacket = DerserializeXml<PipePacket>(readBufferString);
+
+                            ExecutePipePacket(pipePacket);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (ex is InvalidOperationException || ex is IOException || ex is ObjectDisposedException)
+                    {
+                        StartPipeServer();
+                    }
+
+                    throw ex;
+                }
+            }));
+
+            thread.CurrentCulture = CultureInfo.InvariantCulture;
+            thread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            thread.Start();
+        }
+
+        private static void ExecutePipePacket(PipePacket pipePacket)
+        {
+            switch (pipePacket.PacketType)
+            {
+                case PipePacketType.Alert:
+                    AlertModel alertModel = DerserializeXml<AlertModel>(pipePacket.XmlData);
+
+                    _bootstrapper.AddAlert(alertModel);
+
+                    break;
+
+                default:
+                    throw new InvalidDataException("Unknown pipe packet type");
             }
         }
 

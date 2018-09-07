@@ -81,7 +81,8 @@ namespace cAlgo.API.Alert.UI.ViewModels
                 ThemeBase = GetThemeBases().FirstOrDefault(themeBase => themeBase.Name.Equals("Light",
                 StringComparison.InvariantCultureIgnoreCase)),
                 ThemeAccent = GetThemeAccents().FirstOrDefault(accent => accent.Accent.Name.Equals("Cobalt",
-                StringComparison.InvariantCultureIgnoreCase))
+                StringComparison.InvariantCultureIgnoreCase)),
+                TopMost = true
             };
 
             Models.AlertOptionsModel alerts = new Models.AlertOptionsModel()

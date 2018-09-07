@@ -65,6 +65,19 @@
                             </controls:MetroHeader>
                         </WrapPanel>
                     </GroupBox>
+
+                    <controls:ToggleSwitch
+                        Margin="5"
+                        HorizontalAlignment="Left"
+                        Header="Top Most"
+                        IsChecked="{Binding Path=Model.General.TopMost, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="IsCheckedChanged">
+                                <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
+                                <i:InvokeCommandAction Command="{Binding Path=GeneralOptionsChangedCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </controls:ToggleSwitch>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Alerts">

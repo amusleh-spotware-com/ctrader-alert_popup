@@ -1,9 +1,7 @@
-﻿using cAlgo.API.Alert.UI;
+﻿using cAlgo.API.Alert.Types.Enums;
 using cAlgo.API.Alert.UI.Models;
 using cAlgo.API.Internals;
 using System;
-using System.Globalization;
-using System.Threading;
 
 namespace cAlgo.API.Alert
 {
@@ -11,22 +9,22 @@ namespace cAlgo.API.Alert
     {
         #region Methods
 
-        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, Types.TradeSide tradeSide)
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeSide tradeSide)
         {
             ShowPopup(notifications, timeFrame, symbol, "Unknown", tradeSide);
         }
 
-        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, string triggeredBy, Types.TradeSide tradeSide)
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, string triggeredBy, TradeSide tradeSide)
         {
             ShowPopup(notifications, timeFrame, symbol, symbol.Bid, triggeredBy, tradeSide, string.Empty);
         }
 
-        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, double price, string triggeredBy, Types.TradeSide tradeSide, string comment)
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, double price, string triggeredBy, TradeSide tradeSide, string comment)
         {
             ShowPopup(notifications, timeFrame, symbol, price, triggeredBy, tradeSide, comment, DateTimeOffset.Now);
         }
 
-        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, double price, string triggeredBy, Types.TradeSide tradeSide, string comment, DateTimeOffset time)
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, double price, string triggeredBy, TradeSide tradeSide, string comment, DateTimeOffset time)
         {
             ShowPopup(notifications, timeFrame.ToString(), symbol.ToString(), price, triggeredBy, tradeSide.ToString(), comment, time);
         }
@@ -44,31 +42,9 @@ namespace cAlgo.API.Alert
                 Time = time
             };
 
-            Controller.SetupConfigurationPaths();
+            Controller.SetupConfiguration();
 
-            Thread windowThread = new Thread(new ThreadStart(() =>
-            {
-                try
-                {
-                    Bootstrapper bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath);
-
-                    Controller.TriggerAlerts(notifications, bootstrapper.Options, alert);
-
-                    bootstrapper.AddAlert(alert);
-
-                    bootstrapper.Run();
-                }
-                catch (Exception ex)
-                {
-                    Controller.LogException(ex);
-                }
-            }));
-
-            windowThread.SetApartmentState(ApartmentState.STA);
-            windowThread.CurrentCulture = CultureInfo.InvariantCulture;
-            windowThread.CurrentUICulture = CultureInfo.InvariantCulture;
-
-            windowThread.Start();
+            Controller.Show(notifications, alert);
         }
 
         #endregion Methods
