@@ -38,7 +38,7 @@
                         <WrapPanel>
                             <controls:MetroHeader Header="Base">
                                 <ComboBox
-                                    DisplayMemberPath="Name"
+                                    DisplayMemberPath="DisplayName"
                                     ItemsSource="{Binding Path=ThemeBases}"
                                     SelectedItem="{Binding Path=Model.General.ThemeBase, Mode=TwoWay}">
                                     <i:Interaction.Triggers>
@@ -597,7 +597,7 @@
                                 2. Once your bot is created you will receive an access Token from BotFather, save it somewhere safe
                             </Paragraph>
                             <Paragraph>
-                                3. Create a conversation/chat with the created bot by searching its name and then sending it a test (ex: &quot;Hell World!&quot;) message or add the bot to a channel and then send a test message on channel if you want to receive the alerts on a channel
+                                3. Create a conversation/chat with the created bot by searching its name and then sending it a test (ex: &quot;Hello World!&quot;) message or add the bot to a channel and then send a test message on channel if you want to receive the alerts on a channel
                             </Paragraph>
                             <Paragraph>
                                 4. Once you sent the message, write your Telegram username or bot added channel title to the &quot;Username/Channel Title&quot; field and the bot saved access token from step 2 to the &quot;Bot Token&quot; field

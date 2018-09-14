@@ -1,4 +1,5 @@
-﻿using cAlgo.API.Alert.Types.Enums;
+﻿using cAlgo.API.Alert.Types;
+using cAlgo.API.Alert.Types.Enums;
 using cAlgo.API.Alert.UI.Models;
 using cAlgo.API.Internals;
 using System;
@@ -42,7 +43,7 @@ namespace cAlgo.API.Alert
                 Time = time
             };
 
-            Controller.SetupConfiguration();
+            Controller.SetConfigurationIfNotYet();
 
             Controller.Show(notifications, alert);
         }

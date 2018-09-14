@@ -29,31 +29,25 @@ namespace cAlgo.API.Alert.UI
 
         #endregion Fields
 
-        public Bootstrapper(string alertsFilePath, string optionsFilePath)
+        public Bootstrapper(string alertsFilePath, string optionsFilePath, Models.OptionsModel options)
         {
             _alertsFilePath = alertsFilePath;
 
             _optionsFilePath = optionsFilePath;
 
+            _options = options;
+
             _themeResources = new ResourceDictionary();
 
             _shellView = CreateView<Views.ShellView, ViewModels.ShellViewModel>(this);
 
-            if (File.Exists(_optionsFilePath))
-            {
-                _options = GetOptions(_optionsFilePath);
-            }
-            else
-            {
-                _options = ViewModels.OptionsBaseViewModel.GetDefaultOptions();
-
-                SaveOptions(_optionsFilePath, _options);
-            }
-
             _shellView.Topmost = _options.General.TopMost;
 
-            _themeResources.MergedDictionaries.Add(_options.General.ThemeAccent.Accent.Resources);
-            _themeResources.MergedDictionaries.Add(_options.General.ThemeBase.Base.Resources);
+            Accent accent = ViewModels.OptionsBaseViewModel.GetAccent(_options.General.ThemeAccent);
+            AppTheme theme = ViewModels.OptionsBaseViewModel.GetTheme(_options.General.ThemeBase);
+
+            _themeResources.MergedDictionaries.Add(accent.Resources);
+            _themeResources.MergedDictionaries.Add(theme.Resources);
 
             _navigationJournal = new List<string>();
 
@@ -76,6 +70,18 @@ namespace cAlgo.API.Alert.UI
                 _alerts.AddRange(fileAlerts);
             }
         }
+
+        #region Delegates
+
+        public delegate void ExceptionHandler(Exception ex);
+
+        #endregion Delegates
+
+        #region Events
+
+        public event ExceptionHandler OnException;
+
+        #endregion Events
 
         #region Properties
 
@@ -151,7 +157,7 @@ namespace cAlgo.API.Alert.UI
         {
             if (!File.Exists(path))
             {
-                throw new FileNotFoundException("The options file doesn't exist on provided path: " + path);
+                return ViewModels.OptionsBaseViewModel.GetDefaultOptions();
             }
 
             Models.OptionsModel result;
@@ -300,7 +306,7 @@ namespace cAlgo.API.Alert.UI
 
                         File.Delete(path);
 
-                        throw ex;
+                        OnException?.Invoke(ex);
                     }
                 }
             }
@@ -414,7 +420,10 @@ namespace cAlgo.API.Alert.UI
         {
             _shellView.Topmost = options.TopMost;
 
-            ThemeManager.ChangeAppStyle(_themeResources, options.ThemeAccent.Accent, options.ThemeBase.Base);
+            Accent accent = ViewModels.OptionsBaseViewModel.GetAccent(options.ThemeAccent);
+            AppTheme theme = ViewModels.OptionsBaseViewModel.GetTheme(options.ThemeBase);
+
+            ThemeManager.ChangeAppStyle(_themeResources, accent, theme);
         }
 
         private T GetViewModel<T>(params object[] parameters) where T : class

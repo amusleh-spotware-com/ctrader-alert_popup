@@ -35,7 +35,7 @@
                 Fill="{Binding Path=Color}"
                 Stroke="{Binding Path=Color}" />
 
-            <TextBlock Margin="3,0,0,0" Text="{Binding Path=Accent.Name}" />
+            <TextBlock Margin="3,0,0,0" Text="{Binding Path=Name}" />
         </WrapPanel>
     </DataTemplate>
 

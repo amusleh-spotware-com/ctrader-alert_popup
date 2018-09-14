@@ -1,66 +1,16 @@
-﻿using MahApps.Metro;
-using System;
-using System.Xml.Serialization;
+﻿using System;
 
 namespace cAlgo.API.Alert.UI.Models
 {
     public class ThemeBaseModel
     {
-        #region Fields
-
-        private AppTheme _base;
-
-        private string _name, _sourceUri;
-
-        #endregion Fields
-
         #region Properties
 
-        [XmlIgnore]
-        public AppTheme Base
-        {
-            get
-            {
-                if (_base == null)
-                {
-                    _base = new AppTheme(_name, new Uri(_sourceUri));
-                }
+        public string DisplayName { get; set; }
 
-                return _base;
-            }
-            set
-            {
-                _base = value;
+        public string Name { get; set; }
 
-                Name = value.Name;
-
-                SourceUri = value.Resources.Source.ToString();
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
-
-        public string SourceUri
-        {
-            get
-            {
-                return _sourceUri;
-            }
-            set
-            {
-                _sourceUri = value;
-            }
-        }
+        public string SourceUri { get; set; }
 
         #endregion Properties
 

@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using cAlgo.API.Alert.UI.Types.Enums;
+using Prism.Mvvm;
 using System;
 using System.Linq;
 using System.Windows.Media;
@@ -14,7 +15,7 @@ namespace cAlgo.API.Alert.UI.Models
 
         private FontModel _commentFontModel;
         private int _maxAlertNumber, _maxPriceDecimalPlacesNumber;
-        private Types.TimeFormat _timeFormat;
+        private TimeFormat _timeFormat;
 
         private TimeZoneInfo _timeZone;
 
@@ -183,7 +184,7 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public Types.TimeFormat TimeFormat
+        public TimeFormat TimeFormat
         {
             get
             {

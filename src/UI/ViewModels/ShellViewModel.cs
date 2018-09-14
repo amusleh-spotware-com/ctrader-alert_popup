@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
+﻿using Prism.Commands;
 using Prism.Mvvm;
-using Prism.Commands;
-using MahApps.Metro;
+using System;
+using System.Linq;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
@@ -20,8 +15,6 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         #endregion Fields
 
-        
-
         public ShellViewModel(Bootstrapper bootstrapper)
         {
             _bootstrapper = bootstrapper;
@@ -34,8 +27,6 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
             GoBackCommand = new DelegateCommand(GoBack, () => _bootstrapper.NavigationJournal.Count > 1);
         }
-
-        
 
         #region Properties
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using cAlgo.API.Alert.UI.Types.Enums;
+using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -26,15 +27,13 @@ namespace cAlgo.API.Alert.UI.ViewModels
         private Models.TelegramConversation _telegramConversation;
         private List<Models.ThemeAccentModel> _themeAccents;
         private List<Models.ThemeBaseModel> _themeBases;
-        private List<Types.TimeFormat> _timeFormats;
+        private List<TimeFormat> _timeFormats;
 
         private List<TimeZoneInfo> _timeZones;
 
         private string _telegramErrorMessage;
 
         #endregion Fields
-
-        
 
         public OptionsViewModel(Models.OptionsModel model, EventAggregator eventAggregator)
         {
@@ -72,8 +71,6 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
             RemoveSelectedTelegramBotsCommand = new DelegateCommand<IList>(RemoveSelectedTelegramBots);
         }
-
-        
 
         #region Properties
 
@@ -188,7 +185,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        public List<Types.TimeFormat> TimeFormats
+        public List<TimeFormat> TimeFormats
         {
             get
             {
@@ -276,7 +273,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
             if (requiredUpdate == null)
             {
-                TelegramErrorMessage = "There is no open/new conversation or chat between the bot and user/channel, please send a new test message and try again";
+                TelegramErrorMessage = "There is no open/new conversation or chat between the bot and user/channel, please send a new test message to the bot and then try again";
 
                 return;
             }
@@ -383,7 +380,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private void ResetTelegramTemplate()
         {
-            //Model.Telegram.MessageTemplate = Model.Telegram.DefaultMessageTemplate;
+            Model.Telegram.MessageTemplate = Model.Telegram.DefaultMessageTemplate;
         }
 
         private void SoundOptionsChanged()

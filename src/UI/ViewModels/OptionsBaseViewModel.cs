@@ -1,4 +1,5 @@
-﻿using MahApps.Metro;
+﻿using cAlgo.API.Alert.UI.Types.Enums;
+using MahApps.Metro;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -78,10 +79,18 @@ namespace cAlgo.API.Alert.UI.ViewModels
         {
             Models.GeneralOptionsModel general = new Models.GeneralOptionsModel()
             {
-                ThemeBase = GetThemeBases().FirstOrDefault(themeBase => themeBase.Name.Equals("Light",
-                StringComparison.InvariantCultureIgnoreCase)),
-                ThemeAccent = GetThemeAccents().FirstOrDefault(accent => accent.Accent.Name.Equals("Cobalt",
-                StringComparison.InvariantCultureIgnoreCase)),
+                ThemeBase = new Models.ThemeBaseModel
+                {
+                    Name = "BaseLight",
+                    DisplayName = "Light",
+                    SourceUri = "pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml"
+                },
+                ThemeAccent = new Models.ThemeAccentModel
+                {
+                    Name = "Cobalt",
+                    ColorCode = "#FF0050EF",
+                    SourceUri = "pack://application:,,,/MahApps.Metro;component/Styles/Accents/Cobalt.xaml"
+                },
                 TopMost = true
             };
 
@@ -105,7 +114,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
                     StyleModel = new Models.FontStyleModel() { Name = "Normal", Style = FontStyles.Normal },
                     Size = 20
                 },
-                TimeFormat = Types.TimeFormat.TwentyFourHour,
+                TimeFormat = TimeFormat.TwentyFourHour,
                 TimeZone = TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(tz => tz.BaseUtcOffset.Equals(DateTimeOffset.Now.Offset)),
             };
 
@@ -180,30 +189,42 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public static List<Models.ThemeAccentModel> GetThemeAccents()
         {
-            return ThemeManager.Accents.Select(accent => new Models.ThemeAccentModel()
+            return ThemeManager.Accents.Select(accent => new Models.ThemeAccentModel
             {
-                Accent = accent,
-                Color = GetAccentColor(accent)
+                Name = accent.Name,
+                Color = GetAccentColor(accent),
+                SourceUri = accent.Resources.Source.ToString()
             }).ToList();
         }
 
         public static List<Models.ThemeBaseModel> GetThemeBases()
         {
-            return ThemeManager.AppThemes.Select(themeBase => new Models.ThemeBaseModel()
+            return ThemeManager.AppThemes.Select(themeBase => new Models.ThemeBaseModel
             {
-                Base = themeBase,
-                Name = themeBase.Name.Replace("Base", string.Empty)
+                SourceUri = themeBase.Resources.Source.ToString(),
+                DisplayName = themeBase.Name.Replace("Base", string.Empty),
+                Name = themeBase.Name
             }).ToList();
         }
 
-        public static List<Types.TimeFormat> GetTimeFormats()
+        public static List<TimeFormat> GetTimeFormats()
         {
-            return Enum.GetValues(typeof(Types.TimeFormat)).Cast<Types.TimeFormat>().ToList();
+            return Enum.GetValues(typeof(TimeFormat)).Cast<TimeFormat>().ToList();
         }
 
         public static List<TimeZoneInfo> GetTimeZones()
         {
             return TimeZoneInfo.GetSystemTimeZones().ToList();
+        }
+
+        public static Accent GetAccent(Models.ThemeAccentModel accentModel)
+        {
+            return new Accent(accentModel.Name, new Uri(accentModel.SourceUri));
+        }
+
+        public static AppTheme GetTheme(Models.ThemeBaseModel baseModel)
+        {
+            return new AppTheme(baseModel.Name, new Uri(baseModel.SourceUri));
         }
     }
 }

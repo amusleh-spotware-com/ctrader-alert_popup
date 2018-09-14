@@ -1,43 +1,12 @@
-﻿using MahApps.Metro;
+﻿using System;
 using System.Windows.Media;
-using System;
 using System.Xml.Serialization;
 
 namespace cAlgo.API.Alert.UI.Models
 {
     public class ThemeAccentModel
     {
-        #region Fields
-
-        private Accent _accent;
-
-        private string _name, _sourceUri;
-
-        #endregion Fields
-
         #region Properties
-
-        [XmlIgnore]
-        public Accent Accent
-        {
-            get
-            {
-                if (_accent == null)
-                {
-                    _accent = new Accent(_name, new Uri(_sourceUri));
-                }
-
-                return _accent;
-            }
-            set
-            {
-                _accent = value;
-
-                Name = value.Name;
-
-                SourceUri = value.Resources.Source.ToString();
-            }
-        }
 
         [XmlIgnore]
         public SolidColorBrush Color { get; set; }
@@ -54,29 +23,9 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
+        public string Name { get; set; }
 
-        public string SourceUri
-        {
-            get
-            {
-                return _sourceUri;
-            }
-            set
-            {
-                _sourceUri = value;
-            }
-        }
+        public string SourceUri { get; set; }
 
         #endregion Properties
 
@@ -114,7 +63,7 @@ namespace cAlgo.API.Alert.UI.Models
 
         public bool Equals(ThemeAccentModel other)
         {
-            return other == null ? false : Accent.Name.Equals(other.Accent.Name, StringComparison.InvariantCultureIgnoreCase);
+            return other == null ? false : Name.Equals(other.Name, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override int GetHashCode()

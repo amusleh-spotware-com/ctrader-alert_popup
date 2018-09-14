@@ -1,5 +1,4 @@
-﻿using cAlgo.API.Alert.Types;
-using cAlgo.API.Alert.Types.Enums;
+﻿using cAlgo.API.Alert.Types.Enums;
 using cAlgo.API.Alert.UI;
 using cAlgo.API.Alert.UI.Models;
 using cAlgo.API.Internals;
@@ -12,10 +11,9 @@ using System.Linq;
 using System.Media;
 using System.Text;
 using System.Threading;
-using System.Xml.Serialization;
 using Telegram.Bot;
 
-namespace cAlgo.API.Alert
+namespace cAlgo.API.Alert.Types
 {
     public static class Controller
     {
@@ -29,16 +27,6 @@ namespace cAlgo.API.Alert
 
         #region Methods
 
-        public static void LogException(Exception ex)
-        {
-            Configuration.Tracer?.Invoke(string.Format("Exception Message: {0}", ex.Message));
-            Configuration.Tracer?.Invoke(string.Format("Exception Type: {0}", ex.GetType()));
-            Configuration.Tracer?.Invoke(string.Format("Exception TargetSite: {0}", ex.TargetSite));
-            Configuration.Tracer?.Invoke(string.Format("Exception Source: {0}", ex.Source));
-            Configuration.Tracer?.Invoke(string.Format("Exception StackTrace: {0}", ex.StackTrace));
-            Configuration.Tracer?.Invoke(string.Format("Exception InnerException: {0}", ex.InnerException));
-        }
-
         public static void PlaySound(string path)
         {
             try
@@ -51,7 +39,7 @@ namespace cAlgo.API.Alert
             }
             catch (Exception ex)
             {
-                LogException(ex);
+                ExceptionLogger.LogException(ex);
             }
         }
 
@@ -85,7 +73,7 @@ namespace cAlgo.API.Alert
             }
             catch (Exception ex)
             {
-                LogException(ex);
+                ExceptionLogger.LogException(ex);
             }
         }
 
@@ -104,11 +92,11 @@ namespace cAlgo.API.Alert
             }
             catch (Exception ex)
             {
-                LogException(ex);
+                ExceptionLogger.LogException(ex);
             }
         }
 
-        public static void SetupConfiguration()
+        public static void SetConfigurationIfNotYet()
         {
             Configuration.Tracer = Configuration.Tracer ?? new Action<string>(message => System.Diagnostics.Trace.WriteLine(message));
 
@@ -163,25 +151,49 @@ namespace cAlgo.API.Alert
             {
                 try
                 {
+                    OptionsModel options = Bootstrapper.GetOptions(Configuration.OptionsFilePath);
+
+                    TriggerAlerts(notifications, options, alert);
+
                     if (IsMutexNew() || !IsPipeServerAlive())
                     {
                         StartPipeServer();
 
-                        Run(notifications, alert);
+                        _bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath, options);
+
+                        _bootstrapper.OnException += ExceptionLogger.LogException;
+
+                        _bootstrapper.AddAlert(alert);
+
+                        _bootstrapper.Run();
                     }
                     else
                     {
-                        OptionsModel options = Bootstrapper.GetOptions(Configuration.OptionsFilePath);
-
-                        TriggerAlerts(notifications, options, alert);
-
                         SendAlertToPipeServer(alert);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Controller.LogException(ex);
+                    ExceptionLogger.LogException(ex);
                 }
+            }));
+
+            windowThread.SetApartmentState(ApartmentState.STA);
+            windowThread.CurrentCulture = CultureInfo.InvariantCulture;
+            windowThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            windowThread.Start();
+        }
+
+        private static void RunBootstrapper(AlertModel alert, OptionsModel options)
+        {
+            Thread windowThread = new Thread(new ThreadStart(() =>
+            {
+                _bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath, options);
+
+                _bootstrapper.AddAlert(alert);
+
+                _bootstrapper.Run();
             }));
 
             windowThread.SetApartmentState(ApartmentState.STA);
@@ -217,67 +229,23 @@ namespace cAlgo.API.Alert
             }
         }
 
-        private static void Run(this INotifications notifications, AlertModel alert)
-        {
-            _bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath);
-
-            TriggerAlerts(notifications, _bootstrapper.Options, alert);
-
-            _bootstrapper.AddAlert(alert);
-
-            _bootstrapper.Run();
-        }
-
         private static void SendAlertToPipeServer(AlertModel alert)
         {
             using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", Properties.Settings.Default.PipeName, PipeDirection.InOut))
             {
                 pipeClient.Connect();
 
-                byte[] data = GetPipePacketBytes(PipePacketType.Alert, alert);
+                byte[] data = GetPipePacketInBytes(PipePacketType.Alert, alert);
 
                 pipeClient.Write(data, 0, data.Count());
             }
         }
 
-        private static string SerializeXml<T>(T obj)
+        private static byte[] GetPipePacketInBytes<T>(PipePacketType packetType, T dataObject)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            PipePacket packet = new PipePacket { PacketType = packetType, Data = Serializer.Serialize<T>(dataObject) };
 
-            string xml = string.Empty;
-
-            using (StringWriter textWriter = new StringWriter())
-            {
-                serializer.Serialize(textWriter, obj);
-
-                xml = textWriter.ToString();
-            }
-
-            if (string.IsNullOrEmpty(xml))
-            {
-                throw new InvalidOperationException("Couldn't serialize the pipe packet");
-            }
-
-            return xml;
-        }
-
-        private static T DerserializeXml<T>(string xml)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-
-            using (StringReader textReader = new StringReader(xml))
-            {
-                return (T)serializer.Deserialize(textReader);
-            }
-        }
-
-        private static byte[] GetPipePacketBytes<T>(PipePacketType packetType, T dataObject)
-        {
-            string dataXml = SerializeXml<T>(dataObject);
-
-            PipePacket packet = new PipePacket { PacketType = packetType, XmlData = dataXml };
-
-            string xml = SerializeXml<PipePacket>(packet);
+            string xml = Serializer.Serialize(packet);
 
             return Encoding.UTF8.GetBytes(xml);
         }
@@ -306,7 +274,7 @@ namespace cAlgo.API.Alert
                         {
                             string readBufferString = Encoding.UTF8.GetString(readBuffer);
 
-                            PipePacket pipePacket = DerserializeXml<PipePacket>(readBufferString);
+                            PipePacket pipePacket = Serializer.Derserialize<PipePacket>(readBufferString);
 
                             ExecutePipePacket(pipePacket);
                         }
@@ -316,10 +284,12 @@ namespace cAlgo.API.Alert
                 {
                     if (ex is InvalidOperationException || ex is IOException || ex is ObjectDisposedException)
                     {
+                        Thread.Sleep(3000);
+
                         StartPipeServer();
                     }
 
-                    throw ex;
+                    ExceptionLogger.LogException(ex);
                 }
             }));
 
@@ -334,7 +304,7 @@ namespace cAlgo.API.Alert
             switch (pipePacket.PacketType)
             {
                 case PipePacketType.Alert:
-                    AlertModel alertModel = DerserializeXml<AlertModel>(pipePacket.XmlData);
+                    AlertModel alertModel = Serializer.Derserialize<AlertModel>(pipePacket.Data);
 
                     _bootstrapper.AddAlert(alertModel);
 

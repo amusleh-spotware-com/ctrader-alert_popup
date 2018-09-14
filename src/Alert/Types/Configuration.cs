@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace cAlgo.API.Alert
+namespace cAlgo.API.Alert.Types
 {
     public static class Configuration
     {
