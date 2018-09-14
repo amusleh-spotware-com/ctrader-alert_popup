@@ -29,8 +29,6 @@ namespace cAlgo.API.Alert.UI
 
         #endregion Fields
 
-        #region Constructors
-
         public Bootstrapper(string alertsFilePath, string optionsFilePath)
         {
             _alertsFilePath = alertsFilePath;
@@ -78,8 +76,6 @@ namespace cAlgo.API.Alert.UI
                 _alerts.AddRange(fileAlerts);
             }
         }
-
-        #endregion Constructors
 
         #region Properties
 
@@ -366,7 +362,7 @@ namespace cAlgo.API.Alert.UI
         }
 
         private static FileStream GetStream(string path, FileMode fileMode, FileAccess fileAccess, FileShare fileShare = FileShare.ReadWrite,
-int maxTry = 5)
+            int maxTry = 5)
         {
             FileStream stream = null;
 

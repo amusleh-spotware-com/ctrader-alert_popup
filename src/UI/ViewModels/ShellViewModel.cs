@@ -20,7 +20,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         #endregion Fields
 
-        #region Constructor
+        
 
         public ShellViewModel(Bootstrapper bootstrapper)
         {
@@ -35,7 +35,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
             GoBackCommand = new DelegateCommand(GoBack, () => _bootstrapper.NavigationJournal.Count > 1);
         }
 
-        #endregion Constructor
+        
 
         #region Properties
 

@@ -21,7 +21,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         #endregion Fields
 
-        #region Constructor
+        
 
         public AlertsViewModel(List<Models.AlertModel> alerts, Models.OptionsModel options, EventAggregator eventAggregator)
         {
@@ -45,7 +45,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
                 .ObservesProperty(() => SelectedAlerts);
         }
 
-        #endregion Constructor
+        
 
         #region Properties
 

@@ -34,7 +34,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         #endregion Fields
 
-        #region Constructor
+        
 
         public OptionsViewModel(Models.OptionsModel model, EventAggregator eventAggregator)
         {
@@ -73,7 +73,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
             RemoveSelectedTelegramBotsCommand = new DelegateCommand<IList>(RemoveSelectedTelegramBots);
         }
 
-        #endregion Constructor
+        
 
         #region Properties
 
