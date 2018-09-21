@@ -2,6 +2,7 @@
     x:Class="cAlgo.API.Alert.UI.Views.AlertsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:cAlgo.API.Alert.UI.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:iconsPack="http://metro.mahapps.com/winfx/xaml/iconpacks"
@@ -27,7 +28,12 @@
     </i:Interaction.Triggers>
 
     <DataGrid
+        Name="AlertsDataGrid"
         Grid.Row="1"
+        behaviors:DataGridColumnSettingsBehavior.SaveColumnsIndex="True"
+        behaviors:DataGridColumnSettingsBehavior.SaveColumnsSorting="True"
+        behaviors:DataGridColumnSettingsBehavior.SaveColumnsWidth="True"
+        behaviors:ScrollToItemBehavior.Item="{Binding Path=VisibleAlert}"
         ItemsSource="{Binding Path=Alerts}"
         Style="{StaticResource ReadOnlyDataGridStyle}">
         <DataGrid.Columns>
@@ -50,6 +56,7 @@
                 Width="Auto"
                 CellTemplate="{StaticResource TimeTemplate}"
                 Header="Time"
+                SortDirection="Ascending"
                 SortMemberPath="Time" />
             <DataGridTemplateColumn
                 Width="Auto"

@@ -19,9 +19,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
         private Models.OptionsModel _options;
         private IList _selectedAlerts;
 
-        #endregion Fields
+        private Models.AlertModel _visibleAlert;
 
-        
+        #endregion Fields
 
         public AlertsViewModel(List<Models.AlertModel> alerts, Models.OptionsModel options, EventAggregator eventAggregator)
         {
@@ -44,8 +44,6 @@ namespace cAlgo.API.Alert.UI.ViewModels
             RemoveSelectedCommand = new DelegateCommand(RemoveSelected, () => SelectedAlerts != null && SelectedAlerts.Count > 0)
                 .ObservesProperty(() => SelectedAlerts);
         }
-
-        
 
         #region Properties
 
@@ -89,6 +87,18 @@ namespace cAlgo.API.Alert.UI.ViewModels
         public DelegateCommand<IList> SelectionChangedCommand { get; set; }
         public DelegateCommand UnloadedCommand { get; set; }
 
+        public Models.AlertModel VisibleAlert
+        {
+            get
+            {
+                return _visibleAlert;
+            }
+            set
+            {
+                SetProperty(ref _visibleAlert, value);
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -105,6 +115,8 @@ namespace cAlgo.API.Alert.UI.ViewModels
             alertCopy.Price = Math.Round(alertCopy.Price, Options.Alerts.MaxPriceDecimalPlacesNumber);
 
             Alerts.Add(alertCopy);
+
+            VisibleAlert = alertCopy;
         }
 
         private void AlertAddedEvent_Handler(Models.AlertModel alert)

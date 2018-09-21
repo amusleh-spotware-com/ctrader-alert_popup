@@ -11,7 +11,7 @@ namespace cAlgo.API.Alert.Tester
             INotifications notifications = new Notifications();
 
             int counter = 0;
-            while (counter < 10)
+            while (counter < 20)
             {
                 counter++;
 
