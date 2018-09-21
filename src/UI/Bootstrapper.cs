@@ -71,18 +71,6 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
-        #region Delegates
-
-        public delegate void ExceptionHandler(Exception ex);
-
-        #endregion Delegates
-
-        #region Events
-
-        public event ExceptionHandler OnException;
-
-        #endregion Events
-
         #region Properties
 
         public string AlertsFilePath
@@ -300,13 +288,11 @@ namespace cAlgo.API.Alert.UI
                     {
                         result = csvReader.GetRecords<Models.AlertModel>().ToList();
                     }
-                    catch (CsvHelperException ex)
+                    catch (CsvHelperException)
                     {
                         fileStream.Close();
 
                         File.Delete(path);
-
-                        OnException?.Invoke(ex);
                     }
                 }
             }
@@ -353,6 +339,10 @@ namespace cAlgo.API.Alert.UI
 
                 case ViewNames.OptionsView:
                     _shellView.Content = CreateView<Views.OptionsView, ViewModels.OptionsViewModel>(_options, _eventAggregator);
+                    break;
+
+                case ViewNames.AboutView:
+                    _shellView.Content = CreateView<Views.AboutView, ViewModels.AboutViewModel>();
                     break;
             }
         }

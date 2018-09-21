@@ -25,6 +25,11 @@ namespace cAlgo.API.Alert.Types
 
         #endregion Fields
 
+        static Controller()
+        {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        }
+
         #region Methods
 
         public static void PlaySound(string path)
@@ -161,8 +166,6 @@ namespace cAlgo.API.Alert.Types
 
                         _bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath, options);
 
-                        _bootstrapper.OnException += ExceptionLogger.LogException;
-
                         _bootstrapper.AddAlert(alert);
 
                         _bootstrapper.Run();
@@ -183,6 +186,14 @@ namespace cAlgo.API.Alert.Types
             windowThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
             windowThread.Start();
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (e.ExceptionObject != null)
+            {
+                ExceptionLogger.LogException(e.ExceptionObject as Exception);
+            }
         }
 
         private static void RunBootstrapper(AlertModel alert, OptionsModel options)

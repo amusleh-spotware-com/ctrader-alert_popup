@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace cAlgo.API.Alert.UI
+﻿namespace cAlgo.API.Alert.UI
 {
     public static class ViewNames
     {
@@ -13,6 +7,8 @@ namespace cAlgo.API.Alert.UI
         public const string OptionsView = "OptionsView";
 
         public const string AlertsView = "AlertsView";
+
+        public const string AboutView = "AboutView";
 
         #endregion Views
     }

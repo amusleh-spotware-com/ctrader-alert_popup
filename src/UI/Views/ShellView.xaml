@@ -58,6 +58,12 @@
         <Controls:WindowCommands ShowLastSeparator="False">
             <Button
                 Command="{Binding Path=NavigateCommand}"
+                CommandParameter="{x:Static local:ViewNames.AboutView}"
+                ToolTip="About">
+                <iconsPack:PackIconFontAwesome Kind="InfoSolid" />
+            </Button>
+            <Button
+                Command="{Binding Path=NavigateCommand}"
                 CommandParameter="{x:Static local:ViewNames.OptionsView}"
                 IsEnabled="{Binding Path=IsOptionsButtonEnabled}"
                 ToolTip="Settings">
