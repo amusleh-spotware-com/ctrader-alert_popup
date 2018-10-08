@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
 namespace cAlgo.API.Alert.UI.Behaviors
 {
@@ -25,6 +27,10 @@ namespace cAlgo.API.Alert.UI.Behaviors
         public static readonly DependencyProperty SaveColumnsSortingProperty =
             DependencyProperty.RegisterAttached("SaveColumnsSorting", typeof(bool), typeof(DataGridColumnSettingsBehavior),
             new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnSaveColumnsSortingChanged));
+
+        public static readonly DependencyProperty EnableColumnsVisibilityMenuProperty =
+            DependencyProperty.RegisterAttached("EnableColumnsVisibilityMenu", typeof(bool), typeof(DataGridColumnSettingsBehavior),
+            new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnEnableColumnsVisibilityMenuChanged));
 
         #endregion Dependency Properties
 
@@ -58,6 +64,16 @@ namespace cAlgo.API.Alert.UI.Behaviors
         public static void SetSaveColumnsSorting(DependencyObject source, object value)
         {
             source.SetValue(SaveColumnsSortingProperty, value);
+        }
+
+        public static object GetEnableColumnsVisibilityMenu(DependencyObject source)
+        {
+            return (object)source.GetValue(EnableColumnsVisibilityMenuProperty);
+        }
+
+        public static void SetEnableColumnsVisibilityMenu(DependencyObject source, object value)
+        {
+            source.SetValue(EnableColumnsVisibilityMenuProperty, value);
         }
 
         #endregion Dependency Properties Get/Set methods
@@ -104,6 +120,20 @@ namespace cAlgo.API.Alert.UI.Behaviors
             ThrowExceptionIfNameNotSet(dataGrid);
 
             dataGrid.Loaded += (sender, args) => SaveColumnsSortingOnLoaded(sender as DataGrid);
+        }
+
+        private static void OnEnableColumnsVisibilityMenuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(bool)e.NewValue)
+            {
+                return;
+            }
+
+            DataGrid dataGrid = d as DataGrid;
+
+            ThrowExceptionIfNameNotSet(dataGrid);
+
+            dataGrid.Loaded += (sender, args) => EnableColumnsVisibilityMenuOnLoaded(sender as DataGrid);
         }
 
         #endregion Dependency Properties on changed methods
@@ -171,6 +201,11 @@ namespace cAlgo.API.Alert.UI.Behaviors
             dataGrid.Items.Refresh();
         }
 
+        private static void SetColumnVisibility(DataGrid dataGrid, DataGridColumn column, DataGridColumnSettings settings)
+        {
+            column.Visibility = settings.Visibility;
+        }
+
         private static void SaveSettings(DataGrid dataGrid, DataGridColumnSettingsType settingsType)
         {
             DataGridSettings settings = GetDataGridSettings(dataGrid.Name);
@@ -205,6 +240,10 @@ namespace cAlgo.API.Alert.UI.Behaviors
                                 UnitType = column.Width.UnitType
                             };
                             break;
+
+                        case DataGridColumnSettingsType.Visibility:
+                            columnSettings.Visibility = column.Visibility;
+                            break;
                     }
                 }
                 else
@@ -220,7 +259,8 @@ namespace cAlgo.API.Alert.UI.Behaviors
                             DisplayValue = column.Width.DisplayValue,
                             UnitType = column.Width.UnitType
                         },
-                        SortDirection = column.SortDirection
+                        SortDirection = column.SortDirection,
+                        Visibility = column.Visibility
                     };
 
                     settings.ColumnsSetting.Add(columnSettings);
@@ -257,6 +297,65 @@ namespace cAlgo.API.Alert.UI.Behaviors
             ApplySettingsToColumns(dataGrid, SetColumnSorting);
 
             OverrideColumnsPropertyOnChanged(dataGrid, DataGridColumn.SortDirectionProperty, (obj, args) => SaveSettings(dataGrid, DataGridColumnSettingsType.Sorting));
+        }
+
+        private static void EnableColumnsVisibilityMenuOnLoaded(DataGrid dataGrid)
+        {
+            ApplySettingsToColumns(dataGrid, SetColumnVisibility);
+
+            List<DataGridColumnHeader> columnHeaders = GetChildren(dataGrid).Where(child => child is DataGridColumnHeader)
+                .Select(child => child as DataGridColumnHeader)
+                .Where(header => header.Column != null)
+                .ToList();
+
+            ContextMenu contextMenu = new ContextMenu();
+
+            foreach (DataGridColumnHeader columnHeader in columnHeaders)
+            {
+                columnHeader.ContextMenu = contextMenu;
+
+                if (columnHeader.Column.Header is string && !string.IsNullOrEmpty(columnHeader.Column.Header.ToString()))
+                {
+                    MenuItem menuItem = new MenuItem
+                    {
+                        Header = columnHeader.Column.Header,
+                        IsChecked = columnHeader.Column.Visibility == Visibility.Visible ? true : false,
+                        StaysOpenOnClick = true
+                    };
+
+                    menuItem.Click += (sender, args) =>
+                    {
+                        menuItem.IsChecked = !menuItem.IsChecked;
+
+                        DataGridColumn column = dataGrid.Columns.First(iColumn => iColumn.Header.ToString().Equals(
+                            menuItem.Header.ToString(), StringComparison.InvariantCultureIgnoreCase));
+
+                        column.Visibility = menuItem.IsChecked ? Visibility.Visible : Visibility.Collapsed;
+
+                        SaveSettings(dataGrid, DataGridColumnSettingsType.Visibility);
+                    };
+
+                    contextMenu.Items.Add(menuItem);
+                }
+            }
+        }
+
+        private static List<DependencyObject> GetChildren(DependencyObject dp)
+        {
+            List<DependencyObject> result = new List<DependencyObject>();
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(dp); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(dp, i);
+
+                result.Add(child);
+
+                List<DependencyObject> childChildren = GetChildren(child);
+
+                result.AddRange(childChildren);
+            }
+
+            return result;
         }
 
         private static DataGridSettings GetDataGridSettings(string dataGridName)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows;
 
 namespace cAlgo.API.Alert.UI.Types
 {
@@ -14,6 +15,8 @@ namespace cAlgo.API.Alert.UI.Types
         public DataGridLengthSettings Width { get; set; }
 
         public ListSortDirection? SortDirection { get; set; }
+
+        public Visibility Visibility { get; set; }
 
         #endregion Properties
 

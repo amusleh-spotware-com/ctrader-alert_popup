@@ -4,6 +4,7 @@
     {
         Sorting,
         DisplayIndex,
-        Width
+        Width,
+        Visibility
     }
 }

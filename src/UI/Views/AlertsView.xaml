@@ -30,6 +30,7 @@
     <DataGrid
         Name="AlertsDataGrid"
         Grid.Row="1"
+        behaviors:DataGridColumnSettingsBehavior.EnableColumnsVisibilityMenu="True"
         behaviors:DataGridColumnSettingsBehavior.SaveColumnsIndex="True"
         behaviors:DataGridColumnSettingsBehavior.SaveColumnsSorting="True"
         behaviors:DataGridColumnSettingsBehavior.SaveColumnsWidth="True"
