@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -360,9 +359,7 @@ namespace cAlgo.API.Alert.UI.Behaviors
 
         private static DataGridSettings GetDataGridSettings(string dataGridName)
         {
-            string assemblyName = Assembly.GetEntryAssembly().GetName().Name;
-
-            string settingsKey = $"{assemblyName}.{dataGridName}";
+            string settingsKey = $"cTrader.{dataGridName}";
 
             return new DataGridSettings(settingsKey);
         }

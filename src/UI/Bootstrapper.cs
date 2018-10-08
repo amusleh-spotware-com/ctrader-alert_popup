@@ -307,6 +307,17 @@ namespace cAlgo.API.Alert.UI
                 InvokeOnWindowThread(() =>
                 {
                     EventAggregator.GetEvent<Events.AlertAddedEvent>().Publish(alert);
+
+                    if (ShellView.WindowState == WindowState.Minimized)
+                    {
+                        ShellView.WindowState = WindowState.Normal;
+                    }
+
+                    if (!ShellView.Topmost)
+                    {
+                        ShellView.Topmost = true;
+                        ShellView.Topmost = false;
+                    }
                 });
             }
             else

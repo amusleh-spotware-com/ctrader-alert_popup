@@ -160,11 +160,13 @@ namespace cAlgo.API.Alert.Types
 
                     TriggerAlerts(notifications, options, alert);
 
-                    if (IsMutexNew() || !IsPipeServerAlive())
+                    if (IsMutexNew() || !IsPipeServerAlive() || _bootstrapper == null)
                     {
                         StartPipeServer();
 
                         _bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath, options);
+
+                        _bootstrapper.ShellView.Closed += (sender, args) => _bootstrapper = null;
 
                         _bootstrapper.AddAlert(alert);
 
