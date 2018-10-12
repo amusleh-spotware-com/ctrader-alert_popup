@@ -156,13 +156,21 @@ namespace cAlgo.API.Alert.Types
             {
                 try
                 {
+                    Configuration.Tracer("Show 0 | " + alert.Symbol);
+
                     OptionsModel options = Bootstrapper.GetOptions(Configuration.OptionsFilePath);
 
                     TriggerAlerts(notifications, options, alert);
 
+                    Configuration.Tracer("Show 1 | " + alert.Symbol);
+
                     if (IsMutexNew() || !IsPipeServerAlive() || _bootstrapper == null)
                     {
+                        Configuration.Tracer("Show 2 | " + alert.Symbol);
+
                         StartPipeServer();
+
+                        Configuration.Tracer("Show 3| " + alert.Symbol);
 
                         _bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath, options);
 
@@ -171,11 +179,19 @@ namespace cAlgo.API.Alert.Types
                         _bootstrapper.AddAlert(alert);
 
                         _bootstrapper.Run();
+
+                        Configuration.Tracer("Show 4 | " + alert.Symbol);
                     }
                     else
                     {
+                        Configuration.Tracer("Show 5 | " + alert.Symbol);
+
                         SendAlertToPipeServer(alert);
+
+                        Configuration.Tracer("Show 6 | " + alert.Symbol);
                     }
+
+                    Configuration.Tracer("Show 7 | " + alert.Symbol);
                 }
                 catch (Exception ex)
                 {

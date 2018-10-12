@@ -91,7 +91,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Types\Enums\PipePacketType.cs" />
-    <Compile Include="Types\Enums\TradeSide.cs" />
     <Compile Include="Types\ExceptionLogger.cs" />
     <Compile Include="Types\PipePacket.cs" />
     <Compile Include="Types\Serializer.cs" />
