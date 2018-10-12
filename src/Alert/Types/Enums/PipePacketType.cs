@@ -6,6 +6,5 @@
     public enum PipePacketType
     {
         Alert,
-        AlertResponse
     }
 }

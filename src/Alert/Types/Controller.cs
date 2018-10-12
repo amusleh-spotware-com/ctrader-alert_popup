@@ -156,21 +156,15 @@ namespace cAlgo.API.Alert.Types
             {
                 try
                 {
-                    Configuration.Tracer("Show 0 | " + alert.Symbol);
-
                     OptionsModel options = Bootstrapper.GetOptions(Configuration.OptionsFilePath);
 
                     TriggerAlerts(notifications, options, alert);
 
-                    Configuration.Tracer("Show 1 | " + alert.Symbol);
+                    bool isPipeAlive = IsPipeServerAlive();
 
-                    if (IsMutexNew() || !IsPipeServerAlive() || _bootstrapper == null)
+                    if (IsMutexNew() || !isPipeAlive || _bootstrapper == null)
                     {
-                        Configuration.Tracer("Show 2 | " + alert.Symbol);
-
                         StartPipeServer();
-
-                        Configuration.Tracer("Show 3| " + alert.Symbol);
 
                         _bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath, options);
 
@@ -179,19 +173,11 @@ namespace cAlgo.API.Alert.Types
                         _bootstrapper.AddAlert(alert);
 
                         _bootstrapper.Run();
-
-                        Configuration.Tracer("Show 4 | " + alert.Symbol);
                     }
                     else
                     {
-                        Configuration.Tracer("Show 5 | " + alert.Symbol);
-
                         SendAlertToPipeServer(alert);
-
-                        Configuration.Tracer("Show 6 | " + alert.Symbol);
                     }
-
-                    Configuration.Tracer("Show 7 | " + alert.Symbol);
                 }
                 catch (Exception ex)
                 {
@@ -260,19 +246,31 @@ namespace cAlgo.API.Alert.Types
 
         private static void SendAlertToPipeServer(AlertModel alert)
         {
+            byte[] data = GetPipePacketInBytes(PipePacketType.Alert, alert);
+
+            SendDataToPipeServer(data);
+        }
+
+        private static void SendDataToPipeServer(byte[] data)
+        {
             using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", Properties.Settings.Default.PipeName, PipeDirection.InOut))
             {
                 pipeClient.Connect();
 
-                byte[] data = GetPipePacketInBytes(PipePacketType.Alert, alert);
-
                 pipeClient.Write(data, 0, data.Count());
+
+                pipeClient.WaitForPipeDrain();
             }
         }
 
         private static byte[] GetPipePacketInBytes<T>(PipePacketType packetType, T dataObject)
         {
-            PipePacket packet = new PipePacket { PacketType = packetType, Data = Serializer.Serialize<T>(dataObject) };
+            PipePacket packet = new PipePacket { PacketType = packetType };
+
+            if (dataObject != null)
+            {
+                packet.Data = Serializer.Serialize<T>(dataObject);
+            }
 
             string xml = Serializer.Serialize(packet);
 
@@ -285,15 +283,12 @@ namespace cAlgo.API.Alert.Types
             {
                 try
                 {
-                    using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(Properties.Settings.Default.PipeName,
-                        PipeDirection.InOut,
+                    using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(Properties.Settings.Default.PipeName, PipeDirection.InOut,
                         NamedPipeServerStream.MaxAllowedServerInstances))
                     {
                         pipeServer.WaitForConnection();
 
                         StartPipeServer();
-
-                        Thread.Sleep(1000);
 
                         byte[] readBuffer = new byte[1024];
 
@@ -333,6 +328,7 @@ namespace cAlgo.API.Alert.Types
             switch (pipePacket.PacketType)
             {
                 case PipePacketType.Alert:
+
                     AlertModel alertModel = Serializer.Derserialize<AlertModel>(pipePacket.Data);
 
                     _bootstrapper.AddAlert(alertModel);

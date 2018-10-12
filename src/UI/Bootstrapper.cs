@@ -360,7 +360,7 @@ namespace cAlgo.API.Alert.UI
 
         public void Run()
         {
-            _shellView.ShowDialog();
+            InvokeOnWindowThread(() => _shellView.ShowDialog());
         }
 
         public void Shutdown()
