@@ -127,6 +127,8 @@ namespace cAlgo.API.Alert.Types
             Configuration.OptionsFilePath = Configuration.OptionsFilePath ?? Path.Combine(calgoDirPath, "PopupOptions.xml");
 
             Configuration.SinglePopupWindow = Configuration.SinglePopupWindow ?? false;
+
+            Configuration.Title = "Alerts - cTrader";
         }
 
         public static void TriggerAlerts(INotifications notifications, OptionsModel options, AlertModel alert)
@@ -178,6 +180,8 @@ namespace cAlgo.API.Alert.Types
                         if (_bootstrapper == null)
                         {
                             _bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath, options);
+
+                            _bootstrapper.ShellView.Title = Configuration.Title;
 
                             _bootstrapper.ShellView.Closed += (sender, args) =>
                             {
