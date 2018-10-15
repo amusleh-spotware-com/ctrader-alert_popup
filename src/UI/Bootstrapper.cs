@@ -137,6 +137,14 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
+        public bool IsWindowOpen
+        {
+            get
+            {
+                return ShellView != null && ShellView.Dispatcher.Invoke(() => ShellView.Visibility != Visibility.Hidden);
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -360,7 +368,13 @@ namespace cAlgo.API.Alert.UI
 
         public void Run()
         {
-            InvokeOnWindowThread(() => _shellView.ShowDialog());
+            InvokeOnWindowThread(() =>
+            {
+                if (_shellView.Visibility != Visibility.Visible)
+                {
+                    _shellView.ShowDialog();
+                }
+            });
         }
 
         public void Shutdown()

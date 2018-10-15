@@ -12,7 +12,7 @@ namespace cAlgo.API.Alert.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,7 +25,7 @@ namespace cAlgo.API.Alert.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_pipeName")]
+        [global::System.Configuration.DefaultSettingValueAttribute("fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROV_pipeName")]
         public string PipeName {
             get {
                 return ((string)(this["PipeName"]));
@@ -37,7 +37,7 @@ namespace cAlgo.API.Alert.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROVs_mutexName")]
+        [global::System.Configuration.DefaultSettingValueAttribute("fR0r2RKG76477qslFG81n4m9PG1kKMEU84yvEbkP2HbKoOROV_mutexName")]
         public string MutexName {
             get {
                 return ((string)(this["MutexName"]));
