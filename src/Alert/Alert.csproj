@@ -90,9 +90,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Types\Enums\PipePacketType.cs" />
     <Compile Include="Types\ExceptionLogger.cs" />
-    <Compile Include="Types\PipePacket.cs" />
     <Compile Include="Types\Serializer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +106,9 @@
       <Project>{63c5a465-9969-4271-8b6c-e37296007ba8}</Project>
       <Name>UI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Types\Enums\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

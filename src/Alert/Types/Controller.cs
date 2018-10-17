@@ -1,15 +1,12 @@
-﻿using cAlgo.API.Alert.Types.Enums;
-using cAlgo.API.Alert.UI;
+﻿using cAlgo.API.Alert.UI;
 using cAlgo.API.Alert.UI.Models;
 using cAlgo.API.Internals;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Media;
-using System.Text;
 using System.Threading;
 using Telegram.Bot;
 
@@ -19,13 +16,7 @@ namespace cAlgo.API.Alert.Types
     {
         #region Fields
 
-        private static Mutex _mutex;
-
         private static Bootstrapper _bootstrapper;
-
-        private static object _pipServerStateObject = new object();
-
-        private static NamedPipeServerStream _pipeServer;
 
         #endregion Fields
 
@@ -126,9 +117,7 @@ namespace cAlgo.API.Alert.Types
             Configuration.AlertFilePath = Configuration.AlertFilePath ?? Path.Combine(calgoDirPath, "Alerts.csv");
             Configuration.OptionsFilePath = Configuration.OptionsFilePath ?? Path.Combine(calgoDirPath, "PopupOptions.xml");
 
-            Configuration.SinglePopupWindow = Configuration.SinglePopupWindow ?? false;
-
-            Configuration.Title = "Alerts - cTrader";
+            Configuration.Title = Configuration.Title ?? "Alerts - cTrader";
         }
 
         public static void TriggerAlerts(INotifications notifications, OptionsModel options, AlertModel alert)
@@ -168,40 +157,21 @@ namespace cAlgo.API.Alert.Types
 
                     TriggerAlerts(notifications, options, alert);
 
-                    bool isPipeAlive = IsPipeServerAlive();
-
-                    if (!Configuration.SinglePopupWindow.Value || IsMutexNew() || !isPipeAlive)
+                    if (_bootstrapper == null)
                     {
-                        if (Configuration.SinglePopupWindow.Value)
+                        _bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath, options);
+
+                        _bootstrapper.ShellView.Title = Configuration.Title;
+
+                        _bootstrapper.ShellView.Closed += (sender, args) =>
                         {
-                            StartPipeServer();
-                        }
-
-                        if (_bootstrapper == null)
-                        {
-                            _bootstrapper = new Bootstrapper(Configuration.AlertFilePath, Configuration.OptionsFilePath, options);
-
-                            _bootstrapper.ShellView.Title = Configuration.Title;
-
-                            _bootstrapper.ShellView.Closed += (sender, args) =>
-                            {
-                                _bootstrapper = null;
-
-                                if (_pipeServer != null)
-                                {
-                                    _pipeServer.Dispose();
-                                }
-                            };
-                        }
-
-                        _bootstrapper.AddAlert(alert);
-
-                        _bootstrapper.Run();
+                            _bootstrapper = null;
+                        };
                     }
-                    else
-                    {
-                        SendAlertToPipeServer(alert);
-                    }
+
+                    _bootstrapper.AddAlert(alert);
+
+                    _bootstrapper.Run();
                 }
                 catch (Exception ex)
                 {
@@ -240,127 +210,6 @@ namespace cAlgo.API.Alert.Types
             windowThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
             windowThread.Start();
-        }
-
-        private static bool IsMutexNew()
-        {
-            bool isNew;
-
-            _mutex = new Mutex(true, Properties.Settings.Default.MutexName, out isNew);
-
-            return isNew;
-        }
-
-        private static bool IsPipeServerAlive()
-        {
-            using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", Properties.Settings.Default.PipeName, PipeDirection.InOut))
-            {
-                try
-                {
-                    pipeClient.Connect(1000);
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    if (ex is TimeoutException || ex is IOException)
-                    {
-                        return false;
-                    }
-
-                    throw ex;
-                }
-            }
-        }
-
-        private static void SendAlertToPipeServer(AlertModel alert)
-        {
-            byte[] data = GetPipePacketInBytes(PipePacketType.Alert, alert);
-
-            SendDataToPipeServer(data);
-        }
-
-        private static void SendDataToPipeServer(byte[] data)
-        {
-            using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", Properties.Settings.Default.PipeName, PipeDirection.InOut))
-            {
-                pipeClient.Connect();
-
-                pipeClient.Write(data, 0, data.Count());
-
-                pipeClient.WaitForPipeDrain();
-            }
-        }
-
-        private static byte[] GetPipePacketInBytes<T>(PipePacketType packetType, T dataObject)
-        {
-            PipePacket packet = new PipePacket { PacketType = packetType };
-
-            if (dataObject != null)
-            {
-                packet.Data = Serializer.Serialize<T>(dataObject);
-            }
-
-            string xml = Serializer.Serialize(packet);
-
-            return Encoding.UTF8.GetBytes(xml);
-        }
-
-        private static void StartPipeServer()
-        {
-            _pipeServer = new NamedPipeServerStream(Properties.Settings.Default.PipeName, PipeDirection.InOut,
-                                NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
-
-            _pipeServer.BeginWaitForConnection(asyncResult =>
-            {
-                try
-                {
-                    Configuration.Tracer("StartPipeServer 0");
-
-                    _pipeServer.EndWaitForConnection(asyncResult);
-
-                    Configuration.Tracer("StartPipeServer 1");
-
-                    byte[] readBuffer = new byte[1024];
-
-                    _pipeServer.Read(readBuffer, 0, readBuffer.Count());
-
-                    Configuration.Tracer("StartPipeServer 2");
-
-                    if (readBuffer.Any(bufferByte => bufferByte != new byte()))
-                    {
-                        Configuration.Tracer("StartPipeServer 3");
-
-                        string readBufferString = Encoding.UTF8.GetString(readBuffer);
-
-                        PipePacket pipePacket = Serializer.Derserialize<PipePacket>(readBufferString);
-
-                        ExecutePipePacket(pipePacket);
-
-                        Configuration.Tracer("StartPipeServer 4");
-                    }
-                }
-                catch (ObjectDisposedException)
-                {
-                }
-            }, _pipServerStateObject);
-        }
-
-        private static void ExecutePipePacket(PipePacket pipePacket)
-        {
-            switch (pipePacket.PacketType)
-            {
-                case PipePacketType.Alert:
-
-                    AlertModel alertModel = Serializer.Derserialize<AlertModel>(pipePacket.Data);
-
-                    _bootstrapper.AddAlert(alertModel);
-
-                    break;
-
-                default:
-                    throw new InvalidDataException("Unknown pipe packet type");
-            }
         }
 
         #endregion Methods
