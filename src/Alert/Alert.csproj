@@ -78,8 +78,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Telegram.Bot">
-      <HintPath>..\..\..\Telegram.Bot\Telegram.Bot\bin\Release\Telegram.Bot.dll</HintPath>
+    <Reference Include="TelegramBotApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\TelegramBotApi.1.0.0\lib\net45\TelegramBotApi.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

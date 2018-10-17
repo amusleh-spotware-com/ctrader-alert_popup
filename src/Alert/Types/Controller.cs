@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Threading;
-using Telegram.Bot;
+using TelegramBotApi;
 
 namespace cAlgo.API.Alert.Types
 {
