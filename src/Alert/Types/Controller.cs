@@ -100,11 +100,6 @@ namespace cAlgo.API.Alert.Types
         {
             Configuration.Tracer = Configuration.Tracer ?? new Action<string>(message => System.Diagnostics.Trace.WriteLine(message));
 
-            if (!string.IsNullOrEmpty(Configuration.AlertFilePath) && !string.IsNullOrEmpty(Configuration.OptionsFilePath))
-            {
-                return;
-            }
-
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             string calgoDirPath = Path.Combine(documentsPath, "cAlgo");
