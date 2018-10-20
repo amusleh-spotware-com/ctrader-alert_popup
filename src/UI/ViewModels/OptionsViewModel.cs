@@ -9,8 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Windows.Media;
-using Telegram.Bot;
-using Telegram.Bot.Types;
+using TelegramBotApi;
+using TelegramBotApi.Types;
 
 namespace cAlgo.API.Alert.UI.ViewModels
 {
