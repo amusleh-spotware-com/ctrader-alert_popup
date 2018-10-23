@@ -165,7 +165,7 @@ namespace cAlgo.API.Alert.UI.Behaviors
                 DataGridColumnSettings columnSettings = settings.ColumnsSetting.FirstOrDefault(iColumnSettings => iColumnSettings.Header.Equals(
                     column.Header.ToString(), StringComparison.InvariantCultureIgnoreCase));
 
-                if (settings == null)
+                if (columnSettings == null)
                 {
                     continue;
                 }
