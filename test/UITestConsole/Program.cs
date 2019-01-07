@@ -9,7 +9,7 @@ namespace cAlgo.API.Alert.Tester
         {
             INotifications notifications = new Notifications();
 
-            notifications.ShowPopup("Hour", "EURUSD", 1.23132, "UITestConsole", "Buy", "0", DateTimeOffset.Now);
+            notifications.ShowPopup("Hour", "EURUSD", "Trend Line", "UITestConsole", 1.23452, "No comment", DateTimeOffset.Now);
 
             //Thread.Sleep(10000);
 

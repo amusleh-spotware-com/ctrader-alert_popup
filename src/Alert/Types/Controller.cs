@@ -9,6 +9,7 @@ using System.Linq;
 using System.Media;
 using System.Threading;
 using TelegramBotApi;
+using System.Reflection;
 
 namespace cAlgo.API.Alert.Types
 {
@@ -109,8 +110,10 @@ namespace cAlgo.API.Alert.Types
                 Directory.CreateDirectory(calgoDirPath);
             }
 
-            Configuration.AlertFilePath = Configuration.AlertFilePath ?? Path.Combine(calgoDirPath, "Alerts.csv");
-            Configuration.OptionsFilePath = Configuration.OptionsFilePath ?? Path.Combine(calgoDirPath, "PopupOptions.xml");
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            Configuration.AlertFilePath = Configuration.AlertFilePath ?? Path.Combine(calgoDirPath, $"Alerts_{version}.csv");
+            Configuration.OptionsFilePath = Configuration.OptionsFilePath ?? Path.Combine(calgoDirPath, $"AlertPopupOptions_{version}.xml");
 
             Configuration.Title = Configuration.Title ?? "Alerts - cTrader";
         }
