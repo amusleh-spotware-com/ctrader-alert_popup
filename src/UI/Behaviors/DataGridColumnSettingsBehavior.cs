@@ -181,7 +181,10 @@ namespace cAlgo.API.Alert.UI.Behaviors
 
         private static void SetColumnDisplayIndex(DataGrid dataGrid, DataGridColumn column, DataGridColumnSettings settings)
         {
-            column.DisplayIndex = settings.DisplayIndex;
+            if (settings.DisplayIndex < dataGrid.Columns.Count)
+            {
+                column.DisplayIndex = settings.DisplayIndex;
+            }
         }
 
         private static void SetColumnSorting(DataGrid dataGrid, DataGridColumn column, DataGridColumnSettings settings)
@@ -302,40 +305,40 @@ namespace cAlgo.API.Alert.UI.Behaviors
         {
             ApplySettingsToColumns(dataGrid, SetColumnVisibility);
 
-            List<DataGridColumnHeader> columnHeaders = GetChildren(dataGrid).Where(child => child is DataGridColumnHeader)
-                .Select(child => child as DataGridColumnHeader)
-                .Where(header => header.Column != null)
-                .ToList();
-
             ContextMenu contextMenu = new ContextMenu();
+
+            IEnumerable<DataGridColumnHeader> columnHeaders = GetChildren(dataGrid).Where(child => child is DataGridColumnHeader)
+                .Select(child => child as DataGridColumnHeader);
 
             foreach (DataGridColumnHeader columnHeader in columnHeaders)
             {
                 columnHeader.ContextMenu = contextMenu;
+            }
 
-                if (columnHeader.Column.Header is string && !string.IsNullOrEmpty(columnHeader.Column.Header.ToString()))
+            foreach (DataGridColumn column in dataGrid.Columns)
+            {
+                if (!(column.Header is string) || string.IsNullOrEmpty(column.ToString()))
                 {
-                    MenuItem menuItem = new MenuItem
-                    {
-                        Header = columnHeader.Column.Header,
-                        IsChecked = columnHeader.Column.Visibility == Visibility.Visible ? true : false,
-                        StaysOpenOnClick = true
-                    };
-
-                    menuItem.Click += (sender, args) =>
-                    {
-                        menuItem.IsChecked = !menuItem.IsChecked;
-
-                        DataGridColumn column = dataGrid.Columns.First(iColumn => iColumn.Header.ToString().Equals(
-                            menuItem.Header.ToString(), StringComparison.InvariantCultureIgnoreCase));
-
-                        column.Visibility = menuItem.IsChecked ? Visibility.Visible : Visibility.Collapsed;
-
-                        SaveSettings(dataGrid, DataGridColumnSettingsType.Visibility);
-                    };
-
-                    contextMenu.Items.Add(menuItem);
+                    continue;
                 }
+
+                MenuItem menuItem = new MenuItem
+                {
+                    Header = column.Header,
+                    IsChecked = column.Visibility == Visibility.Visible ? true : false,
+                    StaysOpenOnClick = true
+                };
+
+                menuItem.Click += (sender, args) =>
+                {
+                    menuItem.IsChecked = !menuItem.IsChecked;
+
+                    column.Visibility = menuItem.IsChecked ? Visibility.Visible : Visibility.Collapsed;
+
+                    SaveSettings(dataGrid, DataGridColumnSettingsType.Visibility);
+                };
+
+                contextMenu.Items.Add(menuItem);
             }
         }
 
@@ -359,7 +362,7 @@ namespace cAlgo.API.Alert.UI.Behaviors
 
         private static DataGridSettings GetDataGridSettings(string dataGridName)
         {
-            string settingsKey = $"cTrader.{dataGridName}";
+            string settingsKey = string.Format("cTrader.AlertPopup.{0}", dataGridName);
 
             return new DataGridSettings(settingsKey);
         }

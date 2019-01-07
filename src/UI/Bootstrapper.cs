@@ -228,6 +228,7 @@ namespace cAlgo.API.Alert.UI
 
                     csvWriter.Configuration.CultureInfo = CultureInfo.InvariantCulture;
                     csvWriter.Configuration.HasHeaderRecord = false;
+                    csvWriter.Configuration.RegisterClassMap<Types.AlertCsvMap>();
 
                     csvWriter.WriteRecords(alerts);
                 }

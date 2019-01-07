@@ -1,5 +1,6 @@
 ﻿using cAlgo.API.Internals;
 using System;
+using System.Threading;
 
 namespace cAlgo.API.Alert.Tester
 {
@@ -9,22 +10,22 @@ namespace cAlgo.API.Alert.Tester
         {
             INotifications notifications = new Notifications();
 
-            notifications.ShowPopup("Hour", "EURUSD", "Trend Line", "UITestConsole", 1.23452, "No comment", DateTimeOffset.Now);
-
-            //Thread.Sleep(10000);
-
-            //notifications.ShowPopup("Hour", "EURUSD", 1.23132, "UITestConsole", "Buy", "1", DateTimeOffset.Now);
+            notifications.ShowPopup("Hour", "EURUSD", "Trend Line", "UITestConsole", 1.23452, "No comment 2", DateTimeOffset.Now);
             /*
             int counter = 0;
+
+            string[] arrows = { "1", "2", "3" };
+
             while (counter < 10)
             {
                 counter++;
 
-                notifications.ShowPopup("Hour", "EURUSD", 1.23132, "UITestConsole", "Buy", counter.ToString(), DateTimeOffset.Now);
+                string type = string.Format("Trend Line {0}", arrows[new Random().Next(0, 3)]);
 
-                Thread.Sleep(3000);
-            }
-            */
+                notifications.ShowPopup("Hour", "EURUSD", type, "UITestConsole", 1.23452, counter.ToString(), DateTimeOffset.Now);
+
+                Thread.Sleep(4000);
+            }*/
         }
     }
 }

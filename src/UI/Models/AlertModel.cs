@@ -2,6 +2,9 @@
 using System;
 using System.Globalization;
 using System.Xml.Serialization;
+using System.Reflection;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace cAlgo.API.Alert.UI.Models
 {
@@ -155,23 +158,38 @@ namespace cAlgo.API.Alert.UI.Models
 
         public bool Equals(AlertModel other)
         {
-            StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
-
-            bool result = false;
-
-            if (other != null &&
-                Symbol.Equals(other.Symbol, stringComparison) &&
-                Time.Equals(other.Time) &&
-                TimeFrame.Equals(other.TimeFrame, stringComparison) &&
-                Type.Equals(other.Type) &&
-                TriggeredBy.Equals(other.TriggeredBy) &&
-                Price.Equals(other.Price) &&
-                Comment.Equals(other.Comment, stringComparison))
+            if (other == null)
             {
-                result = true;
+                return false;
             }
 
-            return result;
+            IEnumerable<PropertyInfo> properties = this.GetType().GetProperties().Where(property => property.CanRead);
+
+            StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
+
+            foreach (PropertyInfo property in properties)
+            {
+                object currentValue = property.GetValue(this);
+                object otherValue = property.GetValue(other);
+
+                if ((currentValue != null && otherValue == null) || (currentValue == null && otherValue != null))
+                {
+                    return false;
+                }
+                else if (currentValue != null && otherValue != null)
+                {
+                    if (property.PropertyType == typeof(string) && !currentValue.ToString().Equals(otherValue.ToString(), stringComparison))
+                    {
+                        return false;
+                    }
+                    else if (!currentValue.Equals(otherValue))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         public override int GetHashCode()
