@@ -84,11 +84,11 @@
                 <StackPanel Orientation="Vertical">
                     <GroupBox Header="Colors">
                         <WrapPanel>
-                            <controls:MetroHeader Header="Buy Side">
+                            <controls:MetroHeader Header="Buy Type">
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
                                     ItemsSource="{Binding Path=Colors}"
-                                    SelectedItem="{Binding Path=Model.Alerts.BuySideColor, Mode=TwoWay}">
+                                    SelectedItem="{Binding Path=Model.Alerts.BuyTypeColor, Mode=TwoWay}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
                                             <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
@@ -98,11 +98,11 @@
                                 </ComboBox>
                             </controls:MetroHeader>
 
-                            <controls:MetroHeader Header="Sell Side">
+                            <controls:MetroHeader Header="Sell Type">
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
                                     ItemsSource="{Binding Path=Colors}"
-                                    SelectedItem="{Binding Path=Model.Alerts.SellSideColor, Mode=TwoWay}">
+                                    SelectedItem="{Binding Path=Model.Alerts.SellTypeColor, Mode=TwoWay}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
                                             <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />
@@ -112,11 +112,11 @@
                                 </ComboBox>
                             </controls:MetroHeader>
 
-                            <controls:MetroHeader Header="Neutral Side">
+                            <controls:MetroHeader Header="Other Types">
                                 <ComboBox
                                     ItemTemplate="{StaticResource ComboBoxColorItemTemplate}"
                                     ItemsSource="{Binding Path=Colors}"
-                                    SelectedItem="{Binding Path=Model.Alerts.NeutralSideColor, Mode=TwoWay}">
+                                    SelectedItem="{Binding Path=Model.Alerts.OtherTypesColor, Mode=TwoWay}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
                                             <i:InvokeCommandAction Command="{Binding Path=OptionsChangedCommand}" />

@@ -40,9 +40,9 @@
         <DataGrid.Columns>
             <DataGridTemplateColumn
                 Width="Auto"
-                CellTemplate="{StaticResource TradeSideTemplate}"
-                Header="Trade Side"
-                SortMemberPath="TradeSide" />
+                CellTemplate="{StaticResource TypeTemplate}"
+                Header="Type"
+                SortMemberPath="Type" />
             <DataGridTemplateColumn
                 Width="Auto"
                 CellTemplate="{StaticResource PriceTemplate}"

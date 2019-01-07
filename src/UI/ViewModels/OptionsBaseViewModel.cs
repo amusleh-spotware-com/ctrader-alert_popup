@@ -96,9 +96,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
             Models.AlertOptionsModel alerts = new Models.AlertOptionsModel()
             {
-                BuySideColor = Brushes.Green,
-                SellSideColor = Brushes.Red,
-                NeutralSideColor = Brushes.Yellow,
+                BuyTypeColor = Brushes.Green,
+                SellTypeColor = Brushes.Red,
+                OtherTypesColor = Brushes.Yellow,
                 PriceColor = Brushes.SlateGray,
                 SymbolColor = Brushes.DarkGoldenrod,
                 TriggeredByColor = Brushes.DeepPink,

@@ -10,7 +10,7 @@ namespace cAlgo.API.Alert.UI.Models
         #region Fields
 
         private DateTimeOffset _time;
-        private string _timeFrame, _symbol, _triggeredBy, _tradeSide, _comment;
+        private string _timeFrame, _symbol, _triggeredBy, _type, _comment;
         private double _price;
 
         #endregion Fields
@@ -66,15 +66,15 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        public string TradeSide
+        public string Type
         {
             get
             {
-                return _tradeSide;
+                return _type;
             }
             set
             {
-                SetProperty(ref _tradeSide, value);
+                SetProperty(ref _type, value);
             }
         }
 
@@ -163,7 +163,7 @@ namespace cAlgo.API.Alert.UI.Models
                 Symbol.Equals(other.Symbol, stringComparison) &&
                 Time.Equals(other.Time) &&
                 TimeFrame.Equals(other.TimeFrame, stringComparison) &&
-                TradeSide.Equals(other.TradeSide) &&
+                Type.Equals(other.Type) &&
                 TriggeredBy.Equals(other.TriggeredBy) &&
                 Price.Equals(other.Price) &&
                 Comment.Equals(other.Comment, stringComparison))
@@ -181,7 +181,7 @@ namespace cAlgo.API.Alert.UI.Models
             hash += (hash * 31) + (!string.IsNullOrEmpty(Symbol) ? Symbol.GetHashCode() : 0);
             hash += (hash * 31) + Time.GetHashCode();
             hash += (hash * 31) + (!string.IsNullOrEmpty(TimeFrame) ? TimeFrame.GetHashCode() : 0);
-            hash += (hash * 31) + (!string.IsNullOrEmpty(TradeSide) ? TradeSide.GetHashCode() : 0);
+            hash += (hash * 31) + (!string.IsNullOrEmpty(Type) ? Type.GetHashCode() : 0);
             hash += (hash * 31) + (!string.IsNullOrEmpty(TriggeredBy) ? TriggeredBy.GetHashCode() : 0);
             hash += (hash * 31) + (!string.IsNullOrEmpty(Comment) ? Comment.GetHashCode() : 0);
             hash += (hash * 31) + Price.GetHashCode();

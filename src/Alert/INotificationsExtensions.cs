@@ -9,27 +9,32 @@ namespace cAlgo.API.Alert
     {
         #region Methods
 
-        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType tradeType)
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType type)
         {
-            ShowPopup(notifications, timeFrame, symbol, "Unknown", tradeType);
+            ShowPopup(notifications, timeFrame, symbol, type, "Unknown");
         }
 
-        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, string triggeredBy, TradeType tradeType)
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType type, string triggeredBy)
         {
-            ShowPopup(notifications, timeFrame, symbol, symbol.Bid, triggeredBy, tradeType, string.Empty);
+            ShowPopup(notifications, timeFrame, symbol, type, triggeredBy, symbol.Bid);
         }
 
-        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, double price, string triggeredBy, TradeType tradeType, string comment)
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType type, string triggeredBy, double price)
         {
-            ShowPopup(notifications, timeFrame, symbol, price, triggeredBy, tradeType, comment, DateTimeOffset.Now);
+            ShowPopup(notifications, timeFrame, symbol, type, triggeredBy, price, string.Empty);
         }
 
-        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, double price, string triggeredBy, TradeType tradeType, string comment, DateTimeOffset time)
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType type, string triggeredBy, double price, string comment)
         {
-            ShowPopup(notifications, timeFrame.ToString(), symbol.Code.ToString(), price, triggeredBy, tradeType.ToString(), comment, time);
+            ShowPopup(notifications, timeFrame, symbol, type, triggeredBy, price, comment, DateTimeOffset.Now);
         }
 
-        public static void ShowPopup(this INotifications notifications, string timeFrame, string symbol, double price, string triggeredBy, string tradeSide, string comment, DateTimeOffset time)
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType type, string triggeredBy, double price, string comment, DateTimeOffset time)
+        {
+            ShowPopup(notifications, timeFrame, symbol, type, triggeredBy, price, comment, DateTimeOffset.Now);
+        }
+
+        public static void ShowPopup(this INotifications notifications, string timeFrame, string symbol, string type, string triggeredBy, double price, string comment, DateTimeOffset time)
         {
             AlertModel alert = new AlertModel
             {
@@ -37,7 +42,7 @@ namespace cAlgo.API.Alert
                 Symbol = symbol,
                 Price = price,
                 TriggeredBy = triggeredBy,
-                TradeSide = tradeSide,
+                Type = type,
                 Comment = comment,
                 Time = time
             };

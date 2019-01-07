@@ -11,7 +11,7 @@ namespace cAlgo.API.Alert.UI.Models
     {
         #region Fields
 
-        private SolidColorBrush _buySideColor, _sellSideColor, _neutralSideColor, _priceColor, _symbolColor, _timeColor, _triggeredByColor, _timeFrameColor;
+        private SolidColorBrush _buyTypeColor, _sellTypeColor, _otherTypesColor, _priceColor, _symbolColor, _timeColor, _triggeredByColor, _timeFrameColor;
 
         private FontModel _commentFontModel;
         private int _maxAlertNumber, _maxPriceDecimalPlacesNumber;
@@ -24,27 +24,27 @@ namespace cAlgo.API.Alert.UI.Models
         #region Properties
 
         [XmlIgnore]
-        public SolidColorBrush BuySideColor
+        public SolidColorBrush BuyTypeColor
         {
             get
             {
-                return _buySideColor;
+                return _buyTypeColor;
             }
             set
             {
-                SetProperty(ref _buySideColor, value);
+                SetProperty(ref _buyTypeColor, value);
             }
         }
 
-        public string BuySideColorCode
+        public string BuyTypeColorCode
         {
             get
             {
-                return BuySideColor.ToString();
+                return BuyTypeColor.ToString();
             }
             set
             {
-                BuySideColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+                BuyTypeColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
             }
         }
 
@@ -85,52 +85,52 @@ namespace cAlgo.API.Alert.UI.Models
         }
 
         [XmlIgnore]
-        public SolidColorBrush NeutralSideColor
+        public SolidColorBrush OtherTypesColor
         {
             get
             {
-                return _neutralSideColor;
+                return _otherTypesColor;
             }
             set
             {
-                SetProperty(ref _neutralSideColor, value);
+                SetProperty(ref _otherTypesColor, value);
             }
         }
 
-        public string NeutralSideColorCode
+        public string OtherTypesColorCode
         {
             get
             {
-                return NeutralSideColor.ToString();
+                return OtherTypesColor.ToString();
             }
             set
             {
-                NeutralSideColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+                OtherTypesColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
             }
         }
 
         [XmlIgnore]
-        public SolidColorBrush SellSideColor
+        public SolidColorBrush SellTypeColor
         {
             get
             {
-                return _sellSideColor;
+                return _sellTypeColor;
             }
             set
             {
-                SetProperty(ref _sellSideColor, value);
+                SetProperty(ref _sellTypeColor, value);
             }
         }
 
-        public string SellSideColorCode
+        public string SellTypeColorCode
         {
             get
             {
-                return SellSideColor.ToString();
+                return SellTypeColor.ToString();
             }
             set
             {
-                SellSideColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
+                SellTypeColor = ViewModels.OptionsBaseViewModel.GetColorFromString(value);
             }
         }
 

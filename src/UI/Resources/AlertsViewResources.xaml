@@ -76,21 +76,21 @@
         </ContentControl>
     </DataTemplate>
 
-    <DataTemplate x:Key="SellSideTemplate">
-        <Border Background="{Binding Path=DataContext.Options.Alerts.SellSideColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
-            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=TradeSide}" />
+    <DataTemplate x:Key="SellTypeTemplate">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.SellTypeColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Type}" />
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="BuySideTemplate">
-        <Border Background="{Binding Path=DataContext.Options.Alerts.BuySideColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
-            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=TradeSide}" />
+    <DataTemplate x:Key="BuyTypeTemplate">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.BuyTypeColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Type}" />
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="NeutralSideTemplate">
-        <Border Background="{Binding Path=DataContext.Options.Alerts.NeutralSideColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
-            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=TradeSide}" />
+    <DataTemplate x:Key="OtherTypesTemplate">
+        <Border Background="{Binding Path=DataContext.Options.Alerts.OtherTypesColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Type}" />
         </Border>
     </DataTemplate>
 
@@ -100,19 +100,17 @@
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="TradeSideTemplate">
+    <DataTemplate x:Key="TypeTemplate">
         <ContentControl Content="{Binding}">
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
+                    <Setter Property="ContentTemplate" Value="{StaticResource OtherTypesTemplate}" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=TradeSide}" Value="Neutral">
-                            <Setter Property="ContentTemplate" Value="{StaticResource NeutralSideTemplate}" />
+                        <DataTrigger Binding="{Binding Path=Type}" Value="Sell">
+                            <Setter Property="ContentTemplate" Value="{StaticResource SellTypeTemplate}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=TradeSide}" Value="Sell">
-                            <Setter Property="ContentTemplate" Value="{StaticResource SellSideTemplate}" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=TradeSide}" Value="Buy">
-                            <Setter Property="ContentTemplate" Value="{StaticResource BuySideTemplate}" />
+                        <DataTrigger Binding="{Binding Path=Type}" Value="Buy">
+                            <Setter Property="ContentTemplate" Value="{StaticResource BuyTypeTemplate}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

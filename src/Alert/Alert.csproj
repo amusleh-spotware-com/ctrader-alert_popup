@@ -38,8 +38,8 @@
     <Reference Include="cAlgo.API">
       <HintPath>..\..\..\..\..\Documents\cAlgo\API\cAlgo.API.dll</HintPath>
     </Reference>
-    <Reference Include="cAlgo.API.Alert.UI, Version=2.0.1.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\cAlgo.API.Alert.UI.2.0.1.1\lib\net45\cAlgo.API.Alert.UI.dll</HintPath>
+    <Reference Include="cAlgo.API.Alert.UI, Version=2.0.1.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\cAlgo.API.Alert.UI.2.0.1.2\lib\net45\cAlgo.API.Alert.UI.dll</HintPath>
     </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\..\packages\CommonServiceLocator.2.0.4\lib\net45\CommonServiceLocator.dll</HintPath>
