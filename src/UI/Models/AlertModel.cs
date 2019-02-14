@@ -1,10 +1,6 @@
-﻿using Prism.Mvvm;
+﻿using LiteDB;
+using Prism.Mvvm;
 using System;
-using System.Globalization;
-using System.Xml.Serialization;
-using System.Reflection;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace cAlgo.API.Alert.UI.Models
 {
@@ -13,12 +9,29 @@ namespace cAlgo.API.Alert.UI.Models
         #region Fields
 
         private DateTimeOffset _time;
-        private string _timeFrame, _symbol, _triggeredBy, _type, _comment;
+
+        private string _id, _timeFrame, _symbol, _triggeredBy, _type, _comment;
+
         private double _price;
 
         #endregion Fields
 
         #region Properties
+
+        [BsonId]
+        public string Id
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_id))
+                {
+                    _id = $"{Time.Ticks}_{Symbol}_{Type}";
+                }
+
+                return _id;
+            }
+            set => _id = value;
+        }
 
         public string Symbol
         {
@@ -32,7 +45,6 @@ namespace cAlgo.API.Alert.UI.Models
             }
         }
 
-        [XmlIgnore]
         public DateTimeOffset Time
         {
             get
@@ -42,18 +54,6 @@ namespace cAlgo.API.Alert.UI.Models
             set
             {
                 SetProperty(ref _time, value);
-            }
-        }
-
-        public string TimeString
-        {
-            get
-            {
-                return Time.ToString(CultureInfo.InvariantCulture);
-            }
-            set
-            {
-                Time = DateTimeOffset.Parse(value, CultureInfo.InvariantCulture);
             }
         }
 
@@ -156,53 +156,13 @@ namespace cAlgo.API.Alert.UI.Models
             return Equals((AlertModel)obj);
         }
 
-        public bool Equals(AlertModel other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            IEnumerable<PropertyInfo> properties = this.GetType().GetProperties().Where(property => property.CanRead);
-
-            StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
-
-            foreach (PropertyInfo property in properties)
-            {
-                object currentValue = property.GetValue(this);
-                object otherValue = property.GetValue(other);
-
-                if ((currentValue != null && otherValue == null) || (currentValue == null && otherValue != null))
-                {
-                    return false;
-                }
-                else if (currentValue != null && otherValue != null)
-                {
-                    if (property.PropertyType == typeof(string) && !currentValue.ToString().Equals(otherValue.ToString(), stringComparison))
-                    {
-                        return false;
-                    }
-                    else if (!currentValue.Equals(otherValue))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
+        public bool Equals(AlertModel other) => other != null && other.Id.Equals(Id, StringComparison.InvariantCultureIgnoreCase);
 
         public override int GetHashCode()
         {
             int hash = 17;
 
-            hash += (hash * 31) + (!string.IsNullOrEmpty(Symbol) ? Symbol.GetHashCode() : 0);
-            hash += (hash * 31) + Time.GetHashCode();
-            hash += (hash * 31) + (!string.IsNullOrEmpty(TimeFrame) ? TimeFrame.GetHashCode() : 0);
-            hash += (hash * 31) + (!string.IsNullOrEmpty(Type) ? Type.GetHashCode() : 0);
-            hash += (hash * 31) + (!string.IsNullOrEmpty(TriggeredBy) ? TriggeredBy.GetHashCode() : 0);
-            hash += (hash * 31) + (!string.IsNullOrEmpty(Comment) ? Comment.GetHashCode() : 0);
-            hash += (hash * 31) + Price.GetHashCode();
+            hash += (hash * 31) + (!string.IsNullOrEmpty(Id) ? Id.GetHashCode() : 0);
 
             return hash;
         }

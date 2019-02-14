@@ -4,7 +4,7 @@
     {
         #region Views
 
-        public const string OptionsView = "OptionsView";
+        public const string SettingsView = "SettingsView";
 
         public const string AlertsView = "AlertsView";
 

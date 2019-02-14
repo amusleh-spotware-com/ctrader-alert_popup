@@ -16,16 +16,16 @@ namespace cAlgo.API.Alert.UI.ViewModels
         private ObservableCollection<Models.AlertModel> _alerts;
 
         private EventAggregator _eventAggregator;
-        private Models.OptionsModel _options;
+        private Models.SettingsModel _Settings;
         private IList _selectedAlerts;
 
         private Models.AlertModel _visibleAlert;
 
         #endregion Fields
 
-        public AlertsViewModel(List<Models.AlertModel> alerts, Models.OptionsModel options, EventAggregator eventAggregator)
+        public AlertsViewModel(List<Models.AlertModel> alerts, Models.SettingsModel Settings, EventAggregator eventAggregator)
         {
-            _options = options;
+            _Settings = Settings;
 
             _eventAggregator = eventAggregator;
 
@@ -61,11 +61,11 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public DelegateCommand LoadedCommand { get; set; }
 
-        public Models.OptionsModel Options
+        public Models.SettingsModel Settings
         {
             get
             {
-                return _options;
+                return _Settings;
             }
         }
 
@@ -107,12 +107,12 @@ namespace cAlgo.API.Alert.UI.ViewModels
         {
             Models.AlertModel alertCopy = alert.Clone() as Models.AlertModel;
 
-            if (!alertCopy.Time.Offset.Equals(_options.Alerts.TimeZone.BaseUtcOffset))
+            if (!alertCopy.Time.Offset.Equals(_Settings.Alerts.TimeZone.BaseUtcOffset))
             {
-                alertCopy.Time = alert.Time.ToOffset(_options.Alerts.TimeZone.BaseUtcOffset);
+                alertCopy.Time = alert.Time.ToOffset(_Settings.Alerts.TimeZone.BaseUtcOffset);
             }
 
-            alertCopy.Price = Math.Round(alertCopy.Price, Options.Alerts.MaxPriceDecimalPlacesNumber);
+            alertCopy.Price = Math.Round(alertCopy.Price, Settings.Alerts.MaxPriceDecimalPlacesNumber);
 
             Alerts.Add(alertCopy);
 
@@ -128,9 +128,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private void Cleanup()
         {
-            if (Alerts.Count > _options.Alerts.MaxAlertNumber)
+            if (Alerts.Count > _Settings.Alerts.MaxAlertNumber)
             {
-                Alerts.OrderByDescending(alert => alert.Time).Skip(_options.Alerts.MaxAlertNumber).ToList().ForEach(alert => Remove(alert));
+                Alerts.OrderByDescending(alert => alert.Time).Skip(_Settings.Alerts.MaxAlertNumber).ToList().ForEach(alert => Remove(alert));
             }
         }
 

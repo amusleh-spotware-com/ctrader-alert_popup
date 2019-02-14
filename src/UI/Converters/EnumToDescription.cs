@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Globalization;
-using System.Windows.Data;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
+using System.Windows.Data;
 
 namespace cAlgo.API.Alert.UI.Converters
 {

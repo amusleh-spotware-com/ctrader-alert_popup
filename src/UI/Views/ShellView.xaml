@@ -63,8 +63,8 @@
             </Button>
             <Button
                 Command="{Binding Path=NavigateCommand}"
-                CommandParameter="{x:Static local:ViewNames.OptionsView}"
-                IsEnabled="{Binding Path=IsOptionsButtonEnabled}"
+                CommandParameter="{x:Static local:ViewNames.SettingsView}"
+                IsEnabled="{Binding Path=IsSettingsButtonEnabled}"
                 ToolTip="Settings">
                 <iconsPack:PackIconMaterial Kind="Settings" />
             </Button>

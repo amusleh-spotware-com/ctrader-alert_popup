@@ -2,7 +2,7 @@
 
 namespace cAlgo.API.Alert.UI.Events
 {
-    public class AlertRemovedEvent : PubSubEvent<Models.AlertModel>
+    public class SettingsChangedEvent : PubSubEvent<Models.SettingsModel>
     {
     }
 }

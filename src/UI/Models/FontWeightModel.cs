@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Xml.Serialization;
-using System.Linq;
 
 namespace cAlgo.API.Alert.UI.Models
 {

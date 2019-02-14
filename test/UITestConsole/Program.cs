@@ -1,6 +1,5 @@
 ﻿using cAlgo.API.Internals;
 using System;
-using System.Threading;
 
 namespace cAlgo.API.Alert.Tester
 {

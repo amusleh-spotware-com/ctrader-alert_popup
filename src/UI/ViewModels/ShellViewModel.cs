@@ -9,15 +9,15 @@ namespace cAlgo.API.Alert.UI.ViewModels
     {
         #region Fields
 
-        private Bootstrapper _bootstrapper;
+        private App _app;
 
-        private bool _isOptionsButtonEnabled;
+        private bool _isSettingsButtonEnabled;
 
         #endregion Fields
 
-        public ShellViewModel(Bootstrapper bootstrapper)
+        public ShellViewModel(App app)
         {
-            _bootstrapper = bootstrapper;
+            _app = app;
 
             NavigateCommand = new DelegateCommand<string>(Navigate);
 
@@ -25,7 +25,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
             UnloadedCommand = new DelegateCommand(Unloaded);
 
-            GoBackCommand = new DelegateCommand(GoBack, () => _bootstrapper.NavigationJournal.Count > 1);
+            GoBackCommand = new DelegateCommand(GoBack, () => _app.NavigationJournal.Count > 1);
         }
 
         #region Properties
@@ -36,15 +36,15 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public DelegateCommand<string> NavigateCommand { get; set; }
 
-        public bool IsOptionsButtonEnabled
+        public bool IsSettingsButtonEnabled
         {
             get
             {
-                return _isOptionsButtonEnabled;
+                return _isSettingsButtonEnabled;
             }
             set
             {
-                SetProperty(ref _isOptionsButtonEnabled, value);
+                SetProperty(ref _isSettingsButtonEnabled, value);
             }
         }
 
@@ -65,37 +65,37 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private void Navigate(string viewName)
         {
-            if (viewName.Equals(ViewNames.OptionsView))
+            if (viewName.Equals(ViewNames.SettingsView))
             {
-                IsOptionsButtonEnabled = false;
+                IsSettingsButtonEnabled = false;
             }
             else
             {
-                IsOptionsButtonEnabled = true;
+                IsSettingsButtonEnabled = true;
             }
 
-            _bootstrapper.Navigate(viewName);
+            _app.Navigate(viewName);
 
             GoBackCommand.RaiseCanExecuteChanged();
         }
 
         private void GoBack()
         {
-            string lastNavigatedViewName = _bootstrapper.NavigationJournal.LastOrDefault();
+            string lastNavigatedViewName = _app.NavigationJournal.LastOrDefault();
 
             if (string.IsNullOrEmpty(lastNavigatedViewName))
             {
                 return;
             }
 
-            if (lastNavigatedViewName.Equals(_bootstrapper.CurrentView, StringComparison.InvariantCultureIgnoreCase))
+            if (lastNavigatedViewName.Equals(_app.CurrentView, StringComparison.InvariantCultureIgnoreCase))
             {
-                _bootstrapper.NavigationJournal.Remove(lastNavigatedViewName);
+                _app.NavigationJournal.Remove(lastNavigatedViewName);
             }
 
-            string previousView = _bootstrapper.NavigationJournal.LastOrDefault();
+            string previousView = _app.NavigationJournal.LastOrDefault();
 
-            _bootstrapper.NavigationJournal.Remove(previousView);
+            _app.NavigationJournal.Remove(previousView);
 
             Navigate(previousView);
         }

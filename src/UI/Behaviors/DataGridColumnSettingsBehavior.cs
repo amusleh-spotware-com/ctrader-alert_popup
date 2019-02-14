@@ -1,5 +1,6 @@
-﻿using cAlgo.API.Alert.UI.Types;
-using cAlgo.API.Alert.UI.Types.Enums;
+﻿using cAlgo.API.Alert.UI.Enums;
+using cAlgo.API.Alert.UI.Models;
+using cAlgo.API.Alert.UI.Settings;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -149,7 +150,7 @@ namespace cAlgo.API.Alert.UI.Behaviors
             }
         }
 
-        private static void ApplySettingsToColumns(DataGrid dataGrid, Action<DataGrid, DataGridColumn, DataGridColumnSettings> function)
+        private static void ApplySettingsToColumns(DataGrid dataGrid, Action<DataGrid, DataGridColumn, DataGridColumnSettingsModel> function)
         {
             DataGridSettings settings = GetDataGridSettings(dataGrid.Name);
 
@@ -162,7 +163,7 @@ namespace cAlgo.API.Alert.UI.Behaviors
 
             foreach (DataGridColumn column in columns)
             {
-                DataGridColumnSettings columnSettings = settings.ColumnsSetting.FirstOrDefault(iColumnSettings => iColumnSettings.Header.Equals(
+                DataGridColumnSettingsModel columnSettings = settings.ColumnsSetting.FirstOrDefault(iColumnSettings => iColumnSettings.Header.Equals(
                     column.Header.ToString(), StringComparison.InvariantCultureIgnoreCase));
 
                 if (columnSettings == null)
@@ -174,12 +175,12 @@ namespace cAlgo.API.Alert.UI.Behaviors
             }
         }
 
-        private static void SetColumnWidth(DataGrid dataGrid, DataGridColumn column, DataGridColumnSettings settings)
+        private static void SetColumnWidth(DataGrid dataGrid, DataGridColumn column, DataGridColumnSettingsModel settings)
         {
             column.Width = new DataGridLength(settings.Width.Value, settings.Width.UnitType, settings.Width.DesiredValue, settings.Width.DisplayValue);
         }
 
-        private static void SetColumnDisplayIndex(DataGrid dataGrid, DataGridColumn column, DataGridColumnSettings settings)
+        private static void SetColumnDisplayIndex(DataGrid dataGrid, DataGridColumn column, DataGridColumnSettingsModel settings)
         {
             if (settings.DisplayIndex < dataGrid.Columns.Count)
             {
@@ -187,7 +188,7 @@ namespace cAlgo.API.Alert.UI.Behaviors
             }
         }
 
-        private static void SetColumnSorting(DataGrid dataGrid, DataGridColumn column, DataGridColumnSettings settings)
+        private static void SetColumnSorting(DataGrid dataGrid, DataGridColumn column, DataGridColumnSettingsModel settings)
         {
             column.SortDirection = settings.SortDirection;
 
@@ -203,7 +204,7 @@ namespace cAlgo.API.Alert.UI.Behaviors
             dataGrid.Items.Refresh();
         }
 
-        private static void SetColumnVisibility(DataGrid dataGrid, DataGridColumn column, DataGridColumnSettings settings)
+        private static void SetColumnVisibility(DataGrid dataGrid, DataGridColumn column, DataGridColumnSettingsModel settings)
         {
             column.Visibility = settings.Visibility;
         }
@@ -214,11 +215,11 @@ namespace cAlgo.API.Alert.UI.Behaviors
 
             IEnumerable<DataGridColumn> columns = dataGrid.Columns.Where(column => column.Header != null);
 
-            settings.ColumnsSetting = settings.ColumnsSetting ?? new List<DataGridColumnSettings>();
+            settings.ColumnsSetting = settings.ColumnsSetting ?? new List<DataGridColumnSettingsModel>();
 
             foreach (DataGridColumn column in columns)
             {
-                DataGridColumnSettings columnSettings = settings.ColumnsSetting.FirstOrDefault(iColumnSettings => iColumnSettings.Header.Equals(
+                DataGridColumnSettingsModel columnSettings = settings.ColumnsSetting.FirstOrDefault(iColumnSettings => iColumnSettings.Header.Equals(
                     column.Header.ToString(), StringComparison.InvariantCultureIgnoreCase));
 
                 if (columnSettings != null)
@@ -234,7 +235,7 @@ namespace cAlgo.API.Alert.UI.Behaviors
                             break;
 
                         case DataGridColumnSettingsType.Width:
-                            columnSettings.Width = new DataGridLengthSettings
+                            columnSettings.Width = new DataGridLengthSettingsModel
                             {
                                 Value = column.Width.Value,
                                 DesiredValue = column.Width.DesiredValue,
@@ -250,11 +251,11 @@ namespace cAlgo.API.Alert.UI.Behaviors
                 }
                 else
                 {
-                    columnSettings = new DataGridColumnSettings
+                    columnSettings = new DataGridColumnSettingsModel
                     {
                         Header = column.Header.ToString(),
                         DisplayIndex = column.DisplayIndex,
-                        Width = new DataGridLengthSettings
+                        Width = new DataGridLengthSettingsModel
                         {
                             Value = column.Width.Value,
                             DesiredValue = column.Width.DesiredValue,
@@ -276,7 +277,7 @@ namespace cAlgo.API.Alert.UI.Behaviors
         {
             if (string.IsNullOrEmpty(dataGrid.Name))
             {
-                throw new NullReferenceException("Please set a unique name for your data grid if you want to use the 'DataGridColumnSettingsBehavior'");
+                throw new NullReferenceException("Please set a unique name for your data grid if you want to use the 'DataGridColumnSettingsModelBehavior'");
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using cAlgo.API.Alert.Types;
-using cAlgo.API.Alert.UI.Models;
+﻿using cAlgo.API.Alert.UI.Models;
 using cAlgo.API.Internals;
 using System;
 
@@ -11,10 +10,20 @@ namespace cAlgo.API.Alert
 
         public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType type)
         {
-            ShowPopup(notifications, timeFrame, symbol, type, "Unknown");
+            ShowPopup(notifications, timeFrame, symbol, type, string.Empty);
+        }
+
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, string type)
+        {
+            ShowPopup(notifications, timeFrame, symbol, type, string.Empty);
         }
 
         public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType type, string triggeredBy)
+        {
+            ShowPopup(notifications, timeFrame, symbol, type, triggeredBy, symbol.Bid);
+        }
+
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, string type, string triggeredBy)
         {
             ShowPopup(notifications, timeFrame, symbol, type, triggeredBy, symbol.Bid);
         }
@@ -24,14 +33,29 @@ namespace cAlgo.API.Alert
             ShowPopup(notifications, timeFrame, symbol, type, triggeredBy, price, string.Empty);
         }
 
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, string type, string triggeredBy, double price)
+        {
+            ShowPopup(notifications, timeFrame, symbol, type, triggeredBy, price, string.Empty);
+        }
+
         public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType type, string triggeredBy, double price, string comment)
+        {
+            ShowPopup(notifications, timeFrame, symbol, type, triggeredBy, price, comment, DateTimeOffset.Now);
+        }
+
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, string type, string triggeredBy, double price, string comment)
         {
             ShowPopup(notifications, timeFrame, symbol, type, triggeredBy, price, comment, DateTimeOffset.Now);
         }
 
         public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType type, string triggeredBy, double price, string comment, DateTimeOffset time)
         {
-            ShowPopup(notifications, timeFrame, symbol, type, triggeredBy, price, comment, DateTimeOffset.Now);
+            ShowPopup(notifications, timeFrame.ToString(), symbol.Code.ToString(), type.ToString(), triggeredBy, price, comment, DateTimeOffset.Now);
+        }
+
+        public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, string type, string triggeredBy, double price, string comment, DateTimeOffset time)
+        {
+            ShowPopup(notifications, timeFrame.ToString(), symbol.Code.ToString(), type, triggeredBy, price, comment, DateTimeOffset.Now);
         }
 
         public static void ShowPopup(this INotifications notifications, string timeFrame, string symbol, string type, string triggeredBy, double price, string comment, DateTimeOffset time)
@@ -47,9 +71,12 @@ namespace cAlgo.API.Alert
                 Time = time
             };
 
-            Controller.SetConfigurationIfNotYet();
+            ShowPopup(notifications, alert);
+        }
 
-            Controller.Show(notifications, alert);
+        public static void ShowPopup(this INotifications notifications, AlertModel alert)
+        {
+            Launcher.Current.Launch(notifications, alert);
         }
 
         #endregion Methods

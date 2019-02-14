@@ -3,11 +3,11 @@
 namespace cAlgo.API.Alert.UI.Views
 {
     /// <summary>
-    /// Interaction logic for AboutView.xaml
+    /// Interaction logic for SettingsView.xaml
     /// </summary>
-    public partial class AboutView : UserControl
+    public partial class SettingsView : UserControl
     {
-        public AboutView()
+        public SettingsView()
         {
             InitializeComponent();
         }
