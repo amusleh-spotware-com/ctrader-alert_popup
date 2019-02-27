@@ -45,6 +45,11 @@ namespace cAlgo.API.Alert
 
         public void PlaySound(string path)
         {
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
             SoundPlayer soundPlayer = new SoundPlayer(path);
 
             soundPlayer.PlaySync();
