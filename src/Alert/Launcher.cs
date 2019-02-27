@@ -66,7 +66,15 @@ namespace cAlgo.API.Alert
             Dictionary<string, object> properties = obj.GetType().GetProperties().ToDictionary(propertyInfo => propertyInfo.Name,
                 propertyInfo => propertyInfo.GetValue(obj));
 
-            keywords.ForEach(keyword => template = template.Replace(keyword, properties[RemoveKeywordBrackets(keyword)].ToString()));
+            foreach (string keyword in keywords)
+            {
+                string propertyName = RemoveKeywordBrackets(keyword);
+
+                if (properties.ContainsKey(propertyName))
+                {
+                    template = template.Replace(keyword, properties[propertyName].ToString());
+                }
+            }
 
             return template;
         }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
+using System.Text;
 
 namespace cAlgo.API.Alert.UI.Factories
 {
@@ -113,12 +114,26 @@ namespace cAlgo.API.Alert.UI.Factories
             return typeof(Brushes).GetProperties().Select(propertyInfo => (SolidColorBrush)propertyInfo.GetValue(null)).ToList();
         }
 
+        public static string GetDefaultMessageTemplate()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.AppendLine("An alert triggered by {TriggeredBy} at {Time}, below is more detail:");
+            stringBuilder.AppendLine("Type: {Type}");
+            stringBuilder.AppendLine("Symbol: {Symbol}");
+            stringBuilder.AppendLine("Price: {Price}");
+            stringBuilder.AppendLine("Chart Time Frame: {TimeFrame}");
+            stringBuilder.AppendLine("Comment: {Comment}");
+
+            return stringBuilder.ToString();
+        }
+
         public static Models.EmailTemplateModel GetDefaultEmailTemplate()
         {
             return new Models.EmailTemplateModel()
             {
-                Subject = "{TradeSide} {Symbol} {Price} | Trade Alert",
-                Body = "An alert triggered by {TriggeredBy} at {Time} to {TradeSide} {Symbol} at price {Price} on {TimeFrame} time frame, comment: {Comment}"
+                Subject = "{Type} {Symbol} {Price} | Trade Alert",
+                Body = GetDefaultMessageTemplate()
             };
         }
 
@@ -194,7 +209,7 @@ namespace cAlgo.API.Alert.UI.Factories
 
         public static string GetDefaultTelegramMessageTemplate()
         {
-            return "An alert triggered by {TriggeredBy} at {Time} to {TradeSide} {Symbol} at price {Price} on {TimeFrame} time frame, comment: {Comment}";
+            return GetDefaultMessageTemplate();
         }
 
         public static List<FontFamily> GetFontFamilies()

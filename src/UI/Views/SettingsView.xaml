@@ -443,7 +443,7 @@
                                             Keywords
                                         </Paragraph>
                                         <Paragraph>
-                                            {TradeSide}, {Symbol}, {Price}, {TimeFrame}, {Time}, {Comment}, and {TriggeredBy}
+                                            {Type}, {Symbol}, {Price}, {TimeFrame}, {Time}, {Comment}, and {TriggeredBy}
                                         </Paragraph>
                                         <Paragraph>
                                             You can use any of the above keywords in email subject or body
@@ -571,7 +571,7 @@
                                             Keywords
                                         </Paragraph>
                                         <Paragraph>
-                                            {TradeSide}, {Symbol}, {Price}, {TimeFrame}, {Time}, {Comment}, and {TriggeredBy}
+                                            {Type}, {Symbol}, {Price}, {TimeFrame}, {Time}, {Comment}, and {TriggeredBy}
                                         </Paragraph>
                                         <Paragraph>
                                             You can use any of the above keywords in message
