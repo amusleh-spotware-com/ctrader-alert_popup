@@ -141,29 +141,38 @@ namespace cAlgo.API.Alert
 
             Thread windowThread = new Thread(new ThreadStart(() =>
             {
-                SettingsModel settings = SettingsFactory.GetSettings(Configuration.Current.SettingsFilePath);
-
-                TriggerAlerts(notifications, settings, alert);
-
-                if (_app == null)
+                try
                 {
-                    _app = new App(Configuration.Current.SettingsFilePath, _alerts);
+                    _logger.Log("Triggering");
 
-                    _app.EventAggregator.GetEvent<AlertRemovedEvent>().Subscribe(AlertRemovedEvent_Handler);
+                    SettingsModel settings = SettingsFactory.GetSettings(Configuration.Current.SettingsFilePath);
 
-                    _app.ShellView.Title = Configuration.Current.Title;
+                    TriggerAlerts(notifications, settings, alert);
 
-                    _app.ShellView.Closed += (sender, args) =>
+                    if (_app == null)
                     {
-                        _app.EventAggregator.GetEvent<AlertRemovedEvent>().Unsubscribe(AlertRemovedEvent_Handler);
+                        _app = new App(Configuration.Current.SettingsFilePath, _alerts);
 
-                        _app = null;
-                    };
+                        _app.EventAggregator.GetEvent<AlertRemovedEvent>().Subscribe(AlertRemovedEvent_Handler);
+
+                        _app.ShellView.Title = Configuration.Current.Title;
+
+                        _app.ShellView.Closed += (sender, args) =>
+                        {
+                            _app.EventAggregator.GetEvent<AlertRemovedEvent>().Unsubscribe(AlertRemovedEvent_Handler);
+
+                            _app = null;
+                        };
+                    }
+
+                    _app.InvokeAlertAddedEvent(alert);
+
+                    _app.Run();
                 }
-
-                _app.InvokeAlertAddedEvent(alert);
-
-                _app.Run();
+                catch (InvalidOperationException ex)
+                {
+                    _logger.Log(ex);
+                }
             }));
 
             windowThread.SetApartmentState(ApartmentState.STA);
