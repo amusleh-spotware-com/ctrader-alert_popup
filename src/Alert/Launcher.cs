@@ -143,8 +143,6 @@ namespace cAlgo.API.Alert
             {
                 try
                 {
-                    _logger.Log("Triggering");
-
                     SettingsModel settings = SettingsFactory.GetSettings(Configuration.Current.SettingsFilePath);
 
                     TriggerAlerts(notifications, settings, alert);
