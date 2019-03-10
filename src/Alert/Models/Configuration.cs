@@ -23,6 +23,7 @@ namespace cAlgo.API.Alert.Models
 
             AlertFilePath = Path.Combine(calgoDirPath, $"Alerts_{version}.db");
             SettingsFilePath = Path.Combine(calgoDirPath, $"AlertPopupSettings_{version}.xml");
+            LogFilePath = Path.Combine(calgoDirPath, $"Alerts_{version}.log");
 
             Title = $"Alerts - cTrader {version}";
         }
@@ -32,6 +33,8 @@ namespace cAlgo.API.Alert.Models
         public string AlertFilePath { get; set; }
 
         public string SettingsFilePath { get; set; }
+
+        public string LogFilePath { get; set; }
 
         public Action<string> Tracer { get; set; }
 

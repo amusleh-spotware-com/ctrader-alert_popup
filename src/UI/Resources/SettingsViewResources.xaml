@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:converters="clr-namespace:cAlgo.API.Alert.UI.Converters"
-    xmlns:iconsPack="clr-namespace:MahApps.Metro.IconPacks;assembly=MahApps.Metro.IconPacks"
+    xmlns:iconsPack="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:cAlgo.API.Alert.UI">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="./SharedResources.xaml" />
@@ -49,7 +49,7 @@
                 Command="{Binding Path=DataContext.RemoveSelectedTelegramBotsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                 CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                 ToolTip="Remove Selected">
-                <iconsPack:Material Kind="Delete" />
+                <iconsPack:PackIconMaterial Kind="Delete" />
             </Button>
         </StackPanel>
     </DataTemplate>
@@ -61,7 +61,7 @@
                 Command="{Binding Path=DataContext.RemoveTelegramBotCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                 CommandParameter="{Binding}"
                 ToolTip="Remove">
-                <iconsPack:Material Kind="Delete" />
+                <iconsPack:PackIconMaterial Kind="Delete" />
             </Button>
         </StackPanel>
     </DataTemplate>

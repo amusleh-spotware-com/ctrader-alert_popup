@@ -26,14 +26,7 @@ namespace cAlgo.API.Alert
 
         private List<AlertModel> _alerts;
 
-        private Logger _logger;
-
         #endregion Fields
-
-        public Launcher()
-        {
-            _logger = new Logger(Configuration.Current.Tracer);
-        }
 
         #region Properties
 
@@ -169,7 +162,7 @@ namespace cAlgo.API.Alert
                 }
                 catch (InvalidOperationException ex)
                 {
-                    _logger.Log(ex);
+                    Logger.LogException(ex);
                 }
             }));
 

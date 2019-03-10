@@ -59,7 +59,7 @@
                 Command="{Binding Path=NavigateCommand}"
                 CommandParameter="{x:Static local:ViewNames.AboutView}"
                 ToolTip="About">
-                <iconsPack:PackIconFontAwesome Kind="InfoSolid" />
+                <iconsPack:PackIconMaterial Kind="Information" />
             </Button>
             <Button
                 Command="{Binding Path=NavigateCommand}"
