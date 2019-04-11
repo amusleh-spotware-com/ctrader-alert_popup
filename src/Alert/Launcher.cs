@@ -13,6 +13,7 @@ using System.Linq;
 using System.Media;
 using System.Threading;
 using TelegramBotApi;
+using Prism.Events;
 
 namespace cAlgo.API.Alert
 {
@@ -150,8 +151,6 @@ namespace cAlgo.API.Alert
 
                         _app.ShellView.Closed += (sender, args) =>
                         {
-                            _app.EventAggregator.GetEvent<AlertRemovedEvent>().Unsubscribe(AlertRemovedEvent_Handler);
-
                             _app = null;
                         };
                     }
