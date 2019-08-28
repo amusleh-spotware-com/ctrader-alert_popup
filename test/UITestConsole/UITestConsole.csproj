@@ -40,14 +40,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\Alert\bin\Release\cAlgo.API.dll</HintPath>
     </Reference>
-    <Reference Include="cAlgo.API.Alert, Version=2.1.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\src\Alert\bin\Release\cAlgo.API.Alert.dll</HintPath>
-    </Reference>
-    <Reference Include="cAlgo.API.Alert.UI, Version=2.1.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\src\Alert\bin\Release\cAlgo.API.Alert.UI.dll</HintPath>
-    </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\Alert\bin\Release\CommonServiceLocator.dll</HintPath>
@@ -107,6 +99,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Alert\Alert.csproj">
+      <Project>{67ad1d85-119e-4984-a642-ae502bc4af27}</Project>
+      <Name>Alert</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\UI\UI.csproj">
+      <Project>{63c5a465-9969-4271-8b6c-e37296007ba8}</Project>
+      <Name>UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

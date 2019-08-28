@@ -9,20 +9,26 @@ namespace cAlgo.API.Alert.Utility
 {
     public static class Logger
     {
+        #region Properties
+
+        public static Action<string> Tracer { get; set; } = new Action<string>(message => Trace.WriteLine(message));
+
+        #endregion Properties
+
         #region Methods
 
-        public static void LogException(Exception exception)
+        internal static void LogException(Exception exception)
         {
             string exceptionData = GetExceptionData(exception);
 
             Log(exceptionData);
         }
 
-        public static void Log(string message, params object[] parameters)
+        internal static void Log(string message, params object[] parameters)
         {
             string messageFormatted = string.Format(message, parameters);
 
-            Configuration.Current.Tracer?.Invoke(messageFormatted);
+            Tracer?.Invoke(messageFormatted);
 
             string logFilePath = Configuration.Current.LogFilePath;
 

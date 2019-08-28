@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace cAlgo.API.Alert.Factories
 {
-    public static class AlertsFactory
+    internal static class AlertsFactory
     {
         #region Methods
 

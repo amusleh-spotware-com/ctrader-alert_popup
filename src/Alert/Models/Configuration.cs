@@ -8,22 +8,20 @@ namespace cAlgo.API.Alert.Models
     {
         public Configuration()
         {
-            Tracer = new Action<string>(message => System.Diagnostics.Trace.WriteLine(message));
-
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            string calgoDirPath = Path.Combine(documentsPath, "cAlgo");
+            string alertsDirPath = Path.Combine(documentsPath, "cAlgo", "Alerts");
 
-            if (!Directory.Exists(calgoDirPath))
+            if (!Directory.Exists(alertsDirPath))
             {
-                Directory.CreateDirectory(calgoDirPath);
+                Directory.CreateDirectory(alertsDirPath);
             }
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
-            AlertFilePath = Path.Combine(calgoDirPath, $"Alerts_{version}.db");
-            SettingsFilePath = Path.Combine(calgoDirPath, $"AlertPopupSettings_{version}.xml");
-            LogFilePath = Path.Combine(calgoDirPath, $"Alerts_{version}.log");
+            AlertFilePath = Path.Combine(alertsDirPath, $"Alerts_{version}.db");
+            SettingsFilePath = Path.Combine(alertsDirPath, $"AlertPopupSettings_{version}.xml");
+            LogFilePath = Path.Combine(alertsDirPath, $"Alerts_{version}.log");
 
             Title = $"Alerts - cTrader {version}";
         }
@@ -35,8 +33,6 @@ namespace cAlgo.API.Alert.Models
         public string SettingsFilePath { get; set; }
 
         public string LogFilePath { get; set; }
-
-        public Action<string> Tracer { get; set; }
 
         public string Title { get; set; }
 

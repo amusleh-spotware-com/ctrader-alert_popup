@@ -13,11 +13,10 @@ using System.Linq;
 using System.Media;
 using System.Threading;
 using TelegramBotApi;
-using Prism.Events;
 
 namespace cAlgo.API.Alert
 {
-    public class Launcher
+    internal class Launcher
     {
         #region Fields
 
@@ -27,6 +26,10 @@ namespace cAlgo.API.Alert
 
         private List<AlertModel> _alerts;
 
+        private DateTime _lastTriggeredAlertTime;
+
+        private readonly List<string> _templateKeywords;
+
         #endregion Fields
 
         #region Properties
@@ -35,9 +38,47 @@ namespace cAlgo.API.Alert
 
         #endregion Properties
 
+        public Launcher()
+        {
+            _templateKeywords = new List<string>
+            {
+                "{TriggeredBy}",
+                "{Time}",
+                "{Type}",
+                "{Symbol}",
+                "{TimeFrame}",
+                "{Comment}",
+                "{Price}"
+            };
+
+            AppDomain.CurrentDomain.UnhandledException += (obj, args) => Logger.LogException(args.ExceptionObject as Exception);
+        }
+
         #region Methods
 
-        public void PlaySound(string path)
+        public void Launch(INotifications notifications, AlertModel alert)
+        {
+            UpdateAlerts();
+
+            AlertsFactory.AddAlert(alert);
+
+            _alerts.Add(alert);
+
+            SettingsModel settings = SettingsFactory.GetSettings(Configuration.Current.SettingsFilePath);
+
+            TriggerAlerts(notifications, settings, alert);
+
+            ShowWindow(alert);
+        }
+
+        public void ShowWindow()
+        {
+            UpdateAlerts();
+
+            ShowWindow(null);
+        }
+
+        private void PlaySound(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -51,34 +92,28 @@ namespace cAlgo.API.Alert
             soundPlayer.Dispose();
         }
 
-        public string PutObjectInTemplate(object obj, string template)
+        private string PutObjectInTemplate(object obj, string template)
         {
-            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase;
-
-            List<string> keywords = template.Split().Where(word => word.StartsWith("{", comparison) && word.EndsWith("}", comparison)).ToList();
-
-            Dictionary<string, object> properties = obj.GetType().GetProperties().ToDictionary(propertyInfo => propertyInfo.Name,
+            Dictionary<string, object> properties = obj.GetType().GetProperties().Where(iProperty => iProperty.GetValue(obj) != null)
+                .ToDictionary(propertyInfo => propertyInfo.Name,
                 propertyInfo => propertyInfo.GetValue(obj));
 
-            foreach (string keyword in keywords)
+            foreach (string keyword in _templateKeywords)
             {
                 string propertyName = RemoveKeywordBrackets(keyword);
 
-                if (properties.ContainsKey(propertyName))
-                {
-                    template = template.Replace(keyword, properties[propertyName].ToString());
-                }
+                template = template.Replace(keyword, properties.ContainsKey(propertyName) ? properties[propertyName].ToString() : string.Empty);
             }
 
             return template;
         }
 
-        public string RemoveKeywordBrackets(string word)
+        private string RemoveKeywordBrackets(string word)
         {
             return new string(word.Skip(1).Take(word.Length - 2).ToArray());
         }
 
-        public void SendEmail(INotifications notifications, EmailSettingsModel settings, AlertModel alert)
+        private void SendEmail(INotifications notifications, EmailSettingsModel settings, AlertModel alert)
         {
             string subject = PutObjectInTemplate(alert, settings.Template.Subject);
             string body = PutObjectInTemplate(alert, settings.Template.Body);
@@ -86,7 +121,7 @@ namespace cAlgo.API.Alert
             notifications.SendEmail(settings.Sender, settings.Recipient, subject, body);
         }
 
-        public void SendTelegramMessage(TelegramSettingsModel settings, AlertModel alert)
+        private void SendTelegramMessage(TelegramSettingsModel settings, AlertModel alert)
         {
             string message = PutObjectInTemplate(alert, settings.MessageTemplate);
 
@@ -98,7 +133,7 @@ namespace cAlgo.API.Alert
             }
         }
 
-        public void TriggerAlerts(INotifications notifications, SettingsModel settings, AlertModel alert)
+        private void TriggerAlerts(INotifications notifications, SettingsModel settings, AlertModel alert)
         {
             if (settings.Sound.IsEnabled)
             {
@@ -125,21 +160,20 @@ namespace cAlgo.API.Alert
             }
         }
 
-        public void Launch(INotifications notifications, AlertModel alert)
+        private void ShowWindow(AlertModel alert)
         {
-            _alerts = AlertsFactory.GetAlerts().ToList();
-
-            AlertsFactory.AddAlert(alert);
-
-            _alerts.Add(alert);
-
             Thread windowThread = new Thread(new ThreadStart(() =>
             {
                 try
                 {
-                    SettingsModel settings = SettingsFactory.GetSettings(Configuration.Current.SettingsFilePath);
+                    TimeSpan timeSinceLastAlert = DateTime.Now - _lastTriggeredAlertTime;
 
-                    TriggerAlerts(notifications, settings, alert);
+                    _lastTriggeredAlertTime = DateTime.Now;
+
+                    if (timeSinceLastAlert < TimeSpan.FromSeconds(1.5))
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(1.5) - timeSinceLastAlert);
+                    }
 
                     if (_app == null)
                     {
@@ -147,21 +181,29 @@ namespace cAlgo.API.Alert
 
                         _app.EventAggregator.GetEvent<AlertRemovedEvent>().Subscribe(AlertRemovedEvent_Handler);
 
-                        _app.ShellView.Title = Configuration.Current.Title;
-
-                        _app.ShellView.Closed += (sender, args) =>
+                        _app.ShellView.Dispatcher.Invoke(() =>
                         {
-                            _app = null;
-                        };
+                            _app.ShellView.Title = Configuration.Current.Title;
+
+                            _app.ShellView.Closed += (sender, args) =>
+                            {
+                                _app = null;
+                            };
+                        });
                     }
 
-                    _app.InvokeAlertAddedEvent(alert);
+                    if (alert != null)
+                    {
+                        _app.InvokeAlertAddedEvent(alert);
+                    }
 
                     _app.Run();
                 }
-                catch (InvalidOperationException ex)
+                catch (Exception ex)
                 {
                     Logger.LogException(ex);
+
+                    throw ex;
                 }
             }));
 
@@ -175,6 +217,11 @@ namespace cAlgo.API.Alert
         private void AlertRemovedEvent_Handler(AlertModel alert)
         {
             AlertsFactory.RemoveAlert(alert);
+        }
+
+        private void UpdateAlerts()
+        {
+            _alerts = AlertsFactory.GetAlerts().ToList();
         }
 
         #endregion Methods

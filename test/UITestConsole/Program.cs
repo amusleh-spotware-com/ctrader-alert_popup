@@ -11,7 +11,7 @@ namespace cAlgo.API.Alert.Tester
             INotifications notifications = new Notifications();
 
             //notifications.ShowPopup("Hour", "EURUSD", "Trend Line", "UITestConsole", 1.23452, "No comment 2", DateTimeOffset.Now);
-            
+
             int counter = 0;
 
             string[] arrows = { "1", "2", "3" };
@@ -24,7 +24,7 @@ namespace cAlgo.API.Alert.Tester
 
                 notifications.ShowPopup("Hour", "EURUSD", type, "UITestConsole", 1.23452, counter.ToString(), DateTimeOffset.Now);
 
-                Thread.Sleep(3000);
+                Thread.Sleep(2000);
             }
         }
     }
