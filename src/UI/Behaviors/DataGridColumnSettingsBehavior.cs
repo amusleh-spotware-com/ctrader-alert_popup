@@ -9,6 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Configuration;
+using System.Threading.Tasks;
 
 namespace cAlgo.API.Alert.UI.Behaviors
 {
@@ -361,11 +363,25 @@ namespace cAlgo.API.Alert.UI.Behaviors
             return result;
         }
 
-        private static DataGridSettings GetDataGridSettings(string dataGridName)
+        private static DataGridSettings GetDataGridSettings(string dataGridName, bool isRetry = false)
         {
             string settingsKey = string.Format("cTrader.AlertPopup.{0}", dataGridName);
 
-            return new DataGridSettings(settingsKey);
+            try
+            {
+                return new DataGridSettings(settingsKey);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                if (isRetry)
+                {
+                    throw;
+                }
+
+                Task.Delay(TimeSpan.FromSeconds(3));
+
+                return GetDataGridSettings(dataGridName, true);
+            }
         }
 
         #endregion Other Methods

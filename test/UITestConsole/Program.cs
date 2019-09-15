@@ -16,7 +16,7 @@ namespace cAlgo.API.Alert.Tester
 
             string[] arrows = { "1", "2", "3" };
 
-            while (counter < 10)
+            while (counter < 100)
             {
                 counter++;
 

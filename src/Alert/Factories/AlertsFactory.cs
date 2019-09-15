@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace cAlgo.API.Alert.Factories
 {
@@ -52,9 +53,15 @@ namespace cAlgo.API.Alert.Factories
         {
             using (LiteDatabase database = new LiteDatabase(GetStream()))
             {
-                var collection = database.GetCollection<AlertModel>();
+                try
+                {
+                    var collection = database.GetCollection<AlertModel>();
 
-                collection.Delete(iAlert => alerts.Contains(iAlert));
+                    collection.Delete(iAlert => alerts.Contains(iAlert));
+                }
+                catch (KeyNotFoundException)
+                {
+                }
             }
         }
 
@@ -80,7 +87,7 @@ namespace cAlgo.API.Alert.Factories
 
             if (stream == null)
             {
-                throw new NullReferenceException("Couldn't get the file stream");
+                throw new IOException("Couldn't get the file stream");
             }
 
             return stream;
