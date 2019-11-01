@@ -10,6 +10,8 @@ namespace cAlgo.API.Alert.Tester
         {
             INotifications notifications = new Notifications();
 
+            //notifications.ShowPopup();
+
             //notifications.ShowPopup("Hour", "EURUSD", "Trend Line", "UITestConsole", 1.23452, "No comment 2", DateTimeOffset.Now);
 
             int counter = 0;

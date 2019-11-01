@@ -23,10 +23,7 @@
     </Style>
 
     <DataTemplate x:Key="HeaderTemplate">
-        <StackPanel
-            Margin="3"
-            HorizontalAlignment="Center"
-            Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal">
             <Button Command="{Binding Path=DataContext.RemoveSelectedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" ToolTip="Remove Selected">
                 <iconsPack:PackIconMaterial Kind="Delete" />
             </Button>
@@ -34,10 +31,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="CellTemplate">
-        <StackPanel
-            Margin="3"
-            HorizontalAlignment="Center"
-            Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal">
             <Button
                 Command="{Binding Path=DataContext.RemoveCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
                 CommandParameter="{Binding}"

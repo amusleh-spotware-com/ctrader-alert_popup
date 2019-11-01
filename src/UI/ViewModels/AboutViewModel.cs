@@ -5,28 +5,14 @@ namespace cAlgo.API.Alert.UI.ViewModels
 {
     public class AboutViewModel : BindableBase
     {
-        #region Fields
-
-        private Models.AboutMode _model;
-
-        #endregion Fields
-
         public AboutViewModel()
         {
             RequestNavigateCommand = new DelegateCommand<string>(url => System.Diagnostics.Process.Start(url));
-
-            _model = new Models.AboutMode();
         }
 
         #region Properties
 
-        public Models.AboutMode Model
-        {
-            get
-            {
-                return _model;
-            }
-        }
+        public Models.AboutMode Model { get; }
 
         public DelegateCommand<string> RequestNavigateCommand { get; set; }
 

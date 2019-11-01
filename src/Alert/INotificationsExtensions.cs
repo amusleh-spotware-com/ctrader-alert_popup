@@ -10,7 +10,7 @@ namespace cAlgo.API.Alert
 
         public static void ShowPopup(this INotifications notifications)
         {
-            Launcher.Current.ShowWindow();
+            Launcher.Current.ShowPopup();
         }
 
         public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType type)
@@ -82,6 +82,11 @@ namespace cAlgo.API.Alert
         public static void ShowPopup(this INotifications notifications, AlertModel alert)
         {
             Launcher.Current.Launch(notifications, alert);
+        }
+
+        public static void TriggerAlert(this INotifications notifications, AlertModel alert)
+        {
+            Launcher.Current.Launch(notifications, alert, showPopup: false);
         }
 
         #endregion Methods

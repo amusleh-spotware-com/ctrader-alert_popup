@@ -16,7 +16,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
         private ObservableCollection<Models.AlertModel> _alerts;
 
         private EventAggregator _eventAggregator;
-        private Models.SettingsModel _Settings;
+
+        private Models.SettingsModel _settings;
+
         private IList _selectedAlerts;
 
         private Models.AlertModel _visibleAlert;
@@ -25,7 +27,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         public AlertsViewModel(List<Models.AlertModel> alerts, Models.SettingsModel Settings, EventAggregator eventAggregator)
         {
-            _Settings = Settings;
+            _settings = Settings;
 
             _eventAggregator = eventAggregator;
 
@@ -45,7 +47,21 @@ namespace cAlgo.API.Alert.UI.ViewModels
                 .ObservesProperty(() => SelectedAlerts);
         }
 
-        #region Properties
+        #region Commands
+
+        public DelegateCommand<Models.AlertModel> RemoveCommand { get; set; }
+
+        public DelegateCommand RemoveSelectedCommand { get; set; }
+
+        public DelegateCommand LoadedCommand { get; set; }
+
+        public DelegateCommand<IList> SelectionChangedCommand { get; set; }
+
+        public DelegateCommand UnloadedCommand { get; set; }
+
+        #endregion Commands
+
+        #region Other properties
 
         public ObservableCollection<Models.AlertModel> Alerts
         {
@@ -59,18 +75,13 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        public DelegateCommand LoadedCommand { get; set; }
-
         public Models.SettingsModel Settings
         {
             get
             {
-                return _Settings;
+                return _settings;
             }
         }
-
-        public DelegateCommand<Models.AlertModel> RemoveCommand { get; set; }
-        public DelegateCommand RemoveSelectedCommand { get; set; }
 
         public IList SelectedAlerts
         {
@@ -84,9 +95,6 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        public DelegateCommand<IList> SelectionChangedCommand { get; set; }
-        public DelegateCommand UnloadedCommand { get; set; }
-
         public Models.AlertModel VisibleAlert
         {
             get
@@ -99,7 +107,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
             }
         }
 
-        #endregion Properties
+        #endregion Other properties
 
         #region Methods
 
@@ -107,9 +115,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
         {
             Models.AlertModel alertCopy = alert.Clone() as Models.AlertModel;
 
-            if (!alertCopy.Time.Offset.Equals(_Settings.Alerts.TimeZone.BaseUtcOffset))
+            if (!alertCopy.Time.Offset.Equals(_settings.Alerts.TimeZone.BaseUtcOffset))
             {
-                alertCopy.Time = alert.Time.ToOffset(_Settings.Alerts.TimeZone.BaseUtcOffset);
+                alertCopy.Time = alert.Time.ToOffset(_settings.Alerts.TimeZone.BaseUtcOffset);
             }
 
             alertCopy.Price = Math.Round(alertCopy.Price, Settings.Alerts.MaxPriceDecimalPlacesNumber);
@@ -128,9 +136,9 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private void Cleanup()
         {
-            if (Alerts.Count > _Settings.Alerts.MaxAlertNumber)
+            if (Alerts.Count > _settings.Alerts.MaxAlertNumber)
             {
-                Alerts.OrderByDescending(alert => alert.Time).Skip(_Settings.Alerts.MaxAlertNumber).ToList().ForEach(alert => Remove(alert));
+                Alerts.OrderByDescending(alert => alert.Time).Skip(_settings.Alerts.MaxAlertNumber).ToList().ForEach(alert => Remove(alert));
             }
         }
 

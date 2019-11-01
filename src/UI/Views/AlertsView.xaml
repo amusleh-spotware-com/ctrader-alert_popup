@@ -40,42 +40,50 @@
         <DataGrid.Columns>
             <DataGridTemplateColumn
                 Width="Auto"
+                MinWidth="100"
                 CellTemplate="{StaticResource TypeTemplate}"
                 Header="Type"
                 SortMemberPath="Type" />
             <DataGridTemplateColumn
                 Width="Auto"
+                MinWidth="100"
                 CellTemplate="{StaticResource PriceTemplate}"
                 Header="Price"
                 SortMemberPath="Price" />
             <DataGridTemplateColumn
                 Width="Auto"
+                MinWidth="100"
                 CellTemplate="{StaticResource SymbolTemplate}"
                 Header="Symbol"
                 SortMemberPath="Symbol" />
             <DataGridTemplateColumn
                 Width="Auto"
+                MinWidth="150"
                 CellTemplate="{StaticResource TimeTemplate}"
                 Header="Time"
                 SortDirection="Ascending"
                 SortMemberPath="Time" />
             <DataGridTemplateColumn
                 Width="Auto"
+                MinWidth="100"
                 CellTemplate="{StaticResource TimeFrameTemplate}"
                 Header="Time Frame"
                 SortMemberPath="TimeFrame" />
             <DataGridTemplateColumn
                 Width="Auto"
+                MinWidth="110"
                 CellTemplate="{StaticResource TriggeredByTemplate}"
                 Header="Triggered By"
                 SortMemberPath="TriggeredBy" />
             <DataGridTemplateColumn
                 Width="*"
+                MinWidth="150"
                 CellTemplate="{StaticResource CommentTemplate}"
                 Header="Comment"
                 SortMemberPath="Comment" />
             <DataGridTemplateColumn
                 Width="Auto"
+                MinWidth="100"
                 CellTemplate="{StaticResource CellTemplate}"
                 HeaderTemplate="{StaticResource HeaderTemplate}" />
         </DataGrid.Columns>

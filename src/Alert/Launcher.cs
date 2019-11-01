@@ -1,4 +1,4 @@
-﻿using cAlgo.API.Alert.Factories;
+﻿using cAlgo.API.Alert.Helpers;
 using cAlgo.API.Alert.Models;
 using cAlgo.API.Alert.UI;
 using cAlgo.API.Alert.UI.Events;
@@ -20,11 +20,9 @@ namespace cAlgo.API.Alert
     {
         #region Fields
 
-        private static Launcher _current = new Launcher();
-
         private App _app;
 
-        private List<AlertModel> _alerts;
+        private readonly List<AlertModel> _alerts = new List<AlertModel>();
 
         private DateTime _lastTriggeredAlertTime;
 
@@ -34,7 +32,7 @@ namespace cAlgo.API.Alert
 
         #region Properties
 
-        public static Launcher Current => _current;
+        public static Launcher Current { get; } = new Launcher();
 
         #endregion Properties
 
@@ -56,26 +54,32 @@ namespace cAlgo.API.Alert
 
         #region Methods
 
-        public void Launch(INotifications notifications, AlertModel alert)
+        public async void Launch(INotifications notifications, AlertModel alert, bool triggerAlerts = true, bool showPopup = true)
         {
             UpdateAlerts();
 
-            AlertsFactory.AddAlert(alert);
+            await AlertManager.AddAlert(alert);
 
             _alerts.Add(alert);
 
             SettingsModel settings = SettingsFactory.GetSettings(Configuration.Current.SettingsFilePath);
 
-            TriggerAlerts(notifications, settings, alert);
+            if (triggerAlerts)
+            {
+                TriggerAlerts(notifications, settings, alert);
+            }
 
-            ShowWindow(alert);
+            if (showPopup)
+            {
+                ShowPopup(alert);
+            }
         }
 
-        public void ShowWindow()
+        public void ShowPopup()
         {
             UpdateAlerts();
 
-            ShowWindow(null);
+            ShowPopup(null);
         }
 
         private void PlaySound(string path)
@@ -160,7 +164,7 @@ namespace cAlgo.API.Alert
             }
         }
 
-        private void ShowWindow(AlertModel alert)
+        private void ShowPopup(AlertModel alert)
         {
             Thread windowThread = new Thread(new ThreadStart(() =>
             {
@@ -214,14 +218,21 @@ namespace cAlgo.API.Alert
             windowThread.Start();
         }
 
-        private void AlertRemovedEvent_Handler(AlertModel alert)
+        private async void AlertRemovedEvent_Handler(AlertModel alert)
         {
-            AlertsFactory.RemoveAlert(alert);
+            await AlertManager.RemoveAlert(alert);
         }
 
-        private void UpdateAlerts()
+        private async void UpdateAlerts()
         {
-            _alerts = AlertsFactory.GetAlerts().ToList();
+            _alerts.Clear();
+
+            var updatedAlerts = await AlertManager.GetAlerts();
+
+            if (updatedAlerts != null)
+            {
+                _alerts.AddRange(updatedAlerts);
+            }
         }
 
         #endregion Methods

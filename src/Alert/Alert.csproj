@@ -95,7 +95,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Factories\AlertsFactory.cs" />
+    <Compile Include="Helpers\AlertManager.cs" />
     <Compile Include="Utility\ExceptionTools.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\Serializer.cs" />

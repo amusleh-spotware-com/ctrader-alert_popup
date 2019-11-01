@@ -10,20 +10,20 @@ namespace cAlgo.API.Alert.Models
         {
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            string alertsDirPath = Path.Combine(documentsPath, "cAlgo", "Alerts");
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            string alertsDirPath = Path.Combine(documentsPath, "cAlgo", "Alerts", version.ToString());
 
             if (!Directory.Exists(alertsDirPath))
             {
                 Directory.CreateDirectory(alertsDirPath);
             }
 
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-
             AlertFilePath = Path.Combine(alertsDirPath, $"Alerts_{version}.db");
             SettingsFilePath = Path.Combine(alertsDirPath, $"AlertPopupSettings_{version}.xml");
             LogFilePath = Path.Combine(alertsDirPath, $"Alerts_{version}.log");
 
-            Title = $"Alerts - cTrader {version}";
+            Title = $"Alerts - cTrader";
         }
 
         #region Properties
