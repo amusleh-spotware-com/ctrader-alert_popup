@@ -24,7 +24,7 @@
                 <Run Text="{Binding Path=Model.DevelopedBy}" />
             </Paragraph>
             <Paragraph>
-                <Run>Developer Site::</Run>
+                <Run>Developer Site:</Run>
                 <Hyperlink Command="{Binding Path=RequestNavigateCommand}" CommandParameter="{Binding Path=Model.DeveloperSite}">
                     <Run Text="{Binding Path=Model.DeveloperSite}" />
                 </Hyperlink>

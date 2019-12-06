@@ -7,6 +7,8 @@ namespace cAlgo.API.Alert.UI.ViewModels
     {
         public AboutViewModel()
         {
+            Model = new Models.AboutMode();
+
             RequestNavigateCommand = new DelegateCommand<string>(url => System.Diagnostics.Process.Start(url));
         }
 
