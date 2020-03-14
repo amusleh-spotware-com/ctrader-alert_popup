@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alert", "src\Alert\Alert.csproj", "{67AD1D85-119E-4984-A642-AE502BC4AF27}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -15,8 +15,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C9502741-A157-4DD9-9203-976B8CC085B3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{B40FBA14-592C-4E0F-8EE1-7945F9B1C618}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITest", "test\UITest\UITest.csproj", "{F37F0D01-20BF-4DC2-AAA9-59954F10FE36}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITestConsole", "test\UITestConsole\UITestConsole.csproj", "{82149BBC-B6BD-45F5-800E-6AB538F82336}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -38,10 +36,6 @@ Global
 		{63C5A465-9969-4271-8B6C-E37296007BA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63C5A465-9969-4271-8B6C-E37296007BA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63C5A465-9969-4271-8B6C-E37296007BA8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F37F0D01-20BF-4DC2-AAA9-59954F10FE36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F37F0D01-20BF-4DC2-AAA9-59954F10FE36}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F37F0D01-20BF-4DC2-AAA9-59954F10FE36}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F37F0D01-20BF-4DC2-AAA9-59954F10FE36}.Release|Any CPU.Build.0 = Release|Any CPU
 		{82149BBC-B6BD-45F5-800E-6AB538F82336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{82149BBC-B6BD-45F5-800E-6AB538F82336}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82149BBC-B6BD-45F5-800E-6AB538F82336}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,7 +47,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{67AD1D85-119E-4984-A642-AE502BC4AF27} = {FA566F4F-3EFA-4C4A-9AA3-3DC3B4275C73}
 		{63C5A465-9969-4271-8B6C-E37296007BA8} = {FA566F4F-3EFA-4C4A-9AA3-3DC3B4275C73}
-		{F37F0D01-20BF-4DC2-AAA9-59954F10FE36} = {B40FBA14-592C-4E0F-8EE1-7945F9B1C618}
 		{82149BBC-B6BD-45F5-800E-6AB538F82336} = {B40FBA14-592C-4E0F-8EE1-7945F9B1C618}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
