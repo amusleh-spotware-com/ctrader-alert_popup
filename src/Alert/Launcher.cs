@@ -39,9 +39,6 @@ namespace cAlgo.API.Alert
 
         public Launcher()
         {
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
             _templateKeywords = new List<string>
             {
                 "{TriggeredBy}",

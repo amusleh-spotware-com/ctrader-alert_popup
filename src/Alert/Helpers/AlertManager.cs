@@ -100,7 +100,7 @@ namespace cAlgo.API.Alert.Helpers
                     {
                         var collection = database.GetCollection<AlertModel>();
 
-                        collection.Delete(iAlert => alerts.Contains(iAlert));
+                        collection.DeleteMany(iAlert => alerts.Contains(iAlert));
                     }
                 }
                 catch (Exception ex)
