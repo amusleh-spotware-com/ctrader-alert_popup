@@ -35,7 +35,7 @@ namespace cAlgo.API.Alert.Helpers
                 }
                 catch (Exception ex)
                 {
-                    if (ex is KeyNotFoundException || ex is InvalidCastException)
+                    if (ex is KeyNotFoundException || ex is InvalidCastException || ex is ArgumentOutOfRangeException)
                     {
                         DeleteDatabaseFile();
 
@@ -123,7 +123,7 @@ namespace cAlgo.API.Alert.Helpers
             {
                 try
                 {
-                    return File.Open(Configuration.Current.AlertFilePath, System.IO.FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    return File.Open(Configuration.Current.AlertFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
                 }
                 catch (IOException)
                 {
