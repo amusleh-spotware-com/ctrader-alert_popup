@@ -6,7 +6,8 @@
     xmlns:iconsPack="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:cAlgo.API.Alert.UI">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="./SharedResources.xaml" />
+        <ResourceDictionary Source="SharedResources.xaml" />
+        <ResourceDictionary Source="Icons.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style BasedOn="{StaticResource MetroGroupBox}" TargetType="GroupBox">
@@ -48,9 +49,8 @@
             <Button
                 Command="{Binding Path=DataContext.RemoveSelectedTelegramBotsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                 CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                ToolTip="Remove Selected">
-                <iconsPack:PackIconMaterial Kind="Delete" />
-            </Button>
+                Content="{StaticResource Delete}"
+                ToolTip="Remove Selected" />
         </StackPanel>
     </DataTemplate>
 
@@ -60,9 +60,8 @@
                 HorizontalAlignment="Center"
                 Command="{Binding Path=DataContext.RemoveTelegramBotCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                 CommandParameter="{Binding}"
-                ToolTip="Remove">
-                <iconsPack:PackIconMaterial Kind="Delete" />
-            </Button>
+                Content="{StaticResource Delete}"
+                ToolTip="Remove" />
         </StackPanel>
     </DataTemplate>
 </ResourceDictionary>

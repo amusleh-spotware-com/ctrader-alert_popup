@@ -26,7 +26,7 @@ namespace cAlgo.API.Alert.Utility
 
         internal static void Log(string message, params object[] parameters)
         {
-            string messageFormatted = string.Format(message, parameters);
+            string messageFormatted = parameters.Length > 0 ? string.Format(message, parameters) : message;
 
             Tracer?.Invoke(messageFormatted);
 

@@ -35,6 +35,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Resources/SharedResources.xaml" />
+                <ResourceDictionary Source="../Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
@@ -43,13 +44,9 @@
         <Controls:WindowCommands ShowSeparators="False">
             <Button
                 Command="{Binding Path=GoBackCommand}"
+                Content="{StaticResource ArrowLeft}"
                 ToolTip="Go Back"
-                ToolTipService.ShowOnDisabled="True">
-                <iconsPack:PackIconMaterial
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Kind="ArrowLeft" />
-            </Button>
+                ToolTipService.ShowOnDisabled="True" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.LeftWindowCommands>
 
@@ -58,23 +55,20 @@
             <Button
                 Command="{Binding Path=NavigateCommand}"
                 CommandParameter="{x:Static local:ViewNames.AboutView}"
-                ToolTip="About">
-                <iconsPack:PackIconMaterial Kind="Information" />
-            </Button>
+                Content="{StaticResource Information}"
+                ToolTip="About" />
             <Button
                 Command="{Binding Path=NavigateCommand}"
                 CommandParameter="{x:Static local:ViewNames.SettingsView}"
+                Content="{StaticResource Settings}"
                 IsEnabled="{Binding Path=IsSettingsButtonEnabled}"
-                ToolTip="Settings">
-                <iconsPack:PackIconMaterial Kind="Settings" />
-            </Button>
+                ToolTip="Settings" />
             <Button
                 Command="{Binding Path=NavigateCommand}"
                 CommandParameter="{x:Static local:ViewNames.AlertsView}"
+                Content="{StaticResource Home}"
                 ToolTip="Home"
-                Visibility="Collapsed">
-                <iconsPack:PackIconMaterial Kind="Home" />
-            </Button>
+                Visibility="Collapsed" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
 </Controls:MetroWindow>
