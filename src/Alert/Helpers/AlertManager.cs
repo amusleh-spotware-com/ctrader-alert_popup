@@ -1,157 +1,65 @@
 ﻿using cAlgo.API.Alert.Models;
 using cAlgo.API.Alert.UI.Models;
 using LiteDB;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace cAlgo.API.Alert.Helpers
 {
     internal static class AlertManager
     {
-        #region Methods
+        public static string ConnectionString
+        {
+            get
+            {
+                return string.Format("Filename={0};Connection=shared", Configuration.Current.AlertFilePath);
+            }
+        }
 
-        public static async Task<List<AlertModel>> GetAlerts()
+        public static List<AlertModel> GetAlerts()
         {
             if (!File.Exists(Configuration.Current.AlertFilePath))
             {
                 return new List<AlertModel>();
             }
 
-            return await Task.Run(async () =>
+            using (LiteDatabase database = new LiteDatabase(ConnectionString))
             {
-                try
-                {
-                    var stream = await GetStream();
+                var collection = database.GetCollection<AlertModel>();
 
-                    using (LiteDatabase database = new LiteDatabase(stream))
-                    {
-                        var collection = database.GetCollection<AlertModel>();
-
-                        return collection.FindAll().ToList();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (ex is KeyNotFoundException || ex is InvalidCastException || ex is ArgumentOutOfRangeException)
-                    {
-                        DeleteDatabaseFile();
-
-                        return new List<AlertModel>();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            });
-        }
-
-        public static async Task AddAlert(AlertModel alert)
-        {
-            await AddAlerts(new List<AlertModel>() { alert });
-        }
-
-        public static async Task AddAlerts(IEnumerable<AlertModel> alerts)
-        {
-            await Task.Run(async () =>
-            {
-                try
-                {
-                    var stream = await GetStream();
-
-                    using (LiteDatabase database = new LiteDatabase(stream))
-                    {
-                        var collection = database.GetCollection<AlertModel>();
-
-                        collection.InsertBulk(alerts);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (ex is KeyNotFoundException || ex is InvalidCastException)
-                    {
-                        DeleteDatabaseFile();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            });
-        }
-
-        public static async Task RemoveAlert(AlertModel alert)
-        {
-            await RemoveAlerts(new List<AlertModel>() { alert });
-        }
-
-        public static async Task RemoveAlerts(IEnumerable<AlertModel> alerts, int tryNumber = 1)
-        {
-            await Task.Run(async () =>
-            {
-                try
-                {
-                    var stream = await GetStream();
-
-                    using (LiteDatabase database = new LiteDatabase(stream))
-                    {
-                        var collection = database.GetCollection<AlertModel>();
-
-                        collection.DeleteMany(iAlert => alerts.Contains(iAlert));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (ex is KeyNotFoundException || ex is InvalidCastException)
-                    {
-                        DeleteDatabaseFile();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            });
-        }
-
-        private static async Task<FileStream> GetStream(int tryNumber = 1)
-        {
-            return await Task.Run(async () =>
-            {
-                try
-                {
-                    return File.Open(Configuration.Current.AlertFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-                }
-                catch (IOException)
-                {
-                    if (tryNumber < 5)
-                    {
-                        tryNumber++;
-
-                        await Task.Delay(TimeSpan.FromSeconds(1));
-
-                        return await GetStream(tryNumber);
-                    }
-
-                    throw;
-                }
-            });
-        }
-
-        private static void DeleteDatabaseFile()
-        {
-            try
-            {
-                File.Delete(Configuration.Current.AlertFilePath);
-            }
-            catch (IOException)
-            {
+                return collection.FindAll().ToList();
             }
         }
 
-        #endregion Methods
+        public static void AddAlert(AlertModel alert)
+        {
+            AddAlerts(new List<AlertModel>() { alert });
+        }
+
+        public static void AddAlerts(IEnumerable<AlertModel> alerts)
+        {
+            using (LiteDatabase database = new LiteDatabase(ConnectionString))
+            {
+                var collection = database.GetCollection<AlertModel>();
+
+                collection.InsertBulk(alerts);
+            }
+        }
+
+        public static void RemoveAlert(AlertModel alert)
+        {
+            RemoveAlerts(new List<AlertModel>() { alert });
+        }
+
+        public static void RemoveAlerts(IEnumerable<AlertModel> alerts)
+        {
+            using (LiteDatabase database = new LiteDatabase(ConnectionString))
+            {
+                var collection = database.GetCollection<AlertModel>();
+
+                collection.DeleteMany(iAlert => alerts.Contains(iAlert));
+            }
+        }
     }
 }

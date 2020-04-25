@@ -13,7 +13,6 @@ using System.Linq;
 using System.Media;
 using System.Threading;
 using TelegramBotApi;
-using System.Net;
 
 namespace cAlgo.API.Alert
 {
@@ -55,11 +54,11 @@ namespace cAlgo.API.Alert
 
         #region Methods
 
-        public async void Launch(INotifications notifications, AlertModel alert, bool triggerAlerts = true, bool showPopup = true)
+        public void Launch(INotifications notifications, AlertModel alert, bool triggerAlerts = true, bool showPopup = true)
         {
             UpdateAlerts();
 
-            await AlertManager.AddAlert(alert);
+            AlertManager.AddAlert(alert);
 
             _alerts.Add(alert);
 
@@ -177,7 +176,7 @@ namespace cAlgo.API.Alert
 
                     if (timeSinceLastAlert < TimeSpan.FromSeconds(1.5))
                     {
-                        Thread.Sleep(TimeSpan.FromSeconds(1.5) - timeSinceLastAlert);
+                        //Thread.Sleep(TimeSpan.FromSeconds(1.5) - timeSinceLastAlert);
                     }
 
                     if (_app == null)
@@ -219,16 +218,16 @@ namespace cAlgo.API.Alert
             windowThread.Start();
         }
 
-        private async void AlertRemovedEvent_Handler(AlertModel alert)
+        private void AlertRemovedEvent_Handler(AlertModel alert)
         {
-            await AlertManager.RemoveAlert(alert);
+            AlertManager.RemoveAlert(alert);
         }
 
-        private async void UpdateAlerts()
+        private void UpdateAlerts()
         {
             _alerts.Clear();
 
-            var updatedAlerts = await AlertManager.GetAlerts();
+            var updatedAlerts = AlertManager.GetAlerts();
 
             if (updatedAlerts != null)
             {
