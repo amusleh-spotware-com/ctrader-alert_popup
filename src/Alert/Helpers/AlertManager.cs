@@ -9,15 +9,9 @@ namespace cAlgo.API.Alert.Helpers
 {
     internal static class AlertManager
     {
-        public static string ConnectionString
-        {
-            get
-            {
-                return string.Format("Filename={0};Connection=shared", Configuration.Current.AlertFilePath);
-            }
-        }
+        public static string ConnectionString => string.Format("Filename={0};Connection=shared", Configuration.Current.AlertFilePath);
 
-        public static List<AlertModel> GetAlerts()
+        public static IEnumerable<AlertModel> GetAlerts()
         {
             if (!File.Exists(Configuration.Current.AlertFilePath))
             {
@@ -32,12 +26,7 @@ namespace cAlgo.API.Alert.Helpers
             }
         }
 
-        public static void AddAlert(AlertModel alert)
-        {
-            AddAlerts(new List<AlertModel>() { alert });
-        }
-
-        public static void AddAlerts(IEnumerable<AlertModel> alerts)
+        public static void AddAlerts(params AlertModel[] alerts)
         {
             using (LiteDatabase database = new LiteDatabase(ConnectionString))
             {
@@ -47,12 +36,7 @@ namespace cAlgo.API.Alert.Helpers
             }
         }
 
-        public static void RemoveAlert(AlertModel alert)
-        {
-            RemoveAlerts(new List<AlertModel>() { alert });
-        }
-
-        public static void RemoveAlerts(IEnumerable<AlertModel> alerts)
+        public static void RemoveAlerts(params AlertModel[] alerts)
         {
             using (LiteDatabase database = new LiteDatabase(ConnectionString))
             {

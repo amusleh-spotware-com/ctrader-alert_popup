@@ -24,8 +24,6 @@ namespace cAlgo.API.Alert
 
         private readonly List<AlertModel> _alerts = new List<AlertModel>();
 
-        private DateTime _lastTriggeredAlertTime;
-
         private readonly List<string> _templateKeywords;
 
         #endregion Fields
@@ -58,7 +56,7 @@ namespace cAlgo.API.Alert
         {
             UpdateAlerts();
 
-            AlertManager.AddAlert(alert);
+            AlertManager.AddAlerts(alert);
 
             _alerts.Add(alert);
 
@@ -166,19 +164,10 @@ namespace cAlgo.API.Alert
 
         private void ShowPopup(AlertModel alert)
         {
-            Thread windowThread = new Thread(new ThreadStart(() =>
+            var thread = new Thread(new ThreadStart(() =>
             {
                 try
                 {
-                    TimeSpan timeSinceLastAlert = DateTime.Now - _lastTriggeredAlertTime;
-
-                    _lastTriggeredAlertTime = DateTime.Now;
-
-                    if (timeSinceLastAlert < TimeSpan.FromSeconds(1.5))
-                    {
-                        //Thread.Sleep(TimeSpan.FromSeconds(1.5) - timeSinceLastAlert);
-                    }
-
                     if (_app == null)
                     {
                         _app = new App(Configuration.Current.SettingsFilePath, _alerts);
@@ -207,20 +196,20 @@ namespace cAlgo.API.Alert
                 {
                     Logger.LogException(ex);
 
-                    throw ex;
+                    throw;
                 }
             }));
 
-            windowThread.SetApartmentState(ApartmentState.STA);
-            windowThread.CurrentCulture = CultureInfo.InvariantCulture;
-            windowThread.CurrentUICulture = CultureInfo.InvariantCulture;
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.CurrentCulture = CultureInfo.InvariantCulture;
+            thread.CurrentUICulture = CultureInfo.InvariantCulture;
 
-            windowThread.Start();
+            thread.Start();
         }
 
         private void AlertRemovedEvent_Handler(AlertModel alert)
         {
-            AlertManager.RemoveAlert(alert);
+            AlertManager.RemoveAlerts(alert);
         }
 
         private void UpdateAlerts()
