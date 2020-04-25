@@ -39,8 +39,8 @@
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
     </Reference>
-    <Reference Include="LiteDB, Version=5.0.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LiteDB.5.0.4\lib\net45\LiteDB.dll</HintPath>
+    <Reference Include="LiteDB, Version=5.0.7.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LiteDB.5.0.7\lib\net45\LiteDB.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MahApps.Metro.1.6.5\lib\net45\MahApps.Metro.dll</HintPath>

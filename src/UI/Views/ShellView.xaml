@@ -44,9 +44,12 @@
         <Controls:WindowCommands ShowSeparators="False">
             <Button
                 Command="{Binding Path=GoBackCommand}"
-                Content="{StaticResource ArrowLeft}"
                 ToolTip="Go Back"
-                ToolTipService.ShowOnDisabled="True" />
+                ToolTipService.ShowOnDisabled="True">
+                <Viewbox Style="{StaticResource IconsViewboxStyle}">
+                    <Path Style="{StaticResource ArrowLeftIconPathStyle}" />
+                </Viewbox>
+            </Button>
         </Controls:WindowCommands>
     </Controls:MetroWindow.LeftWindowCommands>
 
@@ -55,20 +58,29 @@
             <Button
                 Command="{Binding Path=NavigateCommand}"
                 CommandParameter="{x:Static local:ViewNames.AboutView}"
-                Content="{StaticResource Information}"
-                ToolTip="About" />
+                ToolTip="About">
+                <Viewbox Style="{StaticResource IconsViewboxStyle}">
+                    <Path Style="{StaticResource InformationIconPathStyle}" />
+                </Viewbox>
+            </Button>
             <Button
                 Command="{Binding Path=NavigateCommand}"
                 CommandParameter="{x:Static local:ViewNames.SettingsView}"
-                Content="{StaticResource Settings}"
                 IsEnabled="{Binding Path=IsSettingsButtonEnabled}"
-                ToolTip="Settings" />
+                ToolTip="Settings">
+                <Viewbox Style="{StaticResource IconsViewboxStyle}">
+                    <Path Style="{StaticResource SettingsIconPathStyle}" />
+                </Viewbox>
+            </Button>
             <Button
                 Command="{Binding Path=NavigateCommand}"
                 CommandParameter="{x:Static local:ViewNames.AlertsView}"
-                Content="{StaticResource Home}"
                 ToolTip="Home"
-                Visibility="Collapsed" />
+                Visibility="Collapsed">
+                <Viewbox Style="{StaticResource IconsViewboxStyle}">
+                    <Path Style="{StaticResource HomeIconPathStyle}" />
+                </Viewbox>
+            </Button>
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
 </Controls:MetroWindow>
