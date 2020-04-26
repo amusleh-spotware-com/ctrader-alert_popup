@@ -207,9 +207,9 @@ namespace cAlgo.API.Alert
             thread.Start();
         }
 
-        private void AlertRemovedEvent_Handler(AlertModel alert)
+        private void AlertRemovedEvent_Handler(IEnumerable<AlertModel> alerts)
         {
-            AlertManager.RemoveAlerts(alert);
+            AlertManager.RemoveAlerts(alerts.ToArray());
         }
 
         private void UpdateAlerts()

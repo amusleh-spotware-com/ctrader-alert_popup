@@ -26,9 +26,9 @@ namespace cAlgo.API.Alert.UI
 
         private readonly string _settingsFilePath;
 
-        private string _currentView;
+        private readonly Models.SettingsModel _settings;
 
-        private Models.SettingsModel _settings;
+        private string _currentView;
 
         #endregion Fields
 
@@ -131,11 +131,14 @@ namespace cAlgo.API.Alert.UI
 
         #region Methods
 
-        public void AlertRemovedEvent_Handler(Models.AlertModel alert)
+        public void AlertRemovedEvent_Handler(IEnumerable<AlertModel> alerts)
         {
-            if (_alerts.Contains(alert))
+            foreach (var alert in alerts)
             {
-                _alerts.Remove(alert);
+                if (_alerts.Contains(alert))
+                {
+                    _alerts.Remove(alert);
+                }
             }
         }
 

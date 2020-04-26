@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using cAlgo.API.Alert.UI.Models;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
@@ -17,7 +18,7 @@ namespace cAlgo.API.Alert.UI.ViewModels
 
         private EventAggregator _eventAggregator;
 
-        private Models.SettingsModel _settings;
+        private readonly Models.SettingsModel _settings;
 
         private IList _selectedAlerts;
 
@@ -149,19 +150,29 @@ namespace cAlgo.API.Alert.UI.ViewModels
             _eventAggregator.GetEvent<Events.AlertAddedEvent>().Subscribe(AlertAddedEvent_Handler);
         }
 
-        private void Remove(Models.AlertModel alert)
+        private void Remove(AlertModel alert)
         {
-            if (Alerts.Contains(alert))
-            {
-                _eventAggregator.GetEvent<Events.AlertRemovedEvent>().Publish(alert);
-
-                Alerts.Remove(alert);
-            }
+            RemoveAlerts(new AlertModel[] { alert });
         }
 
         private void RemoveSelected()
         {
-            SelectedAlerts.Cast<Models.AlertModel>().ToList().ForEach(alert => Remove(alert));
+            var alertsToRemove = SelectedAlerts.Cast<AlertModel>().ToArray();
+
+            RemoveAlerts(alertsToRemove);
+        }
+
+        private void RemoveAlerts(IEnumerable<AlertModel> alerts)
+        {
+            foreach (var alert in alerts)
+            {
+                if (Alerts.Contains(alert))
+                {
+                    Alerts.Remove(alert);
+                }
+            }
+
+            _eventAggregator.GetEvent<Events.AlertRemovedEvent>().Publish(alerts);
         }
 
         private void SelectionChanged(IList selectedItems)
