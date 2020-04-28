@@ -14,7 +14,7 @@ namespace cAlgo.API.Alert.UI
     {
         #region Fields
 
-        private readonly List<Models.AlertModel> _alerts;
+        private readonly List<AlertModel> _alerts;
 
         private readonly EventAggregator _eventAggregator;
 
@@ -26,7 +26,7 @@ namespace cAlgo.API.Alert.UI
 
         private readonly string _settingsFilePath;
 
-        private readonly Models.SettingsModel _settings;
+        private readonly SettingsModel _settings;
 
         private string _currentView;
 
@@ -87,7 +87,7 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
-        public Models.SettingsModel Settings
+        public SettingsModel Settings
         {
             get
             {
@@ -142,12 +142,12 @@ namespace cAlgo.API.Alert.UI
             }
         }
 
-        public List<Models.AlertModel> GetAlerts()
+        public List<AlertModel> GetAlerts()
         {
             return _alerts.ToList();
         }
 
-        public void InvokeAlertAddedEvent(Models.AlertModel alert)
+        public void InvokeAlertAddedEvent(AlertModel alert)
         {
             if (ShellView != null)
             {
@@ -238,7 +238,7 @@ namespace cAlgo.API.Alert.UI
             return (T)Activator.CreateInstance(typeof(T), parameters);
         }
 
-        private void GeneralSettingsChangedEvent_Handler(Models.GeneralSettingsModel settings)
+        private void GeneralSettingsChangedEvent_Handler(GeneralSettingsModel settings)
         {
             _shellView.Topmost = settings.TopMost;
 
@@ -248,7 +248,7 @@ namespace cAlgo.API.Alert.UI
             ThemeManager.ChangeAppStyle(_themeResources, accent, theme);
         }
 
-        private void SettingsChangedEvent_Handler(Models.SettingsModel settings)
+        private void SettingsChangedEvent_Handler(SettingsModel settings)
         {
             if (!string.IsNullOrEmpty(_settingsFilePath))
             {

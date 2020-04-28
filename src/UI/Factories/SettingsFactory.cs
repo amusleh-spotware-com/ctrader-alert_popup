@@ -24,16 +24,16 @@ namespace cAlgo.API.Alert.UI.Factories
                 return GetDefaultSettings();
             }
 
-            Models.SettingsModel result;
+            SettingsModel result;
 
             using (FileStream fileStream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite))
             using (TextReader reader = new StreamReader(fileStream))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Models.SettingsModel));
+                XmlSerializer serializer = new XmlSerializer(typeof(SettingsModel));
 
                 try
                 {
-                    result = serializer.Deserialize(reader) as Models.SettingsModel;
+                    result = serializer.Deserialize(reader) as SettingsModel;
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -128,35 +128,35 @@ namespace cAlgo.API.Alert.UI.Factories
             return stringBuilder.ToString();
         }
 
-        public static Models.EmailTemplateModel GetDefaultEmailTemplate()
+        public static EmailTemplateModel GetDefaultEmailTemplate()
         {
-            return new Models.EmailTemplateModel()
+            return new EmailTemplateModel()
             {
                 Subject = "{Type} {Symbol} {Price} | Trade Alert",
                 Body = GetDefaultMessageTemplate()
             };
         }
 
-        public static Models.SettingsModel GetDefaultSettings()
+        public static SettingsModel GetDefaultSettings()
         {
-            Models.GeneralSettingsModel general = new Models.GeneralSettingsModel()
+            GeneralSettingsModel general = new GeneralSettingsModel()
             {
-                ThemeBase = new Models.ThemeBaseModel
+                ThemeBase = new ThemeBaseModel
                 {
                     Name = "BaseLight",
                     DisplayName = "Light",
                     SourceUri = "pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml"
                 },
-                ThemeAccent = new Models.ThemeAccentModel
+                ThemeAccent = new ThemeAccentModel
                 {
                     Name = "Cobalt",
                     ColorCode = "#FF0050EF",
                     SourceUri = "pack://application:,,,/MahApps.Metro;component/Styles/Accents/Cobalt.xaml"
                 },
-                TopMost = true
+                TopMost = false
             };
 
-            Models.AlertSettingsModel alerts = new Models.AlertSettingsModel()
+            AlertSettingsModel alerts = new AlertSettingsModel()
             {
                 BuyTypeColor = Brushes.Green,
                 SellTypeColor = Brushes.Red,
@@ -166,36 +166,36 @@ namespace cAlgo.API.Alert.UI.Factories
                 TriggeredByColor = Brushes.DeepPink,
                 TimeFrameColor = Brushes.DarkMagenta,
                 TimeColor = Brushes.DimGray,
-                MaxAlertNumber = 200,
+                MaxAlertNumber = 100,
                 MaxPriceDecimalPlacesNumber = 5,
-                CommentFontModel = new Models.FontModel()
+                CommentFontModel = new FontModel()
                 {
                     Family = Fonts.SystemFontFamilies.FirstOrDefault(family => family.Source.Equals("Arial",
                     StringComparison.InvariantCultureIgnoreCase)),
-                    WeightModel = new Models.FontWeightModel() { Name = "Normal", Weight = FontWeights.Normal },
-                    StyleModel = new Models.FontStyleModel() { Name = "Normal", Style = FontStyles.Normal },
+                    WeightModel = new FontWeightModel() { Name = "Normal", Weight = FontWeights.Normal },
+                    StyleModel = new FontStyleModel() { Name = "Normal", Style = FontStyles.Normal },
                     Size = 20
                 },
                 TimeFormat = TimeFormat.TwentyFourHour,
                 TimeZone = TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(tz => tz.BaseUtcOffset.Equals(DateTimeOffset.Now.Offset)),
             };
 
-            Models.SoundSettingsModel sound = new Models.SoundSettingsModel();
+            SoundSettingsModel sound = new SoundSettingsModel();
 
-            Models.EmailSettingsModel email = new Models.EmailSettingsModel()
+            EmailSettingsModel email = new EmailSettingsModel()
             {
                 Template = GetDefaultEmailTemplate(),
                 DefaultTemplate = GetDefaultEmailTemplate(),
             };
 
-            Models.TelegramSettingsModel telegram = new Models.TelegramSettingsModel()
+            TelegramSettingsModel telegram = new TelegramSettingsModel()
             {
                 DefaultMessageTemplate = GetDefaultTelegramMessageTemplate(),
                 MessageTemplate = GetDefaultTelegramMessageTemplate(),
-                Conversations = new ObservableCollection<Models.TelegramConversation>()
+                Conversations = new ObservableCollection<TelegramConversation>()
             };
 
-            Models.SettingsModel Settings = new Models.SettingsModel()
+            SettingsModel Settings = new SettingsModel()
             {
                 General = general,
                 Alerts = alerts,
@@ -219,14 +219,14 @@ namespace cAlgo.API.Alert.UI.Factories
 
         public static FontStyle GetFontStyleFromString(string styleName)
         {
-            List<Models.FontStyleModel> styles = GetFontStyles();
+            List<FontStyleModel> styles = GetFontStyles();
 
             return styles.FirstOrDefault(style => style.Name.Equals(styleName, StringComparison.InvariantCultureIgnoreCase)).Style;
         }
 
-        public static List<Models.FontStyleModel> GetFontStyles()
+        public static List<FontStyleModel> GetFontStyles()
         {
-            return typeof(FontStyles).GetProperties().Select(propertyInfo => new Models.FontStyleModel()
+            return typeof(FontStyles).GetProperties().Select(propertyInfo => new FontStyleModel()
             {
                 Name = propertyInfo.Name,
                 Style = (FontStyle)propertyInfo.GetValue(null)
@@ -235,23 +235,23 @@ namespace cAlgo.API.Alert.UI.Factories
 
         public static FontWeight GetFontWeightFromString(string weightName)
         {
-            List<Models.FontWeightModel> weights = GetFontWeights();
+            List<FontWeightModel> weights = GetFontWeights();
 
             return weights.FirstOrDefault(weight => weight.Name.Equals(weightName, StringComparison.InvariantCultureIgnoreCase)).Weight;
         }
 
-        public static List<Models.FontWeightModel> GetFontWeights()
+        public static List<FontWeightModel> GetFontWeights()
         {
-            return typeof(FontWeights).GetProperties().Select(propertyInfo => new Models.FontWeightModel()
+            return typeof(FontWeights).GetProperties().Select(propertyInfo => new FontWeightModel()
             {
                 Name = propertyInfo.Name,
                 Weight = (FontWeight)propertyInfo.GetValue(null)
             }).ToList();
         }
 
-        public static List<Models.ThemeAccentModel> GetThemeAccents()
+        public static List<ThemeAccentModel> GetThemeAccents()
         {
-            return ThemeManager.Accents.Select(accent => new Models.ThemeAccentModel
+            return ThemeManager.Accents.Select(accent => new ThemeAccentModel
             {
                 Name = accent.Name,
                 Color = GetAccentColor(accent),
@@ -259,9 +259,9 @@ namespace cAlgo.API.Alert.UI.Factories
             }).ToList();
         }
 
-        public static List<Models.ThemeBaseModel> GetThemeBases()
+        public static List<ThemeBaseModel> GetThemeBases()
         {
-            return ThemeManager.AppThemes.Select(themeBase => new Models.ThemeBaseModel
+            return ThemeManager.AppThemes.Select(themeBase => new ThemeBaseModel
             {
                 SourceUri = themeBase.Resources.Source.ToString(),
                 DisplayName = themeBase.Name.Replace("Base", string.Empty),
@@ -279,12 +279,12 @@ namespace cAlgo.API.Alert.UI.Factories
             return TimeZoneInfo.GetSystemTimeZones().ToList();
         }
 
-        public static Accent GetAccent(Models.ThemeAccentModel accentModel)
+        public static Accent GetAccent(ThemeAccentModel accentModel)
         {
             return new Accent(accentModel.Name, new Uri(accentModel.SourceUri));
         }
 
-        public static AppTheme GetTheme(Models.ThemeBaseModel baseModel)
+        public static AppTheme GetTheme(ThemeBaseModel baseModel)
         {
             return new AppTheme(baseModel.Name, new Uri(baseModel.SourceUri));
         }

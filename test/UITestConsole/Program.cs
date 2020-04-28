@@ -11,10 +11,10 @@ namespace cAlgo.API.Alert.Tester
         {
             var notifications = new Notifications();
 
-            notifications.ShowPopup();
+            //notifications.ShowPopup();
 
             //notifications.ShowPopup("Hour", "EURUSD", "Trend Line", "UITestConsole", 1.23452, "No comment 2", DateTimeOffset.Now);
-            /*
+            
             int counter = 0;
 
             string[] arrows = { "1", "2", "3" };
@@ -27,15 +27,15 @@ namespace cAlgo.API.Alert.Tester
 
                 notifications.ShowPopup("Hour", "EURUSD", type, "UITestConsole", 1.23452, counter.ToString(), DateTimeOffset.Now);
 
-                Thread.Sleep(2000);
-            }*/
-
-            TestMultiThread();
+                Thread.Sleep(200);
+            }
+            
+            //TestMultiThread();
         }
 
         private static void TestMultiThread()
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 20; i++)
             {
                 var alert = new AlertModel
                 {
