@@ -14,7 +14,7 @@ This library helps you to show an alert popup easily from your cTrader indicator
 <h2>Dependencies</h2>
 
 * <a href="https://github.com/MahApps/MahApps.Metro/">MahApps.Metro</a>
-* <a href="https://github.com/JoshClose/CsvHelper/">CsvHelper</a>
+* <a href="https://github.com/mbdavid/litedb">LiteDB</a>
 * <a href="https://github.com/PrismLibrary/Prism">Prism</a>
 * <a href="https://github.com/afhacker/TelegramBotApi">TelegramBotApi</a>
 * <a href="https://github.com/JamesNK/Newtonsoft.Json">Newtonsoft.Json</a>
