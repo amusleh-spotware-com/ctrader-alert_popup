@@ -1,5 +1,4 @@
-﻿using LiteDB;
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 using System;
 
 namespace cAlgo.API.Alert.UI.Models
@@ -18,14 +17,13 @@ namespace cAlgo.API.Alert.UI.Models
 
         #region Properties
 
-        [BsonId]
         public string Id
         {
             get
             {
                 if (string.IsNullOrEmpty(_id))
                 {
-                    _id = $"{Time.Ticks}_{Symbol}_{Type}";
+                    _id = $"{Time.Ticks}_{Symbol}_{Type}_{Price}_{TriggeredBy}_{TimeFrame}";
                 }
 
                 return _id;

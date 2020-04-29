@@ -74,13 +74,12 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TelegramBotApi, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\TelegramBotApi.1.0.1\lib\net45\TelegramBotApi.dll</HintPath>
+    <Reference Include="TelegramBotApi, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\TelegramBotApi.1.0.2\lib\net45\TelegramBotApi.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\AlertContainer.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Launcher.cs" />
     <Compile Include="INotificationsExtensions.cs" />

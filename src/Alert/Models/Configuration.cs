@@ -20,9 +20,9 @@ namespace cAlgo.API.Alert.Models
                 Directory.CreateDirectory(alertsDirPath);
             }
 
-            AlertsFilePath = Path.Combine(alertsDirPath, $"Alerts_{version}.db");
-            SettingsFilePath = Path.Combine(alertsDirPath, $"AlertPopupSettings_{version}.xml");
-            LogFilePath = Path.Combine(alertsDirPath, $"Alerts_{version}.log");
+            AlertsFilePath = Path.Combine(alertsDirPath, $"data.db");
+            SettingsFilePath = Path.Combine(alertsDirPath, $"settings.xml");
+            LogFilePath = Path.Combine(alertsDirPath, $"logs.log");
 
             Title = $"Alerts - cTrader";
         }

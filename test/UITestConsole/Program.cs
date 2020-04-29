@@ -19,15 +19,24 @@ namespace cAlgo.API.Alert.Tester
 
             string[] arrows = { "1", "2", "3" };
 
-            while (counter < 100)
+            while (counter < 10)
             {
                 counter++;
 
-                string type = string.Format("Trend Line {0}", arrows[new Random().Next(0, 3)]);
+                var alert = new AlertModel
+                {
+                    //TimeFrame = "Hour",
+                    Type = string.Format("Trend Line {0}", arrows[new Random().Next(0, 3)]),
+                    Symbol = "EURUSD",
+                    Time = DateTimeOffset.Now,
+                    Price = 1.23456,
+                    Comment = counter.ToString(),
+                    //TriggeredBy = "UITestConsole"
+                };
 
-                notifications.ShowPopup("Hour", "EURUSD", type, "UITestConsole", 1.23452, counter.ToString(), DateTimeOffset.Now);
+                notifications.ShowPopup(alert);
 
-                Thread.Sleep(200);
+                Thread.Sleep(500);
             }
             
             //TestMultiThread();
