@@ -26,14 +26,8 @@ namespace cAlgo.API.Alert
 
         private static readonly List<AlertModel> _alerts = new List<AlertModel>();
 
-        private static readonly List<string> _templateKeywords;
-
-        #endregion Fields
-
-        static Launcher()
+        private static readonly List<string> _templateKeywords = new List<string>
         {
-            _templateKeywords = new List<string>
-            {
                 "{TriggeredBy}",
                 "{Time}",
                 "{Type}",
@@ -41,8 +35,12 @@ namespace cAlgo.API.Alert
                 "{TimeFrame}",
                 "{Comment}",
                 "{Price}"
-            };
+        };
 
+        #endregion Fields
+
+        static Launcher()
+        {
             AppDomain.CurrentDomain.UnhandledException += (obj, args) => Logger.LogException(args.ExceptionObject as Exception);
         }
 
@@ -168,19 +166,7 @@ namespace cAlgo.API.Alert
                     {
                         if (_app == null)
                         {
-                            _app = new App(Configuration.Current.SettingsFilePath, _alerts);
-
-                            _app.EventAggregator.GetEvent<AlertRemovedEvent>().Subscribe(AlertRemovedEvent_Handler);
-
-                            _app.InvokeOnWindowThread(() =>
-                            {
-                                _app.ShellView.Title = Configuration.Current.Title;
-
-                                _app.ShellView.Closed += (sender, args) =>
-                                {
-                                    _app = null;
-                                };
-                            });
+                            InitializeApp();
                         }
 
                         if (alert != null)
@@ -221,6 +207,23 @@ namespace cAlgo.API.Alert
             {
                 _alerts.AddRange(updatedAlerts);
             }
+        }
+
+        private static void InitializeApp()
+        {
+            _app = new App(Configuration.Current.SettingsFilePath, _alerts);
+
+            _app.EventAggregator.GetEvent<AlertRemovedEvent>().Subscribe(AlertRemovedEvent_Handler);
+
+            _app.InvokeOnWindowThread(() =>
+            {
+                _app.ShellView.Title = Configuration.Current.Title;
+
+                _app.ShellView.Closed += (sender, args) =>
+                {
+                    _app = null;
+                };
+            });
         }
 
         #endregion Methods
