@@ -38,6 +38,9 @@
     <Reference Include="cAlgo.API">
       <HintPath>..\..\..\..\..\Documents\cAlgo\API\cAlgo.API.dll</HintPath>
     </Reference>
+    <Reference Include="cAlgo.API.Alert.UI, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\cAlgo.API.Alert.UI.2.2.0\lib\net45\cAlgo.API.Alert.UI.dll</HintPath>
+    </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\..\packages\CommonServiceLocator.2.0.4\lib\net45\CommonServiceLocator.dll</HintPath>
     </Reference>
@@ -101,12 +104,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\UI\UI.csproj">
-      <Project>{63c5a465-9969-4271-8b6c-e37296007ba8}</Project>
-      <Name>UI</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
