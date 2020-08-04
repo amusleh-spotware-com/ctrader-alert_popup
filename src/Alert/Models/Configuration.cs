@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 
 namespace cAlgo.API.Alert.Models
 {
@@ -40,30 +39,5 @@ namespace cAlgo.API.Alert.Models
         public static Configuration Current { get; set; } = new Configuration();
 
         #endregion Properties
-
-        #region Methods
-
-        public FileInfo GetAlertsFileCopy()
-        {
-            if (!File.Exists(AlertsFilePath))
-            {
-                throw new FileNotFoundException("Couldn't find the alerts file to copy: " + AlertsFilePath);
-            }
-
-            var alertsFileInfo = new FileInfo(AlertsFilePath);
-
-            var alertFileNameWithoutExtension = alertsFileInfo.Name.Substring(0, alertsFileInfo.Name.Length - 4);
-
-            var copyFileName = string.Format("{0}_{1}_{2}_{3}.db", alertFileNameWithoutExtension, DateTime.Now.Ticks,
-                Thread.CurrentThread.ManagedThreadId, Assembly.GetExecutingAssembly().FullName);
-
-            var copyFilePath = Path.Combine(alertsFileInfo.DirectoryName, copyFileName);
-
-            File.Copy(alertsFileInfo.FullName, copyFilePath);
-
-            return new FileInfo(copyFilePath);
-        }
-
-        #endregion
     }
 }

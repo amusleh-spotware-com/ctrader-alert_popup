@@ -1,5 +1,4 @@
-﻿using cAlgo.API.Alert.Helpers;
-using cAlgo.API.Alert.Models;
+﻿using cAlgo.API.Alert.Models;
 using cAlgo.API.Alert.UI;
 using cAlgo.API.Alert.UI.Events;
 using cAlgo.API.Alert.UI.Factories;
@@ -21,8 +20,6 @@ namespace cAlgo.API.Alert
         #region Fields
 
         private static App _app;
-
-        private static readonly object _locker = new object();
 
         private static readonly List<AlertModel> _alerts = new List<AlertModel>();
 
@@ -50,7 +47,7 @@ namespace cAlgo.API.Alert
         {
             UpdateAlerts();
 
-            AlertManager.AddAlerts(alert);
+            DataManager.AddAlerts(alert);
 
             _alerts.Add(alert);
 
@@ -162,8 +159,10 @@ namespace cAlgo.API.Alert
             {
                 try
                 {
-                    lock (_locker)
+                    using (var eventWaitHandle = new EventWaitHandle(true, EventResetMode.AutoReset, "AlertWindowWaitHandle"))
                     {
+                        eventWaitHandle.WaitOne();
+
                         if (_app == null)
                         {
                             InitializeApp();
@@ -173,6 +172,8 @@ namespace cAlgo.API.Alert
                         {
                             _app.InvokeAlertAddedEvent(alert);
                         }
+
+                        eventWaitHandle.Set();
                     }
 
                     _app.Run();
@@ -194,14 +195,14 @@ namespace cAlgo.API.Alert
 
         private static void AlertRemovedEvent_Handler(IEnumerable<AlertModel> alerts)
         {
-            AlertManager.RemoveAlerts(alerts.ToArray());
+            DataManager.RemoveAlerts(alerts.ToArray());
         }
 
         private static void UpdateAlerts()
         {
             _alerts.Clear();
 
-            var updatedAlerts = AlertManager.GetAlerts();
+            var updatedAlerts = DataManager.GetAlerts();
 
             if (updatedAlerts != null)
             {

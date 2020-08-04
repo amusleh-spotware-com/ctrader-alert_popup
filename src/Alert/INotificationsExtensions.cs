@@ -55,12 +55,12 @@ namespace cAlgo.API.Alert
 
         public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, TradeType type, string triggeredBy, double price, string comment, DateTimeOffset time)
         {
-            ShowPopup(notifications, timeFrame.ToString(), symbol.Name.ToString(), type.ToString(), triggeredBy, price, comment, DateTimeOffset.Now);
+            ShowPopup(notifications, timeFrame.ToString(), symbol.Name.ToString(), type.ToString(), triggeredBy, price, comment, time);
         }
 
         public static void ShowPopup(this INotifications notifications, TimeFrame timeFrame, Symbol symbol, string type, string triggeredBy, double price, string comment, DateTimeOffset time)
         {
-            ShowPopup(notifications, timeFrame.ToString(), symbol.Name.ToString(), type, triggeredBy, price, comment, DateTimeOffset.Now);
+            ShowPopup(notifications, timeFrame.ToString(), symbol.Name.ToString(), type, triggeredBy, price, comment, time);
         }
 
         public static void ShowPopup(this INotifications notifications, string timeFrame, string symbol, string type, string triggeredBy, double price, string comment, DateTimeOffset time)

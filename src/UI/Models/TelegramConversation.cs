@@ -57,9 +57,9 @@ namespace cAlgo.API.Alert.UI.Models
 
         public static bool operator !=(TelegramConversation obj1, TelegramConversation obj2)
         {
-            if (ReferenceEquals(obj1, null))
+            if (obj1 is null)
             {
-                return !ReferenceEquals(obj2, null);
+                return obj2 is object;
             }
 
             return !obj1.Equals(obj2);
@@ -67,9 +67,9 @@ namespace cAlgo.API.Alert.UI.Models
 
         public static bool operator ==(TelegramConversation obj1, TelegramConversation obj2)
         {
-            if (ReferenceEquals(obj1, null))
+            if (obj1 is null)
             {
-                return ReferenceEquals(obj2, null);
+                return obj2 is null;
             }
 
             return obj1.Equals(obj2);

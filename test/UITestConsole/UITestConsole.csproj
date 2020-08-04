@@ -40,41 +40,43 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\Alert\bin\Debug\cAlgo.API.dll</HintPath>
     </Reference>
-    <Reference Include="cAlgo.API.Alert, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\cAlgo.API.Alert.2.2.0\lib\net45\cAlgo.API.Alert.dll</HintPath>
-    </Reference>
-    <Reference Include="cAlgo.API.Alert.UI, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\cAlgo.API.Alert.UI.2.2.0\lib\net45\cAlgo.API.Alert.UI.dll</HintPath>
-    </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CommonServiceLocator.2.0.4\lib\net45\CommonServiceLocator.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\src\Alert\bin\Release\CommonServiceLocator.dll</HintPath>
     </Reference>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\src\Alert\bin\Release\ControlzEx.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=5.0.7.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LiteDB.5.0.7\lib\net45\LiteDB.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\src\Alert\bin\Release\LiteDB.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MahApps.Metro.1.6.5\lib\net45\MahApps.Metro.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\src\Alert\bin\Release\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\src\Alert\bin\Release\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="Prism, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Prism.Core.7.1.0.431\lib\net45\Prism.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\src\Alert\bin\Release\Prism.dll</HintPath>
     </Reference>
     <Reference Include="Prism.Wpf, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Prism.Wpf.7.1.0.431\lib\net45\Prism.Wpf.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\src\Alert\bin\Release\Prism.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Prism.Wpf.7.1.0.431\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\src\Alert\bin\Release\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -84,7 +86,8 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="TelegramBotApi, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\TelegramBotApi.1.0.2\lib\net45\TelegramBotApi.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\src\Alert\bin\Release\TelegramBotApi.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -95,7 +98,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Alert\Alert.csproj">
+      <Project>{67ad1d85-119e-4984-a642-ae502bc4af27}</Project>
+      <Name>Alert</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\UI\UI.csproj">
+      <Project>{63c5a465-9969-4271-8b6c-e37296007ba8}</Project>
+      <Name>UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
