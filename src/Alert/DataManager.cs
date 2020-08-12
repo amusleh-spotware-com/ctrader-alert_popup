@@ -1,6 +1,7 @@
 ﻿using cAlgo.API.Alert.Models;
 using cAlgo.API.Alert.UI.Models;
 using LiteDB;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,16 +22,17 @@ namespace cAlgo.API.Alert
 
             using (var eventWaitHandle = GetWaitHandle())
             {
-                eventWaitHandle.WaitOne();
-
-                using (LiteDatabase database = new LiteDatabase(GetConnectionString()))
+                if (eventWaitHandle.WaitOne(TimeSpan.FromMinutes(1)))
                 {
-                    var collection = database.GetCollection<AlertModel>();
+                    using (LiteDatabase database = new LiteDatabase(GetConnectionString()))
+                    {
+                        var collection = database.GetCollection<AlertModel>();
 
-                    result = collection.FindAll().ToList();
+                        result = collection.FindAll().ToList();
+                    }
+
+                    eventWaitHandle.Set();
                 }
-
-                eventWaitHandle.Set();
             }
 
             return result;
@@ -40,16 +42,17 @@ namespace cAlgo.API.Alert
         {
             using (var eventWaitHandle = GetWaitHandle())
             {
-                eventWaitHandle.WaitOne();
-
-                using (LiteDatabase database = new LiteDatabase(GetConnectionString()))
+                if (eventWaitHandle.WaitOne(TimeSpan.FromMinutes(1)))
                 {
-                    var collection = database.GetCollection<AlertModel>();
+                    using (LiteDatabase database = new LiteDatabase(GetConnectionString()))
+                    {
+                        var collection = database.GetCollection<AlertModel>();
 
-                    collection.InsertBulk(alerts);
+                        collection.InsertBulk(alerts);
+                    }
+
+                    eventWaitHandle.Set();
                 }
-
-                eventWaitHandle.Set();
             }
         }
 
@@ -57,16 +60,17 @@ namespace cAlgo.API.Alert
         {
             using (var eventWaitHandle = GetWaitHandle())
             {
-                eventWaitHandle.WaitOne();
-
-                using (LiteDatabase database = new LiteDatabase(GetConnectionString()))
+                if (eventWaitHandle.WaitOne(TimeSpan.FromMinutes(1)))
                 {
-                    var collection = database.GetCollection<AlertModel>();
+                    using (LiteDatabase database = new LiteDatabase(GetConnectionString()))
+                    {
+                        var collection = database.GetCollection<AlertModel>();
 
-                    collection.DeleteMany(iAlert => alerts.Contains(iAlert));
+                        collection.DeleteMany(iAlert => alerts.Contains(iAlert));
+                    }
+
+                    eventWaitHandle.Set();
                 }
-
-                eventWaitHandle.Set();
             }
         }
 

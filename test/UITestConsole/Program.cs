@@ -10,13 +10,13 @@ namespace cAlgo.API.Alert.Tester
         {
             var notifications = new Notifications();
 
-            notifications.ShowPopup();
+            //notifications.ShowPopup();
 
             //notifications.ShowPopup("Hour", "EURUSD", "Trend Line", "UITestConsole", 1.23452, "No comment 2", DateTimeOffset.Now);
 
             //TriggerAlerts(50, notifications);
 
-            //TestMultiThread();
+            TestMultiThread(10);
         }
 
         private static void TriggerAlerts(int number, Notifications notifications)
@@ -42,13 +42,13 @@ namespace cAlgo.API.Alert.Tester
                     TriggeredBy = "UITestConsole"
                 };
 
-                notifications.TriggerAlert(alert);
+                notifications.ShowPopup(alert);
             }
         }
 
-        private static void TestMultiThread()
+        private static void TestMultiThread(int threadNumber)
         {
-            for (int i = 0; i < 20; i++)
+            for (int i = 1; i <= threadNumber; i++)
             {
                 int number = i;
 
