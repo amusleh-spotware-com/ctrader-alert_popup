@@ -1,0 +1,145 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="SharedResources.xaml" />
+        <ResourceDictionary Source="Icons.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="BoldCenteredTextBlock" TargetType="TextBlock">
+        <Setter Property="Margin" Value="3" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style x:Key="RadiusCornerBorderStyle" TargetType="Border">
+        <Setter Property="MinWidth" Value="50" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="3" />
+    </Style>
+
+    <DataTemplate x:Key="HeaderTemplate">
+        <StackPanel Orientation="Horizontal">
+            <Button Command="{Binding Path=DataContext.RemoveSelectedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" ToolTip="Remove Selected">
+                <Viewbox Style="{StaticResource IconsViewboxStyle}">
+                    <Path Style="{StaticResource DeleteIconPathStyle}" />
+                </Viewbox>
+            </Button>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="CellTemplate">
+        <StackPanel Orientation="Horizontal">
+            <Button
+                Command="{Binding Path=DataContext.RemoveCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                CommandParameter="{Binding}"
+                ToolTip="Remove Selected">
+                <Viewbox Style="{StaticResource IconsViewboxStyle}">
+                    <Path Style="{StaticResource DeleteIconPathStyle}" />
+                </Viewbox>
+            </Button>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TwelveHourTimeTemplate">
+        <Border Background="{Binding Path=DataContext.Settings.Alerts.TimeColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Time, StringFormat={}{0:MM/dd/yyyy hh:mm tt}}" />
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TwentyFourHourTimeTemplate">
+        <Border Background="{Binding Path=DataContext.Settings.Alerts.TimeColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Time, StringFormat={}{0:MM/dd/yyyy HH:mm}}" />
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TimeTemplate">
+        <ContentControl Content="{Binding}">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=DataContext.Settings.Alerts.TimeFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Converter={StaticResource EnumToInt}}" Value="0">
+                            <Setter Property="ContentTemplate" Value="{StaticResource TwelveHourTimeTemplate}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=DataContext.Settings.Alerts.TimeFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Converter={StaticResource EnumToInt}}" Value="1">
+                            <Setter Property="ContentTemplate" Value="{StaticResource TwentyFourHourTimeTemplate}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SellTypeTemplate">
+        <Border Background="{Binding Path=DataContext.Settings.Alerts.SellTypeColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Type}" />
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="BuyTypeTemplate">
+        <Border Background="{Binding Path=DataContext.Settings.Alerts.BuyTypeColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Type}" />
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="OtherTypesTemplate">
+        <Border Background="{Binding Path=DataContext.Settings.Alerts.OtherTypesColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Type}" />
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="PriceTemplate">
+        <Border Background="{Binding Path=DataContext.Settings.Alerts.PriceColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Price}" />
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TypeTemplate">
+        <ContentControl Content="{Binding}">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Setter Property="ContentTemplate" Value="{StaticResource OtherTypesTemplate}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Type}" Value="Sell">
+                            <Setter Property="ContentTemplate" Value="{StaticResource SellTypeTemplate}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=Type}" Value="Buy">
+                            <Setter Property="ContentTemplate" Value="{StaticResource BuyTypeTemplate}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SymbolTemplate">
+        <Border Background="{Binding Path=DataContext.Settings.Alerts.SymbolColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=Symbol}" />
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TimeFrameTemplate">
+        <Border Background="{Binding Path=DataContext.Settings.Alerts.TimeFrameColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=TimeFrame}" />
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TriggeredByTemplate">
+        <Border Background="{Binding Path=DataContext.Settings.Alerts.TriggeredByColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Style="{StaticResource RadiusCornerBorderStyle}">
+            <TextBlock Style="{StaticResource BoldCenteredTextBlock}" Text="{Binding Path=TriggeredBy}" />
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="CommentTemplate">
+        <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Hidden">
+            <FlowDocument>
+                <Paragraph
+                    FontFamily="{Binding Path=DataContext.Settings.Alerts.CommentFontModel.Family, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                    FontSize="{Binding Path=DataContext.Settings.Alerts.CommentFontModel.Size, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                    FontStyle="{Binding Path=DataContext.Settings.Alerts.CommentFontModel.StyleModel.Style, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                    FontWeight="{Binding Path=DataContext.Settings.Alerts.CommentFontModel.WeightModel.Weight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                    <Run Text="{Binding Path=Comment}" />
+                </Paragraph>
+            </FlowDocument>
+        </FlowDocumentScrollViewer>
+    </DataTemplate>
+</ResourceDictionary>

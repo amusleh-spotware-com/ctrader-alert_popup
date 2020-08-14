@@ -1,0 +1,70 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="SharedResources.xaml" />
+        <ResourceDictionary Source="Icons.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style BasedOn="{StaticResource MetroGroupBox}" TargetType="GroupBox">
+        <Setter Property="Margin" Value="5" />
+    </Style>
+
+    <Style TargetType="controls:MetroHeader">
+        <Setter Property="Margin" Value="5" />
+    </Style>
+
+    <DataTemplate x:Key="ComboBoxColorItemTemplate">
+        <Rectangle
+            Width="50"
+            Height="3"
+            HorizontalAlignment="Left"
+            Fill="{Binding}"
+            Stroke="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="ComboBoxAccentItemTemplate">
+        <WrapPanel Orientation="Horizontal">
+            <Rectangle
+                Width="50"
+                Height="3"
+                HorizontalAlignment="Left"
+                Fill="{Binding Path=Color}"
+                Stroke="{Binding Path=Color}" />
+
+            <TextBlock Margin="3,0,0,0" Text="{Binding Path=Name}" />
+        </WrapPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ComboBoxEnumItemTemplate">
+        <TextBlock Text="{Binding Converter={StaticResource EnumToDescription}}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="TelegramBotsHeaderTemplate">
+        <StackPanel>
+            <Button
+                Command="{Binding Path=DataContext.RemoveSelectedTelegramBotsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                ToolTip="Remove Selected">
+                <Viewbox Style="{StaticResource IconsViewboxStyle}">
+                    <Path Style="{StaticResource DeleteIconPathStyle}" />
+                </Viewbox>
+            </Button>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TelegramBotsCellTemplate">
+        <StackPanel>
+            <Button
+                HorizontalAlignment="Center"
+                Command="{Binding Path=DataContext.RemoveTelegramBotCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                CommandParameter="{Binding}"
+                ToolTip="Remove">
+                <Viewbox Style="{StaticResource IconsViewboxStyle}">
+                    <Path Style="{StaticResource DeleteIconPathStyle}" />
+                </Viewbox>
+            </Button>
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>

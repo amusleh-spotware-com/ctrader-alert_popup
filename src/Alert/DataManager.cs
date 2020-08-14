@@ -1,5 +1,4 @@
 ﻿using cAlgo.API.Alert.Models;
-using cAlgo.API.Alert.UI.Models;
 using LiteDB;
 using System;
 using System.Collections.Generic;

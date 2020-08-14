@@ -1,8 +1,6 @@
-﻿using cAlgo.API.Alert.Models;
-using cAlgo.API.Alert.UI;
-using cAlgo.API.Alert.UI.Events;
-using cAlgo.API.Alert.UI.Factories;
-using cAlgo.API.Alert.UI.Models;
+﻿using cAlgo.API.Alert.Events;
+using cAlgo.API.Alert.Factories;
+using cAlgo.API.Alert.Models;
 using cAlgo.API.Alert.Utility;
 using cAlgo.API.Internals;
 using System;

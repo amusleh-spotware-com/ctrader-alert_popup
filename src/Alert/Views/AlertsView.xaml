@@ -1,0 +1,96 @@
+﻿<UserControl
+    x:Class="cAlgo.API.Alert.Views.AlertsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:cAlgo.API.Alert.Behaviors"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:iconsPack="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources/AlertsViewResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=LoadedCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Unloaded">
+            <i:InvokeCommandAction Command="{Binding Path=UnloadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <DataGrid
+        Name="AlertsDataGrid"
+        Grid.Row="1"
+        behaviors:DataGridColumnSettingsBehavior.EnableColumnsVisibilityMenu="True"
+        behaviors:DataGridColumnSettingsBehavior.SaveColumnsIndex="True"
+        behaviors:DataGridColumnSettingsBehavior.SaveColumnsSorting="True"
+        behaviors:DataGridColumnSettingsBehavior.SaveColumnsWidth="True"
+        behaviors:ScrollToItemBehavior.Item="{Binding Path=VisibleAlert}"
+        ItemsSource="{Binding Path=Alerts}"
+        Style="{StaticResource ReadOnlyDataGridStyle}">
+        <DataGrid.Columns>
+            <DataGridTemplateColumn
+                Width="Auto"
+                MinWidth="100"
+                CellTemplate="{StaticResource TypeTemplate}"
+                Header="Type"
+                SortMemberPath="Type" />
+            <DataGridTemplateColumn
+                Width="Auto"
+                MinWidth="100"
+                CellTemplate="{StaticResource PriceTemplate}"
+                Header="Price"
+                SortMemberPath="Price" />
+            <DataGridTemplateColumn
+                Width="Auto"
+                MinWidth="100"
+                CellTemplate="{StaticResource SymbolTemplate}"
+                Header="Symbol"
+                SortMemberPath="Symbol" />
+            <DataGridTemplateColumn
+                Width="Auto"
+                MinWidth="150"
+                CellTemplate="{StaticResource TimeTemplate}"
+                Header="Time"
+                SortDirection="Ascending"
+                SortMemberPath="Time" />
+            <DataGridTemplateColumn
+                Width="Auto"
+                MinWidth="100"
+                CellTemplate="{StaticResource TimeFrameTemplate}"
+                Header="Time Frame"
+                SortMemberPath="TimeFrame" />
+            <DataGridTemplateColumn
+                Width="Auto"
+                MinWidth="110"
+                CellTemplate="{StaticResource TriggeredByTemplate}"
+                Header="Triggered By"
+                SortMemberPath="TriggeredBy" />
+            <DataGridTemplateColumn
+                Width="*"
+                MinWidth="150"
+                CellTemplate="{StaticResource CommentTemplate}"
+                Header="Comment"
+                SortMemberPath="Comment" />
+            <DataGridTemplateColumn
+                Width="Auto"
+                MinWidth="100"
+                CellTemplate="{StaticResource CellTemplate}"
+                HeaderTemplate="{StaticResource HeaderTemplate}" />
+        </DataGrid.Columns>
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="SelectionChanged">
+                <i:InvokeCommandAction Command="{Binding Path=SelectionChangedCommand}" CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+    </DataGrid>
+</UserControl>

@@ -1,4 +1,4 @@
-﻿using cAlgo.API.Alert.UI.Models;
+﻿using cAlgo.API.Alert.Models;
 using System;
 using System.Threading;
 

@@ -38,9 +38,6 @@
     <Reference Include="cAlgo.API">
       <HintPath>..\..\..\..\..\Documents\cAlgo\API\cAlgo.API.dll</HintPath>
     </Reference>
-    <Reference Include="cAlgo.API.Alert.UI, Version=2.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\cAlgo.API.Alert.UI.2.2.1\lib\net45\cAlgo.API.Alert.UI.dll</HintPath>
-    </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\..\packages\CommonServiceLocator.2.0.4\lib\net45\CommonServiceLocator.dll</HintPath>
     </Reference>
@@ -86,9 +83,42 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App.cs" />
+    <Compile Include="Behaviors\DataGridColumnSettingsBehavior.cs" />
+    <Compile Include="Behaviors\ScrollToItemBehavior.cs" />
+    <Compile Include="Converters\EnumToDescription.cs" />
+    <Compile Include="Converters\EnumToInt.cs" />
+    <Compile Include="Enums\DataGridColumnSettingsType.cs" />
+    <Compile Include="Enums\TimeFormat.cs" />
+    <Compile Include="Events\AlertAddedEvent.cs" />
+    <Compile Include="Events\AlertRemovedEvent.cs" />
+    <Compile Include="Events\AlertSettingsChangedEvent.cs" />
+    <Compile Include="Events\EmailSettingsChangedEvent.cs" />
+    <Compile Include="Events\GeneralSettingsChangedEvent.cs" />
+    <Compile Include="Events\SettingsChangedEvent.cs" />
+    <Compile Include="Events\SoundSettingsChangedEvent.cs" />
+    <Compile Include="Events\TelegramSettingsChangedEvent.cs" />
+    <Compile Include="Factories\SettingsFactory.cs" />
+    <Compile Include="Models\AboutModel.cs" />
+    <Compile Include="Models\AlertModel.cs" />
+    <Compile Include="Models\AlertSettingsModel.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Launcher.cs" />
     <Compile Include="INotificationsExtensions.cs" />
+    <Compile Include="Models\DataGridColumnSettingsModels.cs" />
+    <Compile Include="Models\DataGridLengthSettingsModels.cs" />
+    <Compile Include="Models\EmailSettingsModel.cs" />
+    <Compile Include="Models\EmailTemplateModel.cs" />
+    <Compile Include="Models\FontModel.cs" />
+    <Compile Include="Models\FontStyleModel.cs" />
+    <Compile Include="Models\FontWeightModel.cs" />
+    <Compile Include="Models\GeneralSettingsModel.cs" />
+    <Compile Include="Models\SettingsModel.cs" />
+    <Compile Include="Models\SoundSettingsModel.cs" />
+    <Compile Include="Models\TelegramConversation.cs" />
+    <Compile Include="Models\TelegramSettingsModel.cs" />
+    <Compile Include="Models\ThemeAccentModel.cs" />
+    <Compile Include="Models\ThemeBaseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -96,9 +126,27 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="DataManager.cs" />
+    <Compile Include="Settings\DataGridSettings.cs" />
     <Compile Include="Utility\ExceptionTools.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\Serializer.cs" />
+    <Compile Include="ViewModels\AboutViewModel.cs" />
+    <Compile Include="ViewModels\AlertsViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewNames.cs" />
+    <Compile Include="Views\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AlertsView.xaml.cs">
+      <DependentUpon>AlertsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShellView.xaml.cs">
+      <DependentUpon>ShellView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -107,6 +155,40 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Resources\AlertsViewResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\SettingsViewResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\SharedResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AboutView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AlertsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ShellView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
