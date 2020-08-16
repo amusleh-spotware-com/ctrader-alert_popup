@@ -12,11 +12,11 @@ namespace cAlgo.API.Alert.Tester
 
             //notifications.ShowPopup();
 
-            //notifications.ShowPopup("Hour", "EURUSD", "Trend Line", "UITestConsole", 1.23452, "No comment 2", DateTimeOffset.Now);
+            notifications.ShowPopup("Hour", "EURUSD", "Trend Line", "UITestConsole", 1.23452, "No comment 2", DateTimeOffset.Now);
 
             //TriggerAlerts(50, notifications);
 
-            TestMultiThread(10);
+            //TestMultiThread(10);
         }
 
         private static void TriggerAlerts(int number, Notifications notifications)

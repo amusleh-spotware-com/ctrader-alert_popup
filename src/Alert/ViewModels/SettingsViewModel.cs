@@ -19,12 +19,13 @@ namespace cAlgo.API.Alert.ViewModels
     {
         #region Fields
 
+        private readonly EventAggregator _eventAggregator;
+        private readonly Models.SettingsModel _model;
+
         private List<SolidColorBrush> _colors;
-        private EventAggregator _eventAggregator;
         private List<FontFamily> _fonts;
         private List<Models.FontStyleModel> _fontStyles;
         private List<Models.FontWeightModel> _fontWeights;
-        private Models.SettingsModel _model;
         private Models.TelegramConversation _telegramConversation;
         private List<Models.ThemeAccentModel> _themeAccents;
         private List<Models.ThemeBaseModel> _themeBases;
@@ -243,7 +244,9 @@ namespace cAlgo.API.Alert.ViewModels
 
             try
             {
-                updates = telegramBotClient.GetUpdates();
+                telegramBotClient.DeleteWebhook();
+
+                updates = telegramBotClient.GetUpdates().Result;
             }
             catch (WebException ex)
             {

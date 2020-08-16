@@ -9,7 +9,7 @@ namespace cAlgo.API.Alert.ViewModels
     {
         #region Fields
 
-        private App _app;
+        private readonly App _app;
 
         private bool _isSettingsButtonEnabled;
 
