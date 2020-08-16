@@ -1,4 +1,5 @@
-﻿using cAlgo.API.Alert.Events;
+﻿using cAlgo.API.Alert.Enums;
+using cAlgo.API.Alert.Events;
 using cAlgo.API.Alert.Factories;
 using cAlgo.API.Alert.Models;
 using cAlgo.API.Alert.Utility;
@@ -41,7 +42,7 @@ namespace cAlgo.API.Alert
 
         #region Methods
 
-        public static void Launch(INotifications notifications, AlertModel alert, bool triggerAlerts = true, bool showPopup = true)
+        public static void Launch(INotifications notifications, AlertModel alert, AlertType alertType)
         {
             UpdateAlerts();
 
@@ -49,14 +50,14 @@ namespace cAlgo.API.Alert
 
             _alerts.Add(alert);
 
-            SettingsModel settings = SettingsFactory.GetSettings(Configuration.Current.SettingsFilePath);
+            var settings = SettingsFactory.GetSettings(Configuration.Current.SettingsFilePath);
 
-            if (triggerAlerts)
+            if (alertType == AlertType.Triggers || alertType == AlertType.Popup)
             {
                 TriggerAlerts(notifications, settings, alert);
             }
 
-            if (showPopup)
+            if (alertType == AlertType.Popup)
             {
                 ShowPopup(alert);
             }
@@ -85,7 +86,8 @@ namespace cAlgo.API.Alert
 
         private static string PutObjectInTemplate(object obj, string template)
         {
-            Dictionary<string, object> properties = obj.GetType().GetProperties().Where(iProperty => iProperty.GetValue(obj) != null)
+            Dictionary<string, object> properties = obj.GetType().GetProperties()
+                .Where(iProperty => iProperty.GetValue(obj) != null)
                 .ToDictionary(propertyInfo => propertyInfo.Name,
                 propertyInfo => propertyInfo.GetValue(obj));
 
@@ -93,7 +95,9 @@ namespace cAlgo.API.Alert
             {
                 string propertyName = RemoveKeywordBrackets(keyword);
 
-                template = template.Replace(keyword, properties.ContainsKey(propertyName) ? properties[propertyName].ToString() : string.Empty);
+                template = template.Replace(keyword, properties.ContainsKey(propertyName) 
+                    ? properties[propertyName].ToString() 
+                    : string.Empty);
             }
 
             return template;

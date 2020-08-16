@@ -88,6 +88,7 @@
     <Compile Include="Behaviors\ScrollToItemBehavior.cs" />
     <Compile Include="Converters\EnumToDescription.cs" />
     <Compile Include="Converters\EnumToInt.cs" />
+    <Compile Include="Enums\AlertType.cs" />
     <Compile Include="Enums\DataGridColumnSettingsType.cs" />
     <Compile Include="Enums\TimeFormat.cs" />
     <Compile Include="Events\AlertAddedEvent.cs" />
