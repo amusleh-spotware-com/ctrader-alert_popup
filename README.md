@@ -17,7 +17,6 @@ This library helps you to show an alert popup easily from your cTrader indicator
 * <a href="https://github.com/mbdavid/litedb">LiteDB</a>
 * <a href="https://github.com/PrismLibrary/Prism">Prism</a>
 * <a href="https://github.com/afhacker/TelegramBotApi">TelegramBotApi</a>
-* <a href="https://github.com/JamesNK/Newtonsoft.Json">Newtonsoft.Json</a>
 
 <h2>Documentation</h2>
 
