@@ -1,17 +1,20 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
+    <id>cAlgo.API.Alert</id>
+    <version>2.2.3</version>
     <title>$title$</title>
-    <authors>$author$</authors>
+    <authors>AlgoDeveloper</authors>
     <owners>$author$</owners>
-    <licenseUrl>https://github.com/afhacker/ctrader-alert_popup/blob/master/LICENSE</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/afhacker/ctrader-alert_popup</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>Alert Popup For cTrader</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>cTrader</tags>
+	<dependencies>
+      <group targetFramework=".NETFramework4.5" />
+    </dependencies>
   </metadata>
 </package>
